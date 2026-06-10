@@ -1,5 +1,5 @@
 {
-  "name": "@dddforum/backend",
+  "name": "@talknest/backend",
   "description": "A forum web application for developers to share ideas, thoughts, and experiences about Domain-Driven Design (DDD).",
   "version": "1.0.0",
   "author": "Mohamed Kamel",
@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "clean": "rimraf ./dist",
+    "clean:deps": "rimraf node_modules",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
     "dev": "tsx prepareEnv.ts nodemon",
@@ -36,18 +37,22 @@
     "test:infra": "jest -c jest.config.infra.ts --verbose",
     "test:infra:dev": "jest -c jest.config.infra.ts --watch",
     "test:unit": "jest -c jest.config.unit.ts --verbose",
-    "test:unit:dev": "jest -c jest.config.unit.ts --watch"
+    "test:unit:dev": "jest -c jest.config.unit.ts --watch",
+    "start:db": "docker-compose up -d",
+    "stop:db": "docker-compose down",
+    "stop:db:volumes": "docker-compose down -v",
+    "db:logs": "docker-compose logs -f"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn test && yarn prettier-format && yarn lint"
+      "pre-commit": "yarn test:unit && yarn prettier-format && yarn lint"
     }
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@dddforum/shared": "*",
+    "@talknest/shared": "*",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "cors": "^2.8.6",

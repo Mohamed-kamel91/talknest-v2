@@ -1,4 +1,4 @@
-import type { EmailSubscription } from '@dddforum/shared/api/marketing';
+import type { EmailSubscription } from '@talknest/shared/api/marketing';
 
 import type { IContactListAPI } from './ports/contact-list-api';
 import type { AddEmailToListCommand } from './marketing-command';

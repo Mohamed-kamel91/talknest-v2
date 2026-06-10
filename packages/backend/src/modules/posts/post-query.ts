@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import type { GetPostParams } from '@dddforum/shared/api/post';
+import type { GetPostParams } from '@talknest/shared/api/post';
 import {
   InvalidRequestQueryParamsException,
   MissingRequestQueryParamsException,

@@ -6,22 +6,23 @@ import { CompositionRoot } from '../../../src/shared/composition-root';
 import { Database } from '../../../src/shared/database';
 import { WebServer } from '../../../src/shared/http';
 
-import { sharedTestRoot } from '../../../../shared/src/paths';
+import { sharedTestRoot } from '@talknest/shared/paths';
+import { createAPIClient } from '@talknest/shared/api';
+import type {
+  CreateUserInput,
+  CreateUserResponse,
+} from '@talknest/shared/api/user';
+import { AddEmailToListResponse } from '@talknest/shared/api/marketing';
+import { GenericErrors, UserErrors } from '@talknest/shared/errors';
 import { CreateUserBuilder } from '../../../../shared/tests/support/builders';
 import {
   buildManyUsers,
   resetDatabase,
 } from '../../../../shared/tests/support/fixtures';
-import { createAPIClient } from '../../../../shared/src/api';
-import type {
-  CreateUserResponse,
-  CreateUserInput,
-} from '../../../../shared/src/api/user';
-import type { AddEmailToListResponse } from '../../../../shared/src/api/marketing';
-import { UserErrors, GenericErrors } from '../../../../shared/src/errors';
 
 const feature = loadFeature(
   path.join(sharedTestRoot, 'features/registration.feature'),
+  { tagFilter: '@backend' },
 );
 
 defineFeature(feature, (test) => {

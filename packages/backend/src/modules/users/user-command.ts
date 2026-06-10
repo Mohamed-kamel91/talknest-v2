@@ -1,4 +1,4 @@
-import type { CreateUserInput } from '@dddforum/shared/api/user';
+import type { CreateUserInput } from '@talknest/shared/api/user';
 
 import {
   getMissingKeys,
