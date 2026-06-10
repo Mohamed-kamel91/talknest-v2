@@ -3,22 +3,23 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 
 import { Config } from '../../../src/shared/config';
 import { CompositionRoot } from '../../../src/shared/composition-root';
-import { type Application } from '../../../src/shared/application';
+import type { Application } from '../../../src/shared/application';
 import { InvalidInputException } from '../../../src/shared/errors/validation-errors';
 
 import { CreateUserCommand } from '../../../src/modules/users/user-command';
-import { InMemoryUserRepo } from '../../../src/modules/users/adapters/In-memory-user-repo';
+import type { InMemoryUserRepo } from '../../../src/modules/users/adapters/In-memory-user-repo';
 import {
   EmailAlreadyTakenException,
   UsernameAlreadyTakenException,
 } from '../../../src/modules/users/user-exceptions';
-import { FakeTransactionalEmailAPI } from '../../../src/modules/notifications/adapters/transactional-email-api/fake-transactional-email-api';
-import { FakeContactListAPI } from '../../../src/modules/marketing/adapters/contact-list-api/fake-contact-list-api';
+import type { FakeTransactionalEmailAPI } from '../../../src/modules/notifications/adapters/transactional-email-api/fake-transactional-email-api';
+import type { FakeContactListAPI } from '../../../src/modules/marketing/adapters/contact-list-api/fake-contact-list-api';
 
-import { sharedTestRoot } from '../../../../shared/src/paths';
-import { CreateUserInput, User } from '../../../../shared/src/api/user';
-import { type EmailSubscription } from '../../../../shared/src/api/marketing';
-import { GenericErrors } from '../../../../shared/src/errors/generic';
+import { sharedTestRoot } from '@talknest/shared/paths';
+import type { CreateUserInput, User } from '@talknest/shared/api/user';
+import type { EmailSubscription } from '@talknest/shared/api/marketing';
+import { GenericErrors } from '@talknest/shared/errors/generic';
+
 import { CreateUserBuilder } from '../../../../shared/tests/support/builders';
 
 const feature = loadFeature(

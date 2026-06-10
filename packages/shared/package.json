@@ -1,11 +1,12 @@
 {
-  "name": "@dddforum/shared",
+  "name": "@talknest/shared",
   "author": "Mohamed Kamel",
   "private": true,
   "license": "ISC",
   "version": "1.0.0",
   "scripts": {
     "clean": "rimraf ./dist",
+    "clean:deps": "rimraf node_modules",
     "build": "tsc"
   },
   "main": "./dist/index.js",
@@ -15,21 +16,25 @@
       "default": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./*": {
+      "default": "./dist/*.js",
+      "types": "./dist/*.d.ts "
+    },
     "./api": {
       "types": "./dist/api/index.d.ts",
       "default": "./dist/api/index.js"
     },
     "./api/*": {
-      "types": "./dist/api/*.d.ts",
-      "default": "./dist/api/*.js"
+      "default": "./dist/api/*.js",
+      "types": "./dist/api/*.d.ts"
     },
     "./errors": {
-      "types": "./dist/errors/index.d.ts",
-      "default": "./dist/errors/index.js"
+      "default": "./dist/errors/index.js",
+      "types": "./dist/errors/index.d.ts"
     },
     "./errors/*": {
-      "types": "./dist/errors/*.d.ts",
-      "default": "./dist/errors/*.js"
+      "default": "./dist/errors/*.js",
+      "types": "./dist/errors/*.d.ts"
     }
   }
 }

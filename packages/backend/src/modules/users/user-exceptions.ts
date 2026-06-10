@@ -1,4 +1,4 @@
-import { UserErrors } from '@dddforum/shared/errors/user';
+import { UserErrors } from '@talknest/shared/errors/user';
 import {
   NotFoundError,
   BadRequestError,

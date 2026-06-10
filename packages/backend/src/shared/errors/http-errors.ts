@@ -1,4 +1,4 @@
-import { GenericErrors } from "@dddforum/shared/errors";
+import { GenericErrors } from "@talknest/shared/errors";
 
 export class HttpError extends Error {
   constructor(

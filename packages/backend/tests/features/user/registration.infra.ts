@@ -1,24 +1,26 @@
 import path from 'path';
 import { loadFeature, defineFeature } from 'jest-cucumber';
-import { sharedTestRoot } from '../../../../shared/src/paths';
-import { CreateUserBuilder } from '../../../../shared/tests/support/builders';
-import { CreateUserInput, User } from '../../../../shared/src/api/user';
+
 import { Config } from '../../../src/shared/config';
 import { CompositionRoot } from '../../../src/shared/composition-root';
-import { type EmailSubscription } from '../../../../shared/src/api/marketing';
-import { type Application } from '../../../src/shared/application';
-import { CreateUserCommand } from '../../../src/modules/users/user-command';
-import { Database } from '../../../src/shared/database';
-import {
-  buildManyUsers,
-  resetDatabase,
-} from '../../../../shared/tests/support/fixtures';
+import type { Database } from '../../../src/shared/database';
+import type { Application } from '../../../src/shared/application';
 import { InvalidInputException } from '../../../src/shared/errors/validation-errors';
-import { GenericErrors } from '@dddforum/shared/errors/generic';
+import { CreateUserCommand } from '../../../src/modules/users/user-command';
 import {
   EmailAlreadyTakenException,
   UsernameAlreadyTakenException,
 } from '../../../src/modules/users/user-exceptions';
+
+import { sharedTestRoot } from '@talknest/shared/paths';
+import type { CreateUserInput, User } from '@talknest/shared/api/user';
+import type { EmailSubscription } from '@talknest/shared/api/marketing';
+import { GenericErrors } from '@talknest/shared/errors';
+import {
+  buildManyUsers,
+  resetDatabase,
+} from '../../../../shared/tests/support/fixtures';
+import { CreateUserBuilder } from '../../../../shared/tests/support/builders';
 
 const feature = loadFeature(
   path.join(sharedTestRoot, 'features/registration.feature'),
