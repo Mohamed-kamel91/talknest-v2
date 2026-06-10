@@ -1,6 +1,5 @@
 {
   "name": "@talknest/frontend",
-  "description": "A forum web application for developers to share ideas, thoughts, and experiences about Domain-Driven Design (DDD).",
   "version": "1.0.0",
   "type": "module",
   "author": "Mohamed Kamel",
