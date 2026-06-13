@@ -31,7 +31,7 @@ defineFeature(feature, (test) => {
   let server: WebServer;
 
   const config: Config = new Config('test:e2e');
-  const apiClient = createAPIClient('http://localhost:3000');
+  const apiClient = createAPIClient(config.getApiURL());
 
   beforeAll(async () => {
     composition = CompositionRoot.createCompositionRoot(config);
