@@ -11,6 +11,9 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "dependencies": {
+    "axios": "^1.6.2"
+  },
   "exports": {
     ".": {
       "default": "./dist/index.js",
@@ -18,7 +21,7 @@
     },
     "./*": {
       "default": "./dist/*.js",
-      "types": "./dist/*.d.ts "
+      "types": "./dist/*.d.ts"
     },
     "./api": {
       "types": "./dist/api/index.d.ts",
