@@ -8,19 +8,20 @@
   "scripts": {
     "clean": "rimraf ./dist",
     "clean:deps": "rimraf node_modules",
-    "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
+    "build": "tsc --build",
     "dev": "tsx prepareEnv.ts nodemon",
     "start": "node dist/index.js",
-    "start:dev": "yarn db:migrate && yarn db:generate && yarn dev",
+    "start:dev": "pnpm run db:migrate && pnpm run db:generate && pnpm run dev",
     "db:generate": "tsx prepareEnv.ts prisma generate",
     "db:migrate": "tsx prepareEnv.ts prisma migrate dev",
-    "db:migrate:seed": "yarn db:migrate && yarn db:seed",
-    "db:sync": "yarn db:migrate && yarn db:generate",
-    "db:setup": "yarn db:migrate && yarn db:generate && yarn db:seed",
+    "db:migrate:seed": "pnpm run db:migrate && pnpm run db:seed",
+    "db:sync": "pnpm run db:migrate && pnpm run db:generate",
+    "db:setup": "pnpm run db:migrate && pnpm run db:generate && pnpm run db:seed",
     "db:seed": "tsx prepareEnv.ts prisma db seed",
     "db:reset": "tsx prepareEnv.ts prisma migrate reset",
-    "db:reset:seed": "prisma migrate reset && yarn db:seed",
+    "db:reset:seed": "prisma migrate reset && pnpm run db:seed",
     "db:studio": "prisma studio",
     "prettier-format": "run-script-os",
     "prettier-format:win32": "prettier --config .prettierrc \"./src/**/*.ts\" --write",
@@ -45,14 +46,14 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn test:unit && yarn prettier-format && yarn lint"
+      "pre-commit": "pnpm run test:unit && pnpm run prettier-format && pnpm run lint"
     }
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@talknest/shared": "*",
+    "@talknest/shared": "workspace:*",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "cors": "^2.8.6",
