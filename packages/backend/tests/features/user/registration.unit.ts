@@ -18,7 +18,7 @@ import type { FakeContactListAPI } from '../../../src/modules/marketing/adapters
 import { sharedTestRoot } from '@talknest/shared/paths';
 import type { CreateUserInput, User } from '@talknest/shared/api/user';
 import type { EmailSubscription } from '@talknest/shared/api/marketing';
-import { GenericErrors } from '@talknest/shared/errors/generic';
+import { GenericErrors } from '@talknest/shared/errors';
 
 import { CreateUserBuilder } from '../../../../shared/tests/support/builders';
 

@@ -1,8 +1,9 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2022",
     "lib": ["ES2022"],
     "types": ["node", "jest", "jest-cucumber", "@faker-js/faker"],
 
@@ -19,8 +20,6 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-
-    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo"
   },
   "include": ["src"],
   "exclude": [

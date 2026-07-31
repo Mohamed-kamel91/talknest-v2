@@ -6,4 +6,8 @@ export default async (): Promise<JestConfigWithTsJest> => ({
   transform: {
     '^.+\\.(t|j)sx?$': ['ts-jest', {}],
   },
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+  },
+  verbose: true,
 });
