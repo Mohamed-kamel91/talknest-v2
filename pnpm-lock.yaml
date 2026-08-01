@@ -193,6 +193,10 @@ importers:
       axios:
         specifier: ^1.6.2
         version: 1.18.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+    devDependencies:
+      '@faker-js/faker':
+        specifier: ^9.9.0
+        version: 9.9.0
 
 packages:
 
