@@ -162,7 +162,7 @@ defineFeature(feature, (test) => {
             .withFirstName(input.firstName)
             .withLastName(input.lastName)
             .withUsername(input.username)
-            .withPasswrod(input.password)
+            .withPassword(input.password)
             .build();
         });
 
@@ -206,7 +206,7 @@ defineFeature(feature, (test) => {
             .withFirstName(user.firstName)
             .withLastName(user.lastName)
             .withUsername(user.username)
-            .withPasswrod(user.password)
+            .withPassword(user.password)
             .build();
         });
 
@@ -223,7 +223,7 @@ defineFeature(feature, (test) => {
             .withFirstName(input.firstName)
             .withLastName(input.lastName)
             .withUsername(input.username)
-            .withPasswrod(input.password)
+            .withPassword(input.password)
             .build();
         });
 
