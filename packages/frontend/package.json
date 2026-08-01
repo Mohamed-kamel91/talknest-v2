@@ -5,14 +5,19 @@
   "author": "Mohamed Kamel",
   "private": true,
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "clean": "rimraf ./dist",
     "clean:deps": "rimraf node_modules",
-    "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "build": "tsc && vite build",
     "preview": "vite preview",
     "start:dev": "vite",
-    "test:e2e": "jest -c jest.config.e2e.ts",
-    "test:e2e:dev": "jest -c jest.config.e2e.ts --watch"
+    "test:unit:dev": "jest -c jest.config.unit.ts --watch",
+    "test:infra:dev": "jest -c jest.config.infra.ts --watch",
+    "test:e2e:dev": "jest -c jest.config.e2e.ts --watch",
+    "test:unit": "jest -c jest.config.unit.ts",
+    "test:infra": "jest -c jest.config.infra.ts",
+    "test:e2e": "jest -c jest.config.e2e.ts"
   },
   "dependencies": {
     "@talknest/shared": "workspace:*",
