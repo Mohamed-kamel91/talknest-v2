@@ -19,8 +19,6 @@ async function resetDatabase() {
     ]);
   } catch (error) {
     console.error(error);
-  } finally {
-    await database.disconnect();
   }
 }
 
