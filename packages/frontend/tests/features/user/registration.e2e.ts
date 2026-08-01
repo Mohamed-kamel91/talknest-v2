@@ -9,6 +9,10 @@ import {
   aUser,
 } from '../../../../shared/tests/support/fixtures';
 
+import { Config } from '../../../../backend/src/shared/config';
+import { CompositionRoot } from '../../../../backend/src/shared/composition-root';
+import { Database } from '../../../../backend/src/shared/database';
+
 import { PuppeteerPageDriver } from '../../shared/driver';
 import {
   createAppPageObject,
@@ -34,7 +38,15 @@ defineFeature(feature, (test) => {
   let registrationPage: RegistrationPage;
   let puppeteerPageDriver: PuppeteerPageDriver;
 
+  let composition: CompositionRoot;
+  let database: Database;
+
+  const config: Config = new Config('test:e2e');
+
   beforeAll(async () => {
+    composition = CompositionRoot.createCompositionRoot(config);
+    database = composition.getDatabase();
+
     puppeteerPageDriver = await PuppeteerPageDriver.create();
     app = createAppPageObject(puppeteerPageDriver);
     components = app.components;
@@ -49,6 +61,7 @@ defineFeature(feature, (test) => {
 
   afterAll(async () => {
     await puppeteerPageDriver.browser.close();
+    await database.disconnect();
   });
 
   jest.setTimeout(60000);
@@ -77,9 +90,7 @@ defineFeature(feature, (test) => {
     );
 
     then('I should be granted access to my account', async () => {
-      expect(
-        await registrationPage.isSuccessToastVisible(),
-      ).toBeTruthy();
+      expect(await registrationPage.isSuccessToastVisible()).toBeTruthy();
 
       expect(await layout.header.getLoggedInUsername()).toBe(
         userInput.username,
@@ -98,9 +109,7 @@ defineFeature(feature, (test) => {
     let invalidUser: Partial<CreateUserInput>;
 
     given('I am a new user', async () => {
-      const user = new CreateUserBuilder()
-        .withEmail('mohkamel')
-        .build();
+      const user = new CreateUserBuilder().withEmail('mohkamel').build();
 
       invalidUser = {
         email: user.email,
@@ -121,28 +130,16 @@ defineFeature(feature, (test) => {
     then(
       'I should see an error notifying me that my input is invalid',
       async () => {
-        expect(
-          await registrationPage.getFailureToastMessage(),
-        ).toBeDefined();
+        expect(await registrationPage.getFailureToastMessage()).toBeDefined();
 
-        expect(
-          await registrationPage.isFailureToastVisible(),
-        ).toBeTruthy();
+        expect(await registrationPage.isFailureToastVisible()).toBeTruthy();
       },
     );
 
-    and(
-      'I should not have been sent access to account details',
-      () => {},
-    );
+    and('I should not have been sent access to account details', () => {});
   });
 
-  test('Account already created with email', ({
-    given,
-    when,
-    then,
-    and,
-  }) => {
+  test('Account already created with email', ({ given, when, then, and }) => {
     given(
       'a set of users already created accounts',
       async (table: CreateUserInput[]) => {
@@ -178,19 +175,12 @@ defineFeature(feature, (test) => {
     then(
       'they should see an error notifying them that the account already exists',
       async () => {
-        expect(
-          await registrationPage.getFailureToastMessage(),
-        ).toBeDefined();
+        expect(await registrationPage.getFailureToastMessage()).toBeDefined();
 
-        expect(
-          await registrationPage.isFailureToastVisible(),
-        ).toBeTruthy();
+        expect(await registrationPage.isFailureToastVisible()).toBeTruthy();
       },
     );
 
-    and(
-      'they should not be sent access to account details',
-      () => {},
-    );
+    and('they should not be sent access to account details', () => {});
   });
 });
