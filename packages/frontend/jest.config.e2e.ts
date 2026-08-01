@@ -10,5 +10,6 @@ export default async (): Promise<JestConfigWithTsJest> => ({
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
   maxWorkers: 1,
+  globalSetup: '../backend/tests/support/globalDevEnvTestSetup.ts',
   passWithNoTests: true,
 });
