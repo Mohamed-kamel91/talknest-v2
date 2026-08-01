@@ -182,7 +182,7 @@ defineFeature(feature, (test) => {
             .withLastName(user.lastName)
             .withUsername(user.username)
             .withEmail(user.email)
-            .withPasswrod(user.password)
+            .withPassword(user.password)
             .build();
         });
 
@@ -199,7 +199,7 @@ defineFeature(feature, (test) => {
             .withLastName(user.lastName)
             .withUsername(user.username)
             .withEmail(user.email)
-            .withPasswrod(user.password)
+            .withPassword(user.password)
             .buildCommand();
 
           const result = application.user.createUser(createUserCommand);
@@ -233,7 +233,7 @@ defineFeature(feature, (test) => {
             .withLastName(user.lastName)
             .withUsername(user.username)
             .withEmail(user.email)
-            .withPasswrod(user.password)
+            .withPassword(user.password)
             .build();
         });
 
@@ -250,7 +250,7 @@ defineFeature(feature, (test) => {
             .withLastName(user.lastName)
             .withUsername(user.username)
             .withEmail(user.email)
-            .withPasswrod(user.password)
+            .withPassword(user.password)
             .buildCommand();
 
           const result = application.user.createUser(createUserCommand);
