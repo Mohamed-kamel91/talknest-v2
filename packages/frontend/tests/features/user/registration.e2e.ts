@@ -163,9 +163,9 @@ defineFeature(feature, (test) => {
       async (table: CreateUserInput[]) => {
         const newUser = new CreateUserBuilder()
           .withEmail(table[0].email)
-          .withFirstname(table[0].firstName)
-          .withLastname(table[0].lastName)
-          .withPasswrod(table[0].password)
+          .withFirstName(table[0].firstName)
+          .withLastName(table[0].lastName)
+          .withPassword(table[0].password)
           .withUsername(table[0].username)
           .build();
 
