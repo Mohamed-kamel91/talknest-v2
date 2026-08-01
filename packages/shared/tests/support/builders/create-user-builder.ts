@@ -36,7 +36,7 @@ export class CreateUserBuilder {
     return this;
   }
 
-  public withPasswrod(password: string) {
+  public withPassword(password: string) {
     this.props.password = password;
     return this;
   }
