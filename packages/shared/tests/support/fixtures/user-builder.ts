@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 import { CreateUserInput } from '../../../src/api/user';
-import { database } from '../../../../backend/src/shared/bootstrap';
+import { database } from '../../../../../apps/backend/src/shared/bootstrap';
 
 export class UserBuilder {
   private user: CreateUserInput = {

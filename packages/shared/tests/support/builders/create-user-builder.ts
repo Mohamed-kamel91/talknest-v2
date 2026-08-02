@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 import type { CreateUserInput } from '../../../src/api/user';
-import { CreateUserCommand } from '../../../../backend/src/modules/users/user-command';
+import { CreateUserCommand } from '../../../../../apps/backend/src/modules/users/user-command';
 
 export class CreateUserBuilder {
   private props: CreateUserInput;
@@ -36,7 +36,7 @@ export class CreateUserBuilder {
     return this;
   }
 
-  public withPasswrod(password: string) {
+  public withPassword(password: string) {
     this.props.password = password;
     return this;
   }
