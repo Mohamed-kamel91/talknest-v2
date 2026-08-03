@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@talknest/api": "workspace:*",
-    "@talknest/utils": "workspace:*"
+    "@talknest/core": "workspace:*"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.9.0"
