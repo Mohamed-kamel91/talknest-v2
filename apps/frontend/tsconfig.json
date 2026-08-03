@@ -26,7 +26,7 @@
     { "path": "./tsconfig.node.json" },
     { "path": "../../packages/api" },
     { "path": "../../packages/errors" },
-    { "path": "../../packages/utils" }
+    { "path": "../../packages/core" }
   ],
   "include": ["src"]
 }
