@@ -1,7 +1,7 @@
 import path from 'path';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 
-import { testSupportRoot } from '@talknest/utils/paths';
+import { testSupportRoot } from '@talknest/core';
 import { CreateUserInput } from '@talknest/api/user';
 import { CreateUserBuilder } from '@talknest/test-support/builders';
 import {
