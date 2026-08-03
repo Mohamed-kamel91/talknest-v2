@@ -56,7 +56,7 @@
   "dependencies": {
     "@talknest/api": "workspace:*",
     "@talknest/errors": "workspace:*",
-    "@talknest/utils": "workspace:*",
+    "@talknest/core": "workspace:*",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "cors": "^2.8.6",
