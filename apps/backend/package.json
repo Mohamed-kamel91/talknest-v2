@@ -54,7 +54,9 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@talknest/shared": "workspace:*",
+    "@talknest/api": "workspace:*",
+    "@talknest/errors": "workspace:*",
+    "@talknest/utils": "workspace:*",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "cors": "^2.8.6",
@@ -64,6 +66,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^9.9.0",
+    "@talknest/test-support": "workspace:*",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/supertest": "^6.0.3",

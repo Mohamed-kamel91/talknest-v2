@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Post } from '@talknest/shared/api/post';
+import { Post } from '@talknest/api/post';
 
 import { Layout } from '../components/layout';
 import { PostsList } from '../components/postsList';

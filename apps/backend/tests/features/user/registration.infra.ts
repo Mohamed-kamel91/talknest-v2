@@ -12,18 +12,18 @@ import {
   UsernameAlreadyTakenException,
 } from '../../../src/modules/users/user-exceptions';
 
-import { sharedTestRoot } from '@talknest/shared/paths';
-import type { CreateUserInput, User } from '@talknest/shared/api/user';
-import type { EmailSubscription } from '@talknest/shared/api/marketing';
-import { GenericErrors } from '@talknest/shared/errors';
+import { testSupportRoot } from '@talknest/utils/paths';
+import type { CreateUserInput, User } from '@talknest/api/user';
+import type { EmailSubscription } from '@talknest/api/marketing';
+import { GenericErrors } from '@talknest/errors';
 import {
   buildManyUsers,
   resetDatabase,
-} from '../../../../../packages/shared/tests/support/fixtures';
-import { CreateUserBuilder } from '../../../../../packages/shared/tests/support/builders';
+} from '@talknest/test-support/fixtures';
+import { CreateUserBuilder } from '@talknest/test-support/builders';
 
 const feature = loadFeature(
-  path.join(sharedTestRoot, 'features/registration.feature'),
+  path.join(testSupportRoot, 'features/registration.feature'),
   { tagFilter: '@backend' },
 );
 

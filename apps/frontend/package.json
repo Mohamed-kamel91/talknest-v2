@@ -20,7 +20,8 @@
     "test:e2e": "jest -c jest.config.e2e.ts"
   },
   "dependencies": {
-    "@talknest/shared": "workspace:*",
+    "@talknest/api": "workspace:*",
+    "@talknest/errors": "workspace:*",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "axios": "^1.6.2",
@@ -34,6 +35,8 @@
     "react-toastify": "^9.1.3"
   },
   "devDependencies": {
+    "@talknest/test-support": "workspace:*",
+    "@talknest/utils": "workspace:*",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.2.0",

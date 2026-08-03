@@ -1,0 +1,44 @@
+{
+  "name": "@talknest/test-support",
+  "author": "Mohamed Kamel",
+  "private": true,
+  "license": "ISC",
+  "version": "1.0.0",
+  "scripts": {
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "clean:deps": "rimraf node_modules"
+  },
+  "dependencies": {
+    "@talknest/api": "workspace:*",
+    "@talknest/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.9.0"
+  },
+  "exports": {
+    "./*": {
+      "default": "./*.ts",
+      "types": "./*.ts"
+    },
+    "./builders": {
+      "default": "./support/builders/index.ts",
+      "types": "./support/builders/index.ts"
+    },
+    "./builders/*": {
+      "default": "./support/builders/*.ts",
+      "types": "./support/builders/*.ts"
+    },
+    "./fixtures": {
+      "default": "./support/fixtures/index.ts",
+      "types": "./support/fixtures/index.ts"
+    },
+    "./fixtures/*": {
+      "default": "./support/fixtures/*.ts",
+      "types": "./support/fixtures/*.ts"
+    },
+    "./features/*": {
+      "default": "./features/*.feature",
+      "types": "./features/*.feature"
+    }
+  }
+}

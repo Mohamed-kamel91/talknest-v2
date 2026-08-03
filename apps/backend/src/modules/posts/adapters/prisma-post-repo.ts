@@ -1,4 +1,4 @@
-import type { Post } from '@talknest/shared/api/post';
+import type { Post } from '@talknest/api/post';
 
 import type { IPostRepo } from '../ports/post-repo';
 import type { PrismaClient } from '../../../shared/database/prisma/generated/client';

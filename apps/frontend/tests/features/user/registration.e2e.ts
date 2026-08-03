@@ -1,13 +1,13 @@
 import path from 'path';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 
-import { sharedTestRoot } from '../../../../../packages/shared/src/paths';
-import { CreateUserInput } from '../../../../../packages/shared/src/api/user';
-import { CreateUserBuilder } from '../../../../../packages/shared/tests/support/builders';
+import { testSupportRoot } from '@talknest/utils/paths';
+import { CreateUserInput } from '@talknest/api/user';
+import { CreateUserBuilder } from '@talknest/test-support/builders';
 import {
   resetDatabase,
   aUser,
-} from '../../../../../packages/shared/tests/support/fixtures';
+} from '@talknest/test-support/fixtures';
 
 import { Config } from '../../../../backend/src/shared/config';
 import { CompositionRoot } from '../../../../backend/src/shared/composition-root';
@@ -24,7 +24,7 @@ import {
 import { RegistrationPage } from '../../shared/pages/registration-page';
 
 const feature = loadFeature(
-  path.join(sharedTestRoot, 'features/registration.feature'),
+  path.join(testSupportRoot, 'features/registration.feature'),
   {
     tagFilter: '@frontend',
   },

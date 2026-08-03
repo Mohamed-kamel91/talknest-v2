@@ -1,5 +1,5 @@
 import { BadRequestError } from './http-errors';
-import { GenericErrors } from '@talknest/shared/errors';
+import { GenericErrors } from '@talknest/errors';
 
 export class MissingRequestBodyException extends BadRequestError {
   constructor() {

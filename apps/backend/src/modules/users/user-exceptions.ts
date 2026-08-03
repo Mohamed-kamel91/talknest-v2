@@ -1,4 +1,4 @@
-import { UserErrors } from '@talknest/shared/errors';
+import { UserErrors } from '@talknest/errors';
 import {
   NotFoundError,
   BadRequestError,
