@@ -31,6 +31,6 @@
   "references": [
     { "path": "../../packages/api" },
     { "path": "../../packages/errors" },
-    { "path": "../../packages/utils" }
+    { "path": "../../packages/core" }
   ]
 }
