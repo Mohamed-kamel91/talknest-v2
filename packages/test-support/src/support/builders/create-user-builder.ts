@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 import type { CreateUserInput } from '@talknest/api/user';
-import { CreateUserCommand } from '../../../../apps/backend/src/modules/users/user-command';
+import { CreateUserCommand } from '../../../../../apps/backend/src/modules/users/user-command';
 
 export class CreateUserBuilder {
   private props: CreateUserInput;

@@ -1,4 +1,4 @@
-import { database } from '../../../../apps/backend/src/shared/bootstrap';
+import { database } from '../../../../../apps/backend/src/shared/bootstrap';
 
 async function resetDatabase() {
   const dbConnection = database.getConnection();

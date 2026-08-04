@@ -17,28 +17,28 @@
   },
   "exports": {
     ".": {
-      "default": "./index.ts",
-      "types": "./index.ts"
+      "default": "./src/index.ts",
+      "types": "./src/index.ts"
     },
     "./builders": {
-      "default": "./support/builders/index.ts",
-      "types": "./support/builders/index.ts"
+      "default": "./src/support/builders/index.ts",
+      "types": "./src/support/builders/index.ts"
     },
     "./builders/*": {
-      "default": "./support/builders/*.ts",
-      "types": "./support/builders/*.ts"
+      "default": "./src/support/builders/*.ts",
+      "types": "./src/support/builders/*.ts"
     },
     "./fixtures": {
-      "default": "./support/fixtures/index.ts",
-      "types": "./support/fixtures/index.ts"
+      "default": "./src/support/fixtures/index.ts",
+      "types": "./src/support/fixtures/index.ts"
     },
     "./fixtures/*": {
-      "default": "./support/fixtures/*.ts",
-      "types": "./support/fixtures/*.ts"
+      "default": "./src/support/fixtures/*.ts",
+      "types": "./src/support/fixtures/*.ts"
     },
     "./features/*": {
-      "default": "./features/*.feature",
-      "types": "./features/*.feature"
+      "default": "./src/features/*.feature",
+      "types": "./src/features/*.feature"
     }
   }
 }

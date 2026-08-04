@@ -12,7 +12,7 @@ import {
   UsernameAlreadyTakenException,
 } from '../../../src/modules/users/user-exceptions';
 
-import { sharedTestRoot } from '@talknest/core';
+import { sharedTestRoot } from '@talknest/test-support';
 import type { CreateUserInput, User } from '@talknest/api/user';
 import type { EmailSubscription } from '@talknest/api/marketing';
 import { GenericErrors } from '@talknest/errors';
