@@ -14,14 +14,9 @@
     ".": {
       "default": "./src/index.ts",
       "types": "./src/index.ts"
-    },
-    "./number-utils": {
-      "default": "./src/utils/number-utils.ts",
-      "types": "./src/utils/number-utils.ts"
-    },
-    "./paths": {
-      "default": "./src/utils/paths.ts",
-      "types": "./src/utils/paths.ts"
     }
+  },
+  "dependencies": {
+    "uuid": "^14.0.1"
   }
 }
