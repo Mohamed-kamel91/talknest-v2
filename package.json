@@ -29,10 +29,10 @@
     "test:unit:back": "pnpm --filter @talknest/backend run test:unit",
     "test:infra:back": "pnpm --filter @talknest/backend run test:infra",
     "test:e2e:back": "pnpm --filter @talknest/backend run test:e2e",
-    "start:db": "pnpm --filter @talknest/backend run start:db",
-    "stop:db": "pnpm --filter @talknest/backend run stop:db",
-    "stop:db:volumes": "pnpm --filter @talknest/backend run stop:db:volumes",
-    "db:logs": "pnpm --filter @talknest/backend run db:logs"
+    "start:db": "docker-compose up -d",
+    "stop:db": "docker-compose down",
+    "stop:db:volumes": "docker-compose down -v",
+    "db:logs": "docker-compose logs -f"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
