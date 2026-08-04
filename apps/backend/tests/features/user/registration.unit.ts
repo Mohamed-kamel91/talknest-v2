@@ -15,7 +15,7 @@ import {
 import type { FakeTransactionalEmailAPI } from '../../../src/modules/notifications/adapters/transactional-email-api/fake-transactional-email-api';
 import type { FakeContactListAPI } from '../../../src/modules/marketing/adapters/contact-list-api/fake-contact-list-api';
 
-import { testSupportRoot } from '@talknest/core';
+import { sharedTestRoot } from '@talknest/core';
 import type { CreateUserInput, User } from '@talknest/api/user';
 import type { EmailSubscription } from '@talknest/api/marketing';
 import { GenericErrors } from '@talknest/errors';
@@ -23,7 +23,7 @@ import { GenericErrors } from '@talknest/errors';
 import { CreateUserBuilder } from '@talknest/test-support/builders';
 
 const feature = loadFeature(
-  path.join(testSupportRoot, 'features/registration.feature'),
+  path.join(sharedTestRoot, 'features/registration.feature'),
   { tagFilter: '@backend' },
 );
 

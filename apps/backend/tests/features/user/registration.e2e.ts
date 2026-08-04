@@ -6,7 +6,7 @@ import { CompositionRoot } from '../../../src/shared/composition-root';
 import { Database } from '../../../src/shared/database';
 import { WebServer } from '../../../src/shared/http';
 
-import { testSupportRoot } from '@talknest/core';
+import { sharedTestRoot } from '@talknest/test-support';
 import { createAPIClient } from '@talknest/api';
 import type { CreateUserInput, CreateUserResponse } from '@talknest/api/user';
 import { AddEmailToListResponse } from '@talknest/api/marketing';
@@ -15,7 +15,7 @@ import { CreateUserBuilder } from '@talknest/test-support/builders';
 import { resetDatabase, buildManyUsers } from '@talknest/test-support/fixtures';
 
 const feature = loadFeature(
-  path.join(testSupportRoot, 'features/registration.feature'),
+  path.join(sharedTestRoot, 'features/registration.feature'),
   { tagFilter: '@backend' },
 );
 
