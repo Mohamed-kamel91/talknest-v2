@@ -16,9 +16,9 @@
     "@faker-js/faker": "^9.9.0"
   },
   "exports": {
-    "./*": {
-      "default": "./*.ts",
-      "types": "./*.ts"
+    ".": {
+      "default": "./index.ts",
+      "types": "./index.ts"
     },
     "./builders": {
       "default": "./support/builders/index.ts",
