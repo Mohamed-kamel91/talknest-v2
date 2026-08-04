@@ -19,7 +19,6 @@ import { sharedTestRoot } from '@talknest/test-support';
 import type { CreateUserInput, User } from '@talknest/api/user';
 import type { EmailSubscription } from '@talknest/api/marketing';
 import { GenericErrors } from '@talknest/errors';
-
 import { CreateUserBuilder } from '@talknest/test-support/builders';
 
 const feature = loadFeature(

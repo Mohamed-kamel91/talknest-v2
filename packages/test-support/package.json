@@ -6,7 +6,9 @@
   "version": "1.0.0",
   "scripts": {
     "clean": "rimraf dist tsconfig.tsbuildinfo",
-    "clean:deps": "rimraf node_modules"
+    "clean:deps": "rimraf node_modules",
+    "build": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@talknest/api": "workspace:*",
@@ -24,17 +26,9 @@
       "default": "./src/support/builders/index.ts",
       "types": "./src/support/builders/index.ts"
     },
-    "./builders/*": {
-      "default": "./src/support/builders/*.ts",
-      "types": "./src/support/builders/*.ts"
-    },
     "./fixtures": {
       "default": "./src/support/fixtures/index.ts",
       "types": "./src/support/fixtures/index.ts"
-    },
-    "./fixtures/*": {
-      "default": "./src/support/fixtures/*.ts",
-      "types": "./src/support/fixtures/*.ts"
     },
     "./features/*": {
       "default": "./src/features/*.feature",

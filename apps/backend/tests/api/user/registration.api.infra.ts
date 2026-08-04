@@ -1,6 +1,8 @@
 import { createAPIClient } from '@talknest/api';
-import { CreateUserBuilder } from '@talknest/test-support/builders';
-import { UserResultBuilder } from '@talknest/test-support/builders/user-result-builder';
+import {
+  CreateUserBuilder,
+  UserResultBuilder,
+} from '@talknest/test-support/builders';
 import { Application } from '../../../src/shared/application';
 import { CompositionRoot } from '../../../src/shared/composition-root';
 import { Config } from '../../../src/shared/config';
