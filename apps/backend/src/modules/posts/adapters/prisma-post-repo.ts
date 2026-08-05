@@ -1,7 +1,7 @@
 import type { Post } from '@talknest/api/post';
 
 import type { IPostRepo } from '../ports/post-repo';
-import type { PrismaClient } from '../../../shared/database/prisma/generated/client';
+import type { PrismaClient } from '@talknest/database/prisma/generated/client';
 import type { getPostsQuery } from '../post-query';
 
 export class PrismaPostRepo implements IPostRepo {

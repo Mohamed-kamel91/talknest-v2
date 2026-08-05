@@ -3,7 +3,7 @@ import { PrismaPostRepo } from './adapters/prisma-post-repo';
 import { PostService } from './post-service';
 import { PostController } from './post-controller';
 import { PostRouter } from './post-router';
-import { Database } from '../../shared/database';
+import { Database } from '@talknest/database';
 import { WebServer } from '../../shared/http';
 import type { Config } from '../../shared/config';
 import { InMemoryPostRepo } from './adapters/in-memory-post-repo';

@@ -11,7 +11,7 @@ import {
 
 import { Config } from '../../../../backend/src/shared/config';
 import { CompositionRoot } from '../../../../backend/src/shared/composition-root';
-import { Database } from '../../../../backend/src/shared/database';
+import { Database } from '@talknest/database';
 
 import { PuppeteerPageDriver } from '../../shared/driver';
 import {

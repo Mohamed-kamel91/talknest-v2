@@ -3,7 +3,7 @@ import { defineFeature, loadFeature } from 'jest-cucumber';
 
 import { Config } from '../../../src/shared/config';
 import { CompositionRoot } from '../../../src/shared/composition-root';
-import { Database } from '../../../src/shared/database';
+import { Database } from '@talknest/database';
 import { WebServer } from '../../../src/shared/http';
 
 import { sharedTestRoot } from '@talknest/test-support';

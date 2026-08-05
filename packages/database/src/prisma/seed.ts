@@ -1,7 +1,9 @@
-import { Post, User, Vote, Comment } from './generated/client';
-import { database } from '../../bootstrap';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient, Post, User, Vote, Comment } from './generated/client';
 
-const prisma = database.getConnection();
+const connectionString = `${process.env.DATABASE_URL}`;
+const adapter = new PrismaPg({ connectionString });
+const prisma = new PrismaClient({ adapter });
 
 const initialUsers: User[] = [
   {
@@ -28,12 +30,6 @@ const initialUsers: User[] = [
     username: 'billburr',
     password: '123',
   },
-];
-
-const initialMemberUserIds = [
-  { memberId: 1, userId: 1 },
-  { memberId: 2, userId: 2 },
-  { memberId: 3, userId: 3 },
 ];
 
 const initialPosts: Post[] = [

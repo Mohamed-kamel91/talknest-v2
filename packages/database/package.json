@@ -1,0 +1,31 @@
+{
+  "name": "@talknest/database",
+  "author": "Mohamed Kamel",
+  "private": true,
+  "license": "ISC",
+  "version": "1.0.0",
+  "scripts": {
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "clean:deps": "rimraf node_modules",
+    "build": "tsc --build",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "default": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./prisma/generated/client": {
+      "default": "./src/prisma/generated/client.ts",
+      "types": "./src/prisma/generated/client.ts"
+    }
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "pg": "^8.18.0"
+  },
+  "devDependencies": {
+    "prisma": "^7.3.0"
+  }
+}
