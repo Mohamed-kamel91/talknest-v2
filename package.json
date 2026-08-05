@@ -14,7 +14,7 @@
     "build": "turbo run build",
     "clean": "turbo run clean",
     "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
+    "typecheck": "turbo run --parallel typecheck",
     "clean:deps": "pnpm -r --if-present run clean:deps && rimraf node_modules",
     "start": "pnpm --filter @talknest/backend run start",
     "build:api": "pnpm --filter @talknest/api run build",
