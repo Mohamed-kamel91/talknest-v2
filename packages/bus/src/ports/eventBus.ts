@@ -1,0 +1,15 @@
+import { DomainEvent } from '@talknest/core';
+
+export interface EventBus {
+  initialize(): Promise<any>;
+  stop(): Promise<any>;
+  publishEvents(events: DomainEvent[]): void;
+  subscribe<T extends DomainEvent>(
+    eventTypeName: string,
+    handler: (event: T) => void,
+  ): void;
+  unsubscribe(
+    eventTypeName: string,
+    handler: (event: DomainEvent) => void,
+  ): void;
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@talknest/bus",
+  "author": "Mohamed Kamel",
+  "description": "Event bus to subscribe and write to.",
+  "private": true,
+  "version": "1.0.0",
+  "license": "ISC",
+  "scripts": {
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "clean:deps": "rimraf node_modules",
+    "build": "tsc --build",
+    "typecheck": "tsc --noEmit",
+    "test": "jest"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@talknest/core": "workspace:*",
+    "nats": "^2.29.2"
+  }
+}
