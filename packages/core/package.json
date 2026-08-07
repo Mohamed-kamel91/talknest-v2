@@ -1,0 +1,22 @@
+{
+  "name": "@talknest/core",
+  "author": "Mohamed Kamel",
+  "private": true,
+  "license": "ISC",
+  "version": "1.0.0",
+  "scripts": {
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "clean:deps": "rimraf node_modules",
+    "build": "tsc --build",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "default": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "uuid": "^14.0.1"
+  }
+}

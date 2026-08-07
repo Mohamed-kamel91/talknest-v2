@@ -1,17 +1,17 @@
 import path from 'path';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 
-import { sharedTestRoot } from '../../../../../packages/shared/src/paths';
-import { CreateUserInput } from '../../../../../packages/shared/src/api/user';
-import { CreateUserBuilder } from '../../../../../packages/shared/tests/support/builders';
+import { sharedTestRoot } from '@talknest/test-support';
+import { CreateUserInput } from '@talknest/api/user';
+import { CreateUserBuilder } from '@talknest/test-support/builders';
 import {
   resetDatabase,
   aUser,
-} from '../../../../../packages/shared/tests/support/fixtures';
+} from '@talknest/test-support/fixtures';
 
 import { Config } from '../../../../backend/src/shared/config';
 import { CompositionRoot } from '../../../../backend/src/shared/composition-root';
-import { Database } from '../../../../backend/src/shared/database';
+import { Database } from '@talknest/database';
 
 import { PuppeteerPageDriver } from '../../shared/driver';
 import {

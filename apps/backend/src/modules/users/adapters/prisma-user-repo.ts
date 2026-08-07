@@ -1,8 +1,8 @@
-import type { User } from '@talknest/shared/api/user';
+import type { User } from '@talknest/api/user';
 
 import type { IUserRepo } from '../ports/user-repo';
 import type { CreateUserCommand } from '../user-command';
-import type { PrismaClient } from '../../../shared/database/prisma/generated/client';
+import type { PrismaClient } from '@talknest/database';
 
 export class PrismaUserRepo implements IUserRepo {
   constructor(private prisma: PrismaClient) {}

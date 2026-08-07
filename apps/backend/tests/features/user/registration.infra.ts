@@ -3,7 +3,7 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 
 import { Config } from '../../../src/shared/config';
 import { CompositionRoot } from '../../../src/shared/composition-root';
-import type { Database } from '../../../src/shared/database';
+import type { Database } from '@talknest/database';
 import type { Application } from '../../../src/shared/application';
 import { InvalidInputException } from '../../../src/shared/errors/validation-errors';
 import { CreateUserCommand } from '../../../src/modules/users/user-command';
@@ -12,15 +12,15 @@ import {
   UsernameAlreadyTakenException,
 } from '../../../src/modules/users/user-exceptions';
 
-import { sharedTestRoot } from '@talknest/shared/paths';
-import type { CreateUserInput, User } from '@talknest/shared/api/user';
-import type { EmailSubscription } from '@talknest/shared/api/marketing';
-import { GenericErrors } from '@talknest/shared/errors';
+import { sharedTestRoot } from '@talknest/test-support';
+import type { CreateUserInput, User } from '@talknest/api/user';
+import type { EmailSubscription } from '@talknest/api/marketing';
+import { GenericErrors } from '@talknest/errors';
 import {
   buildManyUsers,
   resetDatabase,
-} from '../../../../../packages/shared/tests/support/fixtures';
-import { CreateUserBuilder } from '../../../../../packages/shared/tests/support/builders';
+} from '@talknest/test-support/fixtures';
+import { CreateUserBuilder } from '@talknest/test-support/builders';
 
 const feature = loadFeature(
   path.join(sharedTestRoot, 'features/registration.feature'),

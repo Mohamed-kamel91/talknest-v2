@@ -2,8 +2,8 @@ import { database } from '../../../shared/bootstrap';
 import type { IUserRepo } from './user-repo';
 import { PrismaUserRepo } from '../adapters/prisma-user-repo';
 import type { CreateUserCommand } from '../user-command';
-import { CreateUserBuilder } from '../../../../../../packages/shared/tests/support/builders';
-import { resetDatabase } from '../../../../../../packages/shared/tests/support/fixtures';
+import { CreateUserBuilder } from '@talknest/test-support/builders';
+import { resetDatabase } from '@talknest/test-support/fixtures';
 import { InMemoryUserRepo } from '../adapters/In-memory-user-repo';
 
 describe('User Repository', () => {

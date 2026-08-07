@@ -1,6 +1,6 @@
 import { Config } from '../config';
 import { WebServer } from '../http';
-import { Database } from '../database';
+import { Database } from '@talknest/database';
 
 import { MarketingModule } from '../../modules/marketing';
 import { PostModule } from '../../modules/posts';

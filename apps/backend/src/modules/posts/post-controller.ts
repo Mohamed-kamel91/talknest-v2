@@ -1,6 +1,6 @@
 import express from 'express';
 
-import type { GetPostsResponse } from '@talknest/shared/api/post';
+import type { GetPostsResponse } from '@talknest/api/post';
 
 import type { PostService } from './post-service';
 import { getPostsQuery } from './post-query';

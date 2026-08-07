@@ -3,7 +3,7 @@ import { PrismaUserRepo } from './adapters/prisma-user-repo';
 import { UserService } from './user-service';
 import { UserController } from './user-controller';
 import { UserRouter } from './user-router';
-import { Database } from '../../shared/database';
+import { Database } from '@talknest/database';
 import { WebServer } from '../../shared/http';
 import type { Config } from '../../shared/config';
 import type { ITransactionalEmailAPI } from '../notifications/ports/transactional-email-api';

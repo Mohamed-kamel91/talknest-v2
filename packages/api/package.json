@@ -1,0 +1,45 @@
+{
+  "name": "@talknest/api",
+  "author": "Mohamed Kamel",
+  "private": true,
+  "license": "ISC",
+  "version": "1.0.0",
+  "scripts": {
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "clean:deps": "rimraf node_modules",
+    "build": "tsc --build",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "default": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./comment": {
+      "default": "./src/comment.ts",
+      "types": "./src/comment.ts"
+    },
+    "./marketing": {
+      "default": "./src/marketing.ts",
+      "types": "./src/marketing.ts"
+    },
+    "./post": {
+      "default": "./src/post.ts",
+      "types": "./src/post.ts"
+    },
+    "./user": {
+      "default": "./src/user.ts",
+      "types": "./src/user.ts"
+    },
+    "./vote": {
+      "default": "./src/vote.ts",
+      "types": "./src/vote.ts"
+    }
+  },
+  "dependencies": {
+    "@talknest/core": "workspace:*",
+    "@talknest/errors": "workspace:*",
+    "axios": "^1.6.2",
+    "zod": "^4.4.3"
+  }
+}

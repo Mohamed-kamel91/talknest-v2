@@ -1,0 +1,38 @@
+{
+  "name": "@talknest/database",
+  "author": "Mohamed Kamel",
+  "private": true,
+  "license": "ISC",
+  "version": "1.0.0",
+  "scripts": {
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "clean:deps": "rimraf node_modules",
+    "build": "tsc --build",
+    "typecheck": "tsc --noEmit",
+    "generate": "tsx prepareEnv.ts prisma generate",
+    "migrate": "tsx prepareEnv.ts prisma migrate dev",
+    "seed": "tsx prepareEnv.ts prisma db seed",
+    "reset": "tsx prepareEnv.ts prisma migrate reset",
+    "db:migrate:seed": "pnpm run migrate && pnpm run seed",
+    "db:sync": "pnpm run migrate && pnpm run generate",
+    "db:setup": "pnpm run migrate && pnpm run generate && pnpm run seed",
+    "db:reset:seed": "tsx prepareEnv.ts prisma migrate reset && pnpm run seed",
+    "db:studio": "prisma studio"
+  },
+  "exports": {
+    ".": {
+      "default": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@talknest/config": "workspace:*",
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "pg": "^8.18.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^11.0.0",
+    "prisma": "^7.3.0"
+  }
+}

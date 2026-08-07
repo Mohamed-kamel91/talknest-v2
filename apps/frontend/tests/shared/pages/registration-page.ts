@@ -1,6 +1,6 @@
 import { PageObject } from './page-object';
 import { PuppeteerPageDriver } from '../driver';
-import { CreateUserInput } from '../../../../../packages/shared/src/api/user';
+import { CreateUserInput } from '@talknest/api/user';
 import {
   PageElements,
   PageElementsConfig,

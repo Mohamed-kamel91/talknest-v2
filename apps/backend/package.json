@@ -12,18 +12,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "build": "tsc --build",
-    "dev": "tsx prepareEnv.ts nodemon",
-    "start": "node dist/index.js",
-    "start:dev": "pnpm run db:migrate && pnpm run db:generate && pnpm run dev",
-    "db:generate": "tsx prepareEnv.ts prisma generate",
-    "db:migrate": "tsx prepareEnv.ts prisma migrate dev",
-    "db:migrate:seed": "pnpm run db:migrate && pnpm run db:seed",
-    "db:sync": "pnpm run db:migrate && pnpm run db:generate",
-    "db:setup": "pnpm run db:migrate && pnpm run db:generate && pnpm run db:seed",
-    "db:seed": "tsx prepareEnv.ts prisma db seed",
-    "db:reset": "tsx prepareEnv.ts prisma migrate reset",
-    "db:reset:seed": "prisma migrate reset && pnpm run db:seed",
-    "db:studio": "prisma studio",
+    "start": "node --import tsx dist/index.js",
+    "start:dev": "tsx prepareEnv.ts nodemon",
     "prettier-format": "run-script-os",
     "prettier-format:win32": "prettier --config .prettierrc \"./src/**/*.ts\" --write",
     "prettier-format:darwin:linux": "prettier --config .prettierrc 'src/**/*.ts' --write",
@@ -39,31 +29,27 @@
     "test:e2e": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.e2e.ts",
     "test:unit:dev": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.unit.ts --watch",
     "test:infra:dev": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.infra.ts --watch",
-    "test:e2e:dev": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.e2e.ts --watch",
-    "start:db": "docker-compose up -d",
-    "stop:db": "docker-compose down",
-    "stop:db:volumes": "docker-compose down -v",
-    "db:logs": "docker-compose logs -f"
+    "test:e2e:dev": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.e2e.ts --watch"
   },
   "husky": {
     "hooks": {
       "pre-commit": "pnpm run test:unit && pnpm run prettier-format && pnpm run lint"
     }
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "dependencies": {
-    "@talknest/shared": "workspace:*",
-    "@prisma/adapter-pg": "^7.3.0",
-    "@prisma/client": "^7.3.0",
+    "@talknest/api": "workspace:*",
+    "@talknest/errors": "workspace:*",
+    "@talknest/core": "workspace:*",
+    "@talknest/database": "workspace:*",
+    "@talknest/config": "workspace:*",
+    "@talknest/bus": "workspace:*",
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
-    "express": "^5.2.1",
-    "pg": "^8.18.0"
+    "express": "^5.2.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.9.0",
+    "@talknest/test-support": "workspace:*",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/supertest": "^6.0.3",

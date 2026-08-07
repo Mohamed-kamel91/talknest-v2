@@ -1,4 +1,4 @@
-import type { User } from '@talknest/shared/api/user';
+import type { User } from '@talknest/api/user';
 import type { CreateUserCommand } from '../user-command';
 
 export interface IUserRepo {

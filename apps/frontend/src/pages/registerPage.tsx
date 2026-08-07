@@ -11,7 +11,7 @@ import { OverlaySpinner } from '../components/overlaySpinner';
 import { api } from '../api';
 import { useUser } from '../contexts/userContext';
 import { useSpinner } from '../contexts/spinnerContext';
-import { GenericErrors, UserErrors } from '@talknest/shared/errors';
+import { GenericErrors, UserErrors } from '@talknest/errors';
 import { appSelectors, toId } from '../shared/selectors';
 
 type ValidationResult = {

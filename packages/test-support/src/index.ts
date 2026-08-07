@@ -1,0 +1,1 @@
+export { sharedTestRoot } from './paths';

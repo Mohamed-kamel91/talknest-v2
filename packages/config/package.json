@@ -1,0 +1,21 @@
+{
+  "name": "@talknest/config",
+  "version": "1.0.0",
+  "description": "The global config location for environment variables throughout the project",
+  "scripts": {
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "clean:deps": "rimraf node_modules",
+    "build": "tsc --build",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.4",
+    "zod": "^4.4.3"
+  }
+}

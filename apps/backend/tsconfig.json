@@ -19,7 +19,7 @@
     "strict": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "include": ["src"],
   "exclude": [
@@ -28,5 +28,12 @@
     "**/*.test.ts",
     "**/*.e2e.ts"
   ],
-  "references": [{ "path": "../../packages/shared" }]
+  "references": [
+    { "path": "../../packages/api" },
+    { "path": "../../packages/errors" },
+    { "path": "../../packages/core" },
+    { "path": "../../packages/database" },
+    { "path": "../../packages/config" },
+    { "path": "../../packages/bus" }
+  ]
 }
