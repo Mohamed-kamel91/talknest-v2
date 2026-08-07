@@ -10,10 +10,6 @@
     "build": "tsc --build",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@talknest/errors": "workspace:*",
-    "axios": "^1.6.2"
-  },
   "exports": {
     ".": {
       "default": "./src/index.ts",
@@ -39,5 +35,11 @@
       "default": "./src/vote.ts",
       "types": "./src/vote.ts"
     }
+  },
+  "dependencies": {
+    "@talknest/core": "workspace:*",
+    "@talknest/errors": "workspace:*",
+    "axios": "^1.6.2",
+    "zod": "^4.4.3"
   }
 }
