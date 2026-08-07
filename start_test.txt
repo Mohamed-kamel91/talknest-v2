@@ -1,9 +1,0 @@
-﻿node.exe : $ pnpm --filter @talknest/backend run start
-At C:\Program Files\nodejs\pnpm.ps1:16 char:5
-+     & "$basedir/node$exe"  "$basedir/node_modules/corepack/dist/pnpm. ...
-+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: ($ pnpm --filter...ckend run start:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
-$ node dist/index.js
-Server is running on port 3000
