@@ -14,5 +14,6 @@
     "skipLibCheck": true
   },
   "include": ["./src"],
-  "references": [{ "path": "../errors" }]
+  "exclude": ["node_modules", "dist"],
+  "references": [{ "path": "../core" }, { "path": "../errors" }]
 }
