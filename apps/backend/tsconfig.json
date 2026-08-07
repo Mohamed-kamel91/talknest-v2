@@ -32,6 +32,8 @@
     { "path": "../../packages/api" },
     { "path": "../../packages/errors" },
     { "path": "../../packages/core" },
-    { "path": "../../packages/database" }
+    { "path": "../../packages/database" },
+    { "path": "../../packages/config" },
+    { "path": "../../packages/bus" }
   ]
 }
