@@ -11,7 +11,7 @@ import {
 
 import { Config } from '../../../../backend/src/shared/config';
 import { CompositionRoot } from '../../../../backend/src/shared/composition-root';
-import { Database } from '@talknest/database';
+import { IDatabase } from '@talknest/database';
 
 import { PuppeteerPageDriver } from '../../shared/driver';
 import {
@@ -39,7 +39,7 @@ defineFeature(feature, (test) => {
   let puppeteerPageDriver: PuppeteerPageDriver;
 
   let composition: CompositionRoot;
-  let database: Database;
+  let database: IDatabase;
 
   const config: Config = new Config('test:e2e');
 

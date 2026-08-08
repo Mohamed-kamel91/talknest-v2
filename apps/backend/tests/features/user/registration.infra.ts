@@ -3,7 +3,7 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 
 import { Config } from '../../../src/shared/config';
 import { CompositionRoot } from '../../../src/shared/composition-root';
-import type { Database } from '@talknest/database';
+import type { IDatabase } from '@talknest/database';
 import type { Application } from '../../../src/shared/application';
 import { InvalidInputException } from '../../../src/shared/errors/validation-errors';
 import { CreateUserCommand } from '../../../src/modules/users/user-command';
@@ -32,7 +32,7 @@ defineFeature(feature, (test) => {
 
   let composition: CompositionRoot;
   let application: Application;
-  let database: Database;
+  let database: IDatabase;
 
   beforeAll(async () => {
     composition = CompositionRoot.createCompositionRoot(config);
