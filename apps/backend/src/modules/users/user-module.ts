@@ -3,7 +3,7 @@ import { PrismaUserRepo } from './adapters/prisma-user-repo';
 import { UserService } from './user-service';
 import { UserController } from './user-controller';
 import { UserRouter } from './user-router';
-import { Database } from '@talknest/database';
+import { IDatabase } from '@talknest/database';
 import { WebServer } from '../../shared/http';
 import type { Config } from '../../shared/config';
 import type { ITransactionalEmailAPI } from '../notifications/ports/transactional-email-api';
@@ -16,7 +16,7 @@ export class UserModule {
   private userRouter: UserRouter;
 
   private constructor(
-    private database: Database,
+    private database: IDatabase,
     private emailAPI: ITransactionalEmailAPI,
     private config: Config,
   ) {
@@ -29,7 +29,7 @@ export class UserModule {
   }
 
   static build(
-    database: Database,
+    database: IDatabase,
     emailAPI: ITransactionalEmailAPI,
     config: Config,
   ) {
