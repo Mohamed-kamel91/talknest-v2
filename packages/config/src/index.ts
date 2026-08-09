@@ -34,7 +34,7 @@ const configSchema = (dev: boolean = true) =>
       .enum(['development', 'production', 'staging', 'ci'])
       .default('development'),
     script: z
-      .enum(['test:unit', 'test:e2e', 'start', 'test:infra'])
+      .enum(['start', 'test:unit', 'test:infra', 'test:e2e'])
       .optional(),
   });
 
@@ -46,6 +46,7 @@ export type Config = z.infer<ReturnType<typeof configSchema>> & {
 export const Config = (dev: boolean = true) => {
   const cwd = process.cwd();
   const env = process.env.ENV_FILE;
+
   if (env) dev = false;
 
   // If ENV_FILE is provided, use it, otherwise try to read from file in root
