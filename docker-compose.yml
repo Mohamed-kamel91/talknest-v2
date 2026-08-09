@@ -5,8 +5,8 @@ services:
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: talknest
+      POSTGRES_PASSWORD: talknest
       POSTGRES_DB: talknest
     volumes:
       - pgdata:/var/lib/postgresql/data

@@ -1,6 +1,7 @@
-import { Config } from '../config';
+import { type Config } from '../config';
+
+import { type IDatabase, PrismaDatabase } from '@talknest/database';
 import { WebServer } from '../http';
-import { Database } from '@talknest/database';
 
 import { MarketingModule } from '../../modules/marketing';
 import { PostModule } from '../../modules/posts';
@@ -14,7 +15,7 @@ export class CompositionRoot {
   private static instance: CompositionRoot | null = null;
 
   private config: Config;
-  private database: Database;
+  private database: IDatabase;
   private webServer: WebServer;
 
   private notificationsModule: NotificationsModule;
@@ -85,7 +86,7 @@ export class CompositionRoot {
   }
 
   private createDatabase() {
-    return new Database();
+    return new PrismaDatabase();
   }
 
   private createUsersModule() {

@@ -3,7 +3,7 @@ import { PrismaPostRepo } from './adapters/prisma-post-repo';
 import { PostService } from './post-service';
 import { PostController } from './post-controller';
 import { PostRouter } from './post-router';
-import { Database } from '@talknest/database';
+import { IDatabase } from '@talknest/database';
 import { WebServer } from '../../shared/http';
 import type { Config } from '../../shared/config';
 import { InMemoryPostRepo } from './adapters/in-memory-post-repo';
@@ -15,7 +15,7 @@ export class PostModule {
   private postRouter: PostRouter;
 
   private constructor(
-    private database: Database,
+    private database: IDatabase,
     private config: Config,
   ) {
     this.postRepo = this.createPostRepo();
@@ -26,7 +26,7 @@ export class PostModule {
     this.setupRoutes();
   }
 
-  static build(database: Database, config: Config) {
+  static build(database: IDatabase, config: Config) {
     return new PostModule(database, config);
   }
 
