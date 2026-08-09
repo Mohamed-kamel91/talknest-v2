@@ -1,8 +1,8 @@
 import { Config } from '@talknest/config';
-import { Database } from '@talknest/database';
+import { PrismaDatabase } from '@talknest/database';
 
 const config = Config();
-const database = new Database(config);
+const database = new PrismaDatabase(config);
 const prisma = database.getConnection();
 
 async function main() {
