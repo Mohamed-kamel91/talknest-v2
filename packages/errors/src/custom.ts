@@ -1,23 +1,17 @@
-type ErrorType =
-  // Application
-  | 'ValidationError'
-  | 'PermissionError'
-  | 'NotFoundError'
-  | 'ConfictError'
-  | 'CustomError'
-  | 'UnauthorizedError'
+import { ErrorType } from './types';
 
-  // Server
-  | 'InvalidRequestBodyError'
-  | 'InvalidParamsError'
-  | 'MissingRequestParamsError'
-  | 'DatabaseError'
-  | 'GenericServerError';
-
-export class CustomError extends Error {
-  public type: ErrorType;
-  constructor(message: string, type: ErrorType = 'CustomError') {
+export abstract class CustomError<
+  T extends ErrorType = ErrorType,
+> extends Error {
+  constructor(
+    public readonly type: T,
+    public readonly code: number,
+    message: string,
+  ) {
     super(message);
-    this.type = type;
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
   }
 }
+
+

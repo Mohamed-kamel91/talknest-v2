@@ -1,14 +1,14 @@
-import type { User } from '@talknest/api/user';
+import { type UserDTO } from '@talknest/api/users';
 
-import type { CreateUserCommand } from '../user-command';
-import type { IUserRepo } from '../ports/user-repo';
+import { type CreateUserCommand } from '../user-command';
+import { type IUserRepo } from '../ports/user-repo';
 import { Spy } from '../../../shared/test-doubles/spy';
 
 export class InMemoryUserRepo
   extends Spy<IUserRepo>
   implements IUserRepo
 {
-  private users: User[];
+  private users: UserDTO[];
   private nextId = 1;
 
   constructor() {
@@ -16,7 +16,7 @@ export class InMemoryUserRepo
     this.users = [];
   }
 
-  public save(user: CreateUserCommand): Promise<User> {
+  public save(user: CreateUserCommand): Promise<UserDTO> {
     const { email, firstName, lastName, username, password } = user;
 
     this.addCall('save', [user]);
@@ -37,7 +37,7 @@ export class InMemoryUserRepo
     return Promise.resolve({ ...safeUser });
   }
 
-  public getById(id: number): Promise<User | null> {
+  public getById(id: number): Promise<UserDTO | null> {
     return Promise.resolve(
       this.users.find((user) => user.id === id) || null,
     );
@@ -58,7 +58,7 @@ export class InMemoryUserRepo
   public update(
     id: number,
     props: Partial<CreateUserCommand['props']>,
-  ): Promise<User | null> {
+  ): Promise<UserDTO | null> {
     const userIndex = this.users.findIndex((user) => user.id === id);
 
     if (userIndex !== -1) {
@@ -75,13 +75,13 @@ export class InMemoryUserRepo
     return Promise.resolve(null);
   }
 
-  public getByEmail(email: string): Promise<User | null> {
+  public getByEmail(email: string): Promise<UserDTO | null> {
     return Promise.resolve(
       this.users.find((user) => user.email === email) || null,
     );
   }
 
-  public getByUsername(username: string): Promise<User | null> {
+  public getByUsername(username: string): Promise<UserDTO | null> {
     return Promise.resolve(
       this.users.find((user) => user.username === username) || null,
     );

@@ -1,15 +1,15 @@
-import { type Config } from '../config';
-
 import { type IDatabase, PrismaDatabase } from '@talknest/database';
+
+import { type Config } from '../config';
 import { WebServer } from '../http';
 
+import { NotificationsModule } from '../../modules/notifications';
 import { MarketingModule } from '../../modules/marketing';
-import { PostModule } from '../../modules/posts';
 import { UserModule } from '../../modules/users';
+import { PostModule } from '../../modules/posts';
 
-import { errorHandler } from '../errors';
-import { NotificationsModule } from '../../modules/notifications/notification-module';
 import { Application } from '../application';
+import { errorHandler } from '../errors/error-handler';
 
 export class CompositionRoot {
   private static instance: CompositionRoot | null = null;

@@ -1,7 +1,7 @@
-import type { Post } from '@talknest/api/post';
+import { type Post } from '@talknest/api/posts';
 
-import type { IPostRepo } from '../ports/post-repo';
-import type { getPostsQuery } from '../post-query';
+import { type IPostRepo } from '../ports/post-repo';
+import { type getPostsQuery } from '../post-query';
 
 export class InMemoryPostRepo implements IPostRepo {
   private posts: Post[];

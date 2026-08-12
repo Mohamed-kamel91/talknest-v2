@@ -1,12 +1,13 @@
-import type { IUserRepo } from './ports/user-repo';
+import { IDatabase } from '@talknest/database';
+
+import { type IUserRepo } from './ports/user-repo';
 import { PrismaUserRepo } from './adapters/prisma-user-repo';
 import { UserService } from './user-service';
 import { UserController } from './user-controller';
 import { UserRouter } from './user-router';
-import { IDatabase } from '@talknest/database';
 import { WebServer } from '../../shared/http';
-import type { Config } from '../../shared/config';
-import type { ITransactionalEmailAPI } from '../notifications/ports/transactional-email-api';
+import { type Config } from '../../shared/config';
+import { type ITransactionalEmailAPI } from '../notifications/ports/transactional-email-api';
 import { InMemoryUserRepo } from './adapters/In-memory-user-repo';
 
 export class UserModule {

@@ -15,25 +15,25 @@
       "default": "./src/index.ts",
       "types": "./src/index.ts"
     },
-    "./comment": {
-      "default": "./src/comment.ts",
-      "types": "./src/comment.ts"
+    "./comments": {
+      "default": "./src/comments/index.ts",
+      "types": "./src/comments/index.ts"
     },
     "./marketing": {
-      "default": "./src/marketing.ts",
-      "types": "./src/marketing.ts"
+      "default": "./src/marketing/index.ts",
+      "types": "./src/marketing/index.ts"
     },
-    "./post": {
-      "default": "./src/post.ts",
-      "types": "./src/post.ts"
+    "./posts": {
+      "default": "./src/posts/index.ts",
+      "types": "./src/posts/index.ts"
     },
-    "./user": {
-      "default": "./src/user.ts",
-      "types": "./src/user.ts"
+    "./users": {
+      "default": "./src/users/index.ts",
+      "types": "./src/users/index.ts"
     },
-    "./vote": {
-      "default": "./src/vote.ts",
-      "types": "./src/vote.ts"
+    "./votes": {
+      "default": "./src/votes/index.ts",
+      "types": "./src/votes/index.ts"
     }
   },
   "dependencies": {

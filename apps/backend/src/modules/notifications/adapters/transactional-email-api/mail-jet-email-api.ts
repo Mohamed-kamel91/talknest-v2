@@ -1,4 +1,4 @@
-import type { ITransactionalEmailAPI } from '../../ports/transactional-email-api';
+import { type ITransactionalEmailAPI } from '../../ports/transactional-email-api';
 
 export class MailJetEmailAPI implements ITransactionalEmailAPI {
   async sendMail(input: {

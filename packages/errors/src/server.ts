@@ -1,64 +1,27 @@
 import { CustomError } from './custom';
+import { ErrorType } from './types';
 
-export namespace ServerErrors {
-  export class InvalidRequestBodyError extends CustomError {
-    constructor(missingKeys: string[]) {
-      super(
-        'Body is missing required key: ' + missingKeys.join(', '),
-        'InvalidRequestBodyError',
-      );
-    }
+export type ServerError = InternalServerError | DatabaseError;
+
+export const serverErrorTypes = {
+  INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
+  DATABASE_ERROR: 'DATABASE_ERROR',
+} as const;
+
+export class InternalServerError extends CustomError {
+  constructor(
+    type: ErrorType = serverErrorTypes.INTERNAL_SERVER_ERROR,
+    message: string = 'Something went wrong on our end',
+  ) {
+    super(type, 500, message);
   }
+}
 
-  export class InvalidParamsError extends CustomError {
-    constructor() {
-      super('Params are invalid', 'InvalidParamsError');
-    }
+export class DatabaseError extends CustomError {
+  constructor(
+    type: ErrorType = serverErrorTypes.DATABASE_ERROR,
+    message: string = 'A database error occurred',
+  ) {
+    super(type, 500, message);
   }
-
-  export class MissingRequestParamsError extends CustomError {
-    constructor(missingKeys: string[]) {
-      super(
-        'Params is missing required key: ' + missingKeys.join(', '),
-        'MissingRequestParamsError',
-      );
-    }
-  }
-
-  export class InvalidRequestParamsError extends CustomError {
-    constructor(invalidKeys: string[]) {
-      super(
-        'Params has invalid key: ' + invalidKeys.join(', '),
-        'MissingRequestParamsError',
-      );
-    }
-  }
-
-  export class GenericServerError extends CustomError {
-    constructor(message = '') {
-      super(
-        message
-          ? `An error occurred: ${message}`
-          : 'An error occurred',
-        'GenericServerError',
-      );
-    }
-  }
-
-  export class DatabaseError extends CustomError {
-    constructor() {
-      super(
-        'An error occurred saving to the database',
-        'DatabaseError',
-      );
-    }
-  }
-
-  export type AnyServerError =
-    | ServerErrors.InvalidRequestBodyError
-    | ServerErrors.InvalidParamsError
-    | ServerErrors.MissingRequestParamsError
-    | ServerErrors.InvalidParamsError
-    | ServerErrors.GenericServerError
-    | ServerErrors.DatabaseError;
 }

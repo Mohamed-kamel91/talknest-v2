@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker';
 
-import type { User } from '@talknest/api/user';
+import type { UserDTO } from '@talknest/api/users';
 import { NumberUtil } from '@talknest/core';
 
 export class UserResultBuilder {
-  private props: User;
+  private props: UserDTO;
 
   constructor() {
     this.props = {

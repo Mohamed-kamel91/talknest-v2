@@ -3,7 +3,7 @@ import express from 'express';
 import {
   CreateUserResponse,
   GetUserByEmailResponse,
-} from '@talknest/api/user';
+} from '@talknest/api/users';
 
 import type { UserService } from './user-service';
 import { CreateUserCommand } from './user-command';

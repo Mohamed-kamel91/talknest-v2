@@ -1,8 +1,8 @@
 import { Server as HttpServer } from 'http';
-import express, { Express } from 'express';
+import express, { ErrorRequestHandler, Express } from 'express';
 import cors from 'cors';
 
-import { ErrorHandler } from '../errors';
+// import { ErrorHandler } from '../errors/error-handler';
 
 interface WebServerConfig {
   port: number;
@@ -13,9 +13,7 @@ export class WebServer {
   private readonly app: Express;
   private server: HttpServer | undefined;
 
-  constructor(
-    private config: WebServerConfig,
-  ) {
+  constructor(private config: WebServerConfig) {
     this.app = express();
     this.addMiddlewares();
   }
@@ -28,7 +26,7 @@ export class WebServer {
     this.app.use(path, router);
   }
 
-  public useErrorHandler(errorHandler: ErrorHandler) {
+  public useErrorHandler(errorHandler: ErrorRequestHandler) {
     this.app.use(errorHandler);
   }
 

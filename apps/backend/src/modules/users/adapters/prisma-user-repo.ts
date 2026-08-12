@@ -1,13 +1,13 @@
-import type { User } from '@talknest/api/user';
+import { type UserDTO } from '@talknest/api/users';
+import { type PrismaClient } from '@talknest/database';
 
-import type { IUserRepo } from '../ports/user-repo';
-import type { CreateUserCommand } from '../user-command';
-import type { PrismaClient } from '@talknest/database';
+import { type IUserRepo } from '../ports/user-repo';
+import { type CreateUserCommand } from '../user-command';
 
 export class PrismaUserRepo implements IUserRepo {
   constructor(private prisma: PrismaClient) {}
 
-  public async save(user: CreateUserCommand): Promise<User> {
+  public async save(user: CreateUserCommand): Promise<UserDTO> {
     const { email, firstName, lastName, username, password } = user;
 
     const result = await this.prisma.$transaction(async () => {
@@ -33,7 +33,7 @@ export class PrismaUserRepo implements IUserRepo {
     return formattedUser;
   }
 
-  public async getByEmail(email: string): Promise<User | null> {
+  public async getByEmail(email: string): Promise<UserDTO | null> {
     const user = await this.prisma.user.findFirst({
       where: { email },
     });
@@ -45,7 +45,9 @@ export class PrismaUserRepo implements IUserRepo {
     return user;
   }
 
-  public async getByUsername(username: string): Promise<User | null> {
+  public async getByUsername(
+    username: string,
+  ): Promise<UserDTO | null> {
     const user = await this.prisma.user.findFirst({
       where: { username },
     });
@@ -57,7 +59,7 @@ export class PrismaUserRepo implements IUserRepo {
     return user;
   }
 
-  private formatUser(user: any): User {
+  private formatUser(user: any): UserDTO {
     return {
       id: user.id,
       email: user.email,

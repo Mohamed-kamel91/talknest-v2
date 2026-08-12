@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-import { CreateUserInput } from '@talknest/api/user';
+import { CreateUserInput } from '@talknest/api/users';
 import { database } from '../../../../../apps/backend/src/shared/bootstrap';
 
 export class UserBuilder {

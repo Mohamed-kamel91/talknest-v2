@@ -1,11 +1,11 @@
-import { GenericErrors } from '@talknest/errors';
 import { createMarketingAPI } from './marketing';
-import { createPostAPI } from './post';
-import { createUserAPI } from './user';
+import { createPostsAPI } from './posts';
+import { createUsersAPI } from './users';
 
 export type APIError<U> = {
+  type: U;
+  code: number;
   message: string;
-  code: U;
 };
 
 export type SuccessResponse<Data> = {
@@ -14,29 +14,22 @@ export type SuccessResponse<Data> = {
   error: null;
 };
 
-export type FailureResponse<ErrorCode> = {
+export type FailureResponse<ErrorType> = {
   success: false;
   data: null;
-  error: APIError<ErrorCode>;
+  error: APIError<ErrorType>;
 };
 
 export type APIResponse<T, U> =
-  | SuccessResponse<T>
-  | FailureResponse<U>;
-
-export type ServerError = typeof GenericErrors.SERVER_ERROR;
-export type ClientError = typeof GenericErrors.CLIENT_ERROR;
-export type ValidationError = typeof GenericErrors.VALIDATION_ERROR;
-
-export type GenericErrors =
-  | ServerError
-  | ClientError
-  | ValidationError;
+  SuccessResponse<T> | FailureResponse<U>;
 
 export const createAPIClient = (apiURL: string) => {
   return {
-    user: createUserAPI(apiURL),
     marketing: createMarketingAPI(apiURL),
-    post: createPostAPI(apiURL),
+    posts: createPostsAPI(apiURL),
+    users: createUsersAPI(apiURL),
+    // members: createMembersAPI(apiURL),
+    // comments: createCommentssAPI(apiURL),
+    // votes: createVotesAPI(apiURL),
   };
 };

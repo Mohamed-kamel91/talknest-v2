@@ -48,7 +48,7 @@ export const RegisterPage = () => {
     spinner.activate();
 
     try {
-      const response = await api.user.register(input);
+      const response = await api.users.register(input);
 
       const { EMAIL_ALREADY_TAKEN, USERNAME_ALREADY_TAKEN } =
         UserErrors;
