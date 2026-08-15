@@ -1,12 +1,12 @@
-import { APIResponse } from '..';
 import {
-  RequestErrorType,
-  ServerErrorType,
+  type RequestErrorType,
+  type ServerErrorType,
   userErrorTypes,
 } from '@talknest/errors/types';
 
-// User Error Types
+import { APIResponse } from '..';
 
+// User Error Types
 export type EmailAlreadyTakenError =
   typeof userErrorTypes.EMAIL_ALREADY_TAKEN;
 
@@ -18,8 +18,12 @@ export type UserNotFoundError = typeof userErrorTypes.USER_NOT_FOUND;
 export type ServerError = ServerErrorType;
 export type RequestError = RequestErrorType;
 
-// User Response DTO
+export type DecodedIdToken = {
+  email: string;
+  uid: string;
+};
 
+// User Response DTO
 export type UserDTO = {
   id: number;
   email: string;
@@ -29,7 +33,6 @@ export type UserDTO = {
 };
 
 // User Request DTO
-
 export type CreateUserInput = {
   email: string;
   firstName: string;
@@ -38,27 +41,20 @@ export type CreateUserInput = {
   password: string;
 };
 
-// User Response Data
-
-export type UserResponseData = {
-  user: UserDTO;
-};
-
 // Create User Response
-
 export type CreateUserError =
   EmailAlreadyTakenError | UsernameAlreadyTakenError | ServerError;
 
 export type CreateUserResponse = APIResponse<
-  UserResponseData,
+  UserDTO,
   CreateUserError
 >;
 
 // Get User By Email Response
-
-export type GetUserByEmailError = UserNotFoundError | RequestError;
+export type GetUserByEmailError =
+  UserNotFoundError | RequestError | ServerError;
 
 export type GetUserByEmailResponse = APIResponse<
-  UserResponseData,
+  UserDTO,
   GetUserByEmailError
 >;
