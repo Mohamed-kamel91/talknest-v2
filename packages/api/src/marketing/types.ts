@@ -1,25 +1,24 @@
-import type { APIResponse } from '..';
-
 import type {
   RequestErrorType,
   ServerErrorType,
 } from '@talknest/errors/types';
 
-// Marketing Errors
+import { type APIResponse } from '..';
 
+// Errors
 export type RequestError = RequestErrorType;
 export type ServerError = ServerErrorType;
+export type NetworkError = 'NETWORK_ERROR';
 
-// Marketing DTOs
-
+// DTOs
 export type EmailSubscription = {
   email: string;
   subscribed: boolean;
 };
 
 // Add Email To List Response
-
-export type AddEmailToListError = RequestError | ServerError;
+export type AddEmailToListError =
+  RequestError | ServerError | NetworkError;
 
 export type AddEmailToListResponseData = {
   subscription: EmailSubscription;

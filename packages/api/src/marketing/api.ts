@@ -2,24 +2,35 @@ import axios from 'axios';
 
 import type { AddEmailToListResponse } from './types';
 
-export const createMarketingAPI = (apiURL: string) => {
+export const createMarketingAPI = (apiUrl: string) => {
   return {
     addEmailToList: async (
       email: string,
     ): Promise<AddEmailToListResponse> => {
       try {
         const response = await axios.post<AddEmailToListResponse>(
-          `${apiURL}/marketing`,
+          `${apiUrl}/marketing`,
           { email },
         );
 
         return response.data;
-      } catch (err) {
-        if (axios.isAxiosError<AddEmailToListResponse>(err)) {
-          return err.response?.data as AddEmailToListResponse;
+      } catch (error: unknown) {
+        if (
+          axios.isAxiosError<AddEmailToListResponse>(error) &&
+          error.response
+        ) {
+          return error.response.data;
         }
 
-        throw err;
+        return {
+          success: false,
+          statusCode: 503,
+          data: null,
+          error: {
+            message: 'Network or server unreachable',
+            type: 'NETWORK_ERROR',
+          },
+        };
       }
     },
   };
