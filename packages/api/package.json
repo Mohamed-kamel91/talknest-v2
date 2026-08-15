@@ -34,6 +34,10 @@
     "./votes": {
       "default": "./src/votes/index.ts",
       "types": "./src/votes/index.ts"
+    },
+    "./members": {
+      "default": "./src/members/index.ts",
+      "types": "./src/members/index.ts"
     }
   },
   "dependencies": {
