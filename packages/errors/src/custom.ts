@@ -5,7 +5,7 @@ export abstract class CustomError<
 > extends Error {
   constructor(
     public readonly type: T,
-    public readonly code: number,
+    public readonly statusCode: number,
     message: string,
   ) {
     super(message);
@@ -13,5 +13,3 @@ export abstract class CustomError<
     Error.captureStackTrace(this, this.constructor);
   }
 }
-
-
