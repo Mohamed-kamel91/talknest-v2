@@ -1,7 +1,8 @@
 import {
-  MissingRequestBodyException,
-  InvalidRequestBodyException,
-} from '../../shared/errors';
+  InvalidRequestBodyError,
+  MissingRequestBodyError,
+} from '@talknest/errors/request';
+
 import { getMissingKeys, isObject } from '../../shared/utils';
 
 export class AddEmailToListCommand {
@@ -9,14 +10,14 @@ export class AddEmailToListCommand {
 
   static fromRequest(body: unknown) {
     if (!isObject<{ email: string }>(body)) {
-      throw new MissingRequestBodyException();
+      throw new MissingRequestBodyError();
     }
 
     const requiredKeys = ['email'];
     const missingKeys = getMissingKeys(body, requiredKeys);
 
     if (missingKeys.length > 0) {
-      throw new InvalidRequestBodyException(requiredKeys);
+      throw new InvalidRequestBodyError(requiredKeys);
     }
 
     return new AddEmailToListCommand(body.email);

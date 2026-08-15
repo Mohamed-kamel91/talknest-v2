@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Post } from '@talknest/api/post';
+import { Post } from '@talknest/api/posts';
 
 import { Layout } from '../components/layout';
 import { PostsList } from '../components/postsList';
@@ -11,7 +11,7 @@ export const MainPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const loadPosts = async () => {
     try {
-      let response = await api.post.getPosts({ sort: 'recent' });
+      let response = await api.posts.getPosts({ sort: 'recent' });
       setPosts(response.data!.posts);
     } catch (err) {
       console.log(err);

@@ -45,7 +45,7 @@ describe('Users http API', () => {
 
     createUserSpy.mockResolvedValue(createUserResultStub);
 
-    await apiClient.user.register(createUserInput);
+    await apiClient.users.register(createUserInput);
 
     expect(application.user.createUser).toHaveBeenCalledTimes(1);
   });

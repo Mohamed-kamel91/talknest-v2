@@ -1,10 +1,10 @@
-import type { IContactListAPI } from './ports/contact-list-api';
+import { type IContactListAPI } from './ports/contact-list-api';
 import { MailchimpContactList } from './adapters/contact-list-api/mail-chimp-contact-list';
 import { MarketingService } from './marketing-service';
 import { MarketingController } from './marketing-controller';
 import { MarketingRouter } from './marketing-router';
 import { WebServer } from '../../shared/http';
-import type { Config } from '../../shared/config';
+import { type Config } from '../../shared/config';
 import { FakeContactListAPI } from './adapters/contact-list-api/fake-contact-list-api';
 
 export class MarketingModule {

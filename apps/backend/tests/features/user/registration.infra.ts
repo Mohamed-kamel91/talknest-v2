@@ -3,23 +3,20 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 
 import { Config } from '../../../src/shared/config';
 import { CompositionRoot } from '../../../src/shared/composition-root';
-import type { IDatabase } from '@talknest/database';
-import type { Application } from '../../../src/shared/application';
-import { InvalidInputException } from '../../../src/shared/errors/validation-errors';
+import { type IDatabase } from '@talknest/database';
+import { type Application } from '../../../src/shared/application';
+
 import { CreateUserCommand } from '../../../src/modules/users/user-command';
 import {
-  EmailAlreadyTakenException,
-  UsernameAlreadyTakenException,
-} from '../../../src/modules/users/user-exceptions';
+  EmailAlreadyTakenError,
+  UsernameAlreadyTakenError,
+} from '../../../src/modules/users/user-errors';
 
 import { sharedTestRoot } from '@talknest/test-support';
-import type { CreateUserInput, User } from '@talknest/api/user';
-import type { EmailSubscription } from '@talknest/api/marketing';
-import { GenericErrors } from '@talknest/errors';
-import {
-  buildManyUsers,
-  resetDatabase,
-} from '@talknest/test-support/fixtures';
+import { type CreateUserInput, UserDTO } from '@talknest/api/users';
+import { type EmailSubscription } from '@talknest/api/marketing';
+import { requestErrorTypes, InvalidInputError } from '@talknest/errors/request';
+import { buildManyUsers, resetDatabase } from '@talknest/test-support/fixtures';
 import { CreateUserBuilder } from '@talknest/test-support/builders';
 
 const feature = loadFeature(
@@ -53,7 +50,7 @@ defineFeature(feature, (test) => {
     and,
   }) => {
     let createUserInput: CreateUserInput;
-    let createUserResult: User;
+    let createUserResult: UserDTO;
     let addEmailToListResult: EmailSubscription;
 
     given('I am a new user', () => {
@@ -104,7 +101,7 @@ defineFeature(feature, (test) => {
     then,
   }) => {
     let createUserInput: CreateUserInput;
-    let createUserResult: User;
+    let createUserResult: UserDTO;
 
     given('I am a new user', async () => {
       createUserInput = new CreateUserBuilder().build();
@@ -163,8 +160,8 @@ defineFeature(feature, (test) => {
 
     then('I should see an error notifying me that my input is invalid', () => {
       expect(error).toBeDefined();
-      expect(error).toBeInstanceOf(InvalidInputException);
-      expect(error.code).toBe(GenericErrors.VALIDATION_ERROR);
+      expect(error).toBeInstanceOf(InvalidInputError);
+      expect(error.type).toBe(requestErrorTypes.INVALID_INPUT);
     });
 
     and('I should not have been sent access to account details', () => {});
@@ -213,7 +210,7 @@ defineFeature(feature, (test) => {
       'they should see an error notifying them that the account already exists',
       () => {
         createUserResults.forEach((result) => {
-          expect(result).rejects.toThrow(EmailAlreadyTakenException);
+          expect(result).rejects.toThrow(EmailAlreadyTakenError);
         });
       },
     );
@@ -264,7 +261,7 @@ defineFeature(feature, (test) => {
       'they see an error notifying them that the username has already been taken',
       () => {
         createUserResults.forEach((result) => {
-          expect(result).rejects.toThrow(UsernameAlreadyTakenException);
+          expect(result).rejects.toThrow(UsernameAlreadyTakenError);
         });
       },
     );

@@ -1,7 +1,7 @@
-import type { EmailSubscription } from '@talknest/api/marketing';
+import { type EmailSubscription } from '@talknest/api/marketing';
 
-import type { IContactListAPI } from './ports/contact-list-api';
-import type { AddEmailToListCommand } from './marketing-command';
+import { type IContactListAPI } from './ports/contact-list-api';
+import { type AddEmailToListCommand } from './marketing-command';
 
 export class MarketingService {
   constructor(private contactListAPI: IContactListAPI) {}

@@ -1,5 +1,5 @@
-import type { ITransactionalEmailAPI } from './ports/transactional-email-api';
-import type { Config } from '../../shared/config';
+import { type ITransactionalEmailAPI } from './ports/transactional-email-api';
+import { type Config } from '../../shared/config';
 import { FakeTransactionalEmailAPI } from './adapters/transactional-email-api/fake-transactional-email-api';
 import { MailJetEmailAPI } from './adapters/transactional-email-api/mail-jet-email-api';
 

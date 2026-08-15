@@ -1,13 +1,13 @@
-import type { Post } from '@talknest/api/post';
+import { type PostDTO } from '@talknest/api/posts';
+import { type PrismaClient } from '@talknest/database';
 
-import type { IPostRepo } from '../ports/post-repo';
-import type { PrismaClient } from '@talknest/database';
-import type { getPostsQuery } from '../post-query';
+import { type IPostRepo } from '../ports/post-repo';
+import { type getPostsQuery } from '../post-query';
 
 export class PrismaPostRepo implements IPostRepo {
   constructor(private prisma: PrismaClient) {}
 
-  public async getAll(query: getPostsQuery): Promise<Post[]> {
+  public async getAll(query: getPostsQuery): Promise<PostDTO[]> {
     const posts = await this.prisma.post.findMany({
       include: {
         votes: true, // Include associated votes for each post
@@ -27,7 +27,7 @@ export class PrismaPostRepo implements IPostRepo {
     return formattedPosts;
   }
 
-  private formatPost(post: any): Post {
+  private formatPost(post: any): PostDTO {
     return {
       id: post.id,
       memberId: post.memberId,

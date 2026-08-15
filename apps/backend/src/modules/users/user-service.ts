@@ -2,10 +2,10 @@ import { ITransactionalEmailAPI } from '../notifications/ports/transactional-ema
 import { type IUserRepo } from './ports/user-repo';
 import { CreateUserCommand } from './user-command';
 import {
-  EmailAlreadyTakenException,
-  UsernameAlreadyTakenException,
-  UserNotFoundException,
-} from './user-exceptions';
+  EmailAlreadyTakenError,
+  UsernameAlreadyTakenError,
+  UserNotFoundError,
+} from './user-errors';
 
 export class UserService {
   constructor(
@@ -19,7 +19,7 @@ export class UserService {
     );
 
     if (existingUserByEmail) {
-      throw new EmailAlreadyTakenException();
+      throw new EmailAlreadyTakenError(userdata.email);
     }
 
     const existingUserByUsername = await this.userRepo.getByUsername(
@@ -27,7 +27,7 @@ export class UserService {
     );
 
     if (existingUserByUsername) {
-      throw new UsernameAlreadyTakenException();
+      throw new UsernameAlreadyTakenError(userdata.username);
     }
 
     const user = await this.userRepo.save(userdata);
@@ -45,7 +45,7 @@ export class UserService {
     const user = await this.userRepo.getByEmail(email);
 
     if (!user) {
-      throw new UserNotFoundException();
+      throw new UserNotFoundError();
     }
 
     return user;

@@ -3,22 +3,21 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 
 import { Config } from '../../../src/shared/config';
 import { CompositionRoot } from '../../../src/shared/composition-root';
-import type { Application } from '../../../src/shared/application';
-import { InvalidInputException } from '../../../src/shared/errors/validation-errors';
+import { type Application } from '../../../src/shared/application';
 
 import { CreateUserCommand } from '../../../src/modules/users/user-command';
-import type { InMemoryUserRepo } from '../../../src/modules/users/adapters/In-memory-user-repo';
+import { type InMemoryUserRepo } from '../../../src/modules/users/adapters/In-memory-user-repo';
 import {
-  EmailAlreadyTakenException,
-  UsernameAlreadyTakenException,
-} from '../../../src/modules/users/user-exceptions';
-import type { FakeTransactionalEmailAPI } from '../../../src/modules/notifications/adapters/transactional-email-api/fake-transactional-email-api';
-import type { FakeContactListAPI } from '../../../src/modules/marketing/adapters/contact-list-api/fake-contact-list-api';
+  EmailAlreadyTakenError,
+  UsernameAlreadyTakenError,
+} from '../../../src/modules/users/user-errors';
+import { type FakeTransactionalEmailAPI } from '../../../src/modules/notifications/adapters/transactional-email-api';
+import { type FakeContactListAPI } from '../../../src/modules/marketing/adapters/contact-list-api';
 
 import { sharedTestRoot } from '@talknest/test-support';
-import type { CreateUserInput, User } from '@talknest/api/user';
-import type { EmailSubscription } from '@talknest/api/marketing';
-import { GenericErrors } from '@talknest/errors';
+import { type CreateUserInput, UserDTO } from '@talknest/api/users';
+import { type EmailSubscription } from '@talknest/api/marketing';
+import { requestErrorTypes, InvalidInputError } from '@talknest/errors/request';
 import { CreateUserBuilder } from '@talknest/test-support/builders';
 
 const feature = loadFeature(
@@ -57,7 +56,7 @@ defineFeature(feature, (test) => {
     and,
   }) => {
     let createUserInput: CreateUserCommand;
-    let createUserResult: User;
+    let createUserResult: UserDTO;
     let addEmailToListResult: EmailSubscription;
 
     given('I am a new user', () => {
@@ -113,7 +112,7 @@ defineFeature(feature, (test) => {
     then,
   }) => {
     let createUserInput: CreateUserCommand;
-    let createUserResult: User;
+    let createUserResult: UserDTO;
 
     given('I am a new user', async () => {
       createUserInput = new CreateUserBuilder().buildCommand();
@@ -174,8 +173,8 @@ defineFeature(feature, (test) => {
 
     then('I should see an error notifying me that my input is invalid', () => {
       expect(error).toBeDefined();
-      expect(error).toBeInstanceOf(InvalidInputException);
-      expect(error.code).toBe(GenericErrors.VALIDATION_ERROR);
+      expect(error).toBeInstanceOf(InvalidInputError);
+      expect(error.type).toBe(requestErrorTypes.INVALID_INPUT);
       expect(userRepoSpy.getTimesMethodCalled('save')).toBe(0);
     });
 
@@ -229,7 +228,7 @@ defineFeature(feature, (test) => {
       'they should see an error notifying them that the account already exists',
       () => {
         createUserResults.forEach((result) => {
-          expect(result).rejects.toThrow(EmailAlreadyTakenException);
+          expect(result).rejects.toThrow(EmailAlreadyTakenError);
         });
       },
     );
@@ -284,7 +283,7 @@ defineFeature(feature, (test) => {
       'they see an error notifying them that the username has already been taken',
       () => {
         createUserResults.forEach((result) => {
-          expect(result).rejects.toThrow(UsernameAlreadyTakenException);
+          expect(result).rejects.toThrow(UsernameAlreadyTakenError);
         });
       },
     );

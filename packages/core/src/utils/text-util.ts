@@ -39,4 +39,19 @@ export class TextUtil {
   ) {
     return str.length >= min && str.length <= max;
   }
+
+  public static getMissingKeys(
+    data: any,
+    keysToCheckFor: string[],
+  ): string[] {
+    return keysToCheckFor.filter((key) => data[key] === undefined);
+  }
+
+  public static isObject = <T extends Record<string, any>>(
+    val: any,
+  ): val is T => {
+    return (
+      val !== null && typeof val === 'object' && !Array.isArray(val)
+    );
+  };
 }

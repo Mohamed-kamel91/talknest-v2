@@ -1,23 +1,23 @@
 import { Request } from 'express';
 
-import type { GetPostParams } from '@talknest/api/post';
+import { type GetPostsParams } from '@talknest/api/posts';
 import {
-  InvalidRequestQueryParamsException,
-  MissingRequestQueryParamsException,
-} from '../../shared/errors';
+  InvalidRequestQueryParamsError,
+  MissingRequestQueryParamsError,
+} from '@talknest/errors/request';
 
 export class getPostsQuery {
-  private constructor(public props: GetPostParams) {}
+  private constructor(public props: GetPostsParams) {}
 
   static fromRequest(query: Request['query']) {
     const { sort } = query;
 
     if (!sort) {
-      throw new MissingRequestQueryParamsException(['sort']);
+      throw new MissingRequestQueryParamsError(['sort']);
     }
 
     if (sort !== 'recent') {
-      throw new InvalidRequestQueryParamsException(['sort']);
+      throw new InvalidRequestQueryParamsError(['sort']);
     }
 
     return new getPostsQuery({ sort });

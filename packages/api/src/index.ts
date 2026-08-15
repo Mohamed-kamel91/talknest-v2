@@ -1,42 +1,47 @@
-import { GenericErrors } from '@talknest/errors';
 import { createMarketingAPI } from './marketing';
-import { createPostAPI } from './post';
-import { createUserAPI } from './user';
+import { createPostsAPI } from './posts';
+import { createUsersAPI } from './users';
+import { createCommentsAPI } from './comments';
+import { createMembersAPI } from './members';
+import { createVotesAPI } from './votes';
 
 export type APIError<U> = {
+  type: U;
   message: string;
-  code: U;
 };
 
 export type SuccessResponse<Data> = {
   success: true;
   data: Data;
+  statusCode: number;
   error: null;
 };
 
-export type FailureResponse<ErrorCode> = {
+export type FailureResponse<ErrorType> = {
   success: false;
   data: null;
-  error: APIError<ErrorCode>;
+  statusCode: number;
+  error: APIError<ErrorType>;
 };
 
 export type APIResponse<T, U> =
-  | SuccessResponse<T>
-  | FailureResponse<U>;
+  SuccessResponse<T> | FailureResponse<U>;
 
-export type ServerError = typeof GenericErrors.SERVER_ERROR;
-export type ClientError = typeof GenericErrors.CLIENT_ERROR;
-export type ValidationError = typeof GenericErrors.VALIDATION_ERROR;
-
-export type GenericErrors =
-  | ServerError
-  | ClientError
-  | ValidationError;
+export const getAuthHeaders = (token?: string) => ({
+  headers: token
+    ? {
+        Authorization: `Bearer ${token}`,
+      }
+    : {},
+});
 
 export const createAPIClient = (apiURL: string) => {
   return {
-    user: createUserAPI(apiURL),
+    comments: createCommentsAPI(apiURL),
     marketing: createMarketingAPI(apiURL),
-    post: createPostAPI(apiURL),
+    members: createMembersAPI(apiURL),
+    posts: createPostsAPI(apiURL),
+    users: createUsersAPI(apiURL),
+    votes: createVotesAPI(apiURL),
   };
 };

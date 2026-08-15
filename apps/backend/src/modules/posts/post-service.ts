@@ -1,5 +1,5 @@
-import type { IPostRepo } from './ports/post-repo';
-import type { getPostsQuery } from './post-query';
+import { type IPostRepo } from './ports/post-repo';
+import { type getPostsQuery } from './post-query';
 
 export class PostService {
   constructor(private postRepo: IPostRepo) {}

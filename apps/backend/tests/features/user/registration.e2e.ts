@@ -8,9 +8,12 @@ import { WebServer } from '../../../src/shared/http';
 
 import { sharedTestRoot } from '@talknest/test-support';
 import { createAPIClient } from '@talknest/api';
-import type { CreateUserInput, CreateUserResponse } from '@talknest/api/user';
+import {
+  type CreateUserInput,
+  type CreateUserResponse,
+} from '@talknest/api/users';
 import { AddEmailToListResponse } from '@talknest/api/marketing';
-import { GenericErrors, UserErrors } from '@talknest/errors';
+import { requestErrorTypes, userErrorTypes } from '@talknest/errors';
 import { CreateUserBuilder } from '@talknest/test-support/builders';
 import { resetDatabase, buildManyUsers } from '@talknest/test-support/fixtures';
 
@@ -61,7 +64,7 @@ defineFeature(feature, (test) => {
     when(
       'I register with valid account details accepting marketing emails',
       async () => {
-        createUserResponse = await apiClient.user.register(user);
+        createUserResponse = await apiClient.users.register(user);
 
         addEmailToListResponse = await apiClient.marketing.addEmailToList(
           user.email,
@@ -108,7 +111,7 @@ defineFeature(feature, (test) => {
     when(
       'I register with valid account details declining marketing emails',
       async () => {
-        createUserResponse = await apiClient.user.register(user);
+        createUserResponse = await apiClient.users.register(user);
       },
     );
 
@@ -161,7 +164,7 @@ defineFeature(feature, (test) => {
         });
 
         createUserResponses = await Promise.all(
-          newUsers.map((user) => apiClient.user.register(user)),
+          newUsers.map((user) => apiClient.users.register(user)),
         );
       },
     );
@@ -172,7 +175,7 @@ defineFeature(feature, (test) => {
         createUserResponses.forEach((response) => {
           expect(response.success).toBe(false);
           expect(response.error).toBeDefined();
-          expect(response.error!.code).toBe(UserErrors.EMAIL_ALREADY_TAKEN);
+          expect(response.error!.type).toBe(userErrorTypes.EMAIL_ALREADY_TAKEN);
         });
       },
     );
@@ -222,7 +225,7 @@ defineFeature(feature, (test) => {
         });
 
         createUserResponses = await Promise.all(
-          newUsers.map((user) => apiClient.user.register(user)),
+          newUsers.map((user) => apiClient.users.register(user)),
         );
       },
     );
@@ -233,7 +236,9 @@ defineFeature(feature, (test) => {
         createUserResponses.forEach((response) => {
           expect(response.success).toBe(false);
           expect(response.error).toBeDefined();
-          expect(response.error!.code).toBe(UserErrors.USERNAME_ALREADY_TAKEN);
+          expect(response.error!.type).toBe(
+            userErrorTypes.USERNAME_ALREADY_TAKEN,
+          );
         });
       },
     );
@@ -267,13 +272,13 @@ defineFeature(feature, (test) => {
     });
 
     when('I register with invalid account details', async () => {
-      response = await apiClient.user.register(invalidUser);
+      response = await apiClient.users.register(invalidUser);
     });
 
     then('I should see an error notifying me that my input is invalid', () => {
       expect(response.success).toBe(false);
       expect(response.error).toBeDefined();
-      expect(response.error!.code).toBe(GenericErrors.VALIDATION_ERROR);
+      expect(response.error!.type).toBe(requestErrorTypes.INVALID_INPUT);
     });
 
     and('I should not have been sent access to account details', () => {

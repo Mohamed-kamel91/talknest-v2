@@ -5,29 +5,26 @@ import {
   ErrorRequestHandler,
 } from 'express';
 
-import { HttpError, InternalServerError } from './http-errors';
-
-export type ErrorHandler = (
-  error: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => void;
+import { FailureResponse } from '@talknest/api';
+import { InternalServerError } from '@talknest/errors/server';
+import { CustomError } from '@talknest/errors/custom';
+import { ErrorType } from '@talknest/errors/types';
 
 export const errorHandler: ErrorRequestHandler = (
-  err: any,
+  err: unknown,
   req: Request,
-  res: Response,
+  res: Response<FailureResponse<ErrorType>>,
   next: NextFunction,
 ) => {
-  if (err instanceof HttpError) {
-    return res.status(err.status).json({
+  if (err instanceof CustomError) {
+    return res.status(err.code).json({
+      success: false,
       data: null,
       error: {
+        type: err.type,
         code: err.code,
         message: err.message,
       },
-      success: false,
     });
   }
 
@@ -36,10 +33,13 @@ export const errorHandler: ErrorRequestHandler = (
 
   const internalServerError = new InternalServerError();
 
-  return res.status(internalServerError.status).json({
-    data: undefined,
-    error: internalServerError.code,
-    message: internalServerError.message,
+  return res.status(internalServerError.code).json({
     success: false,
+    data: null,
+    error: {
+      type: internalServerError.type,
+      code: internalServerError.code,
+      message: internalServerError.message,
+    },
   });
 };
