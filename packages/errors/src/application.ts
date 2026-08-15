@@ -20,7 +20,7 @@ export class BadRequestError<
   T extends ErrorType = ErrorType,
 > extends CustomError<T> {
   constructor(
-    type: T,
+    type: T = 'BAD_REQUEST' as T,
     message: string = 'The request could not be processed.',
   ) {
     super(type, 400, message);
@@ -31,7 +31,7 @@ export class NotFoundError<
   T extends ErrorType = ErrorType,
 > extends CustomError<T> {
   constructor(
-    type: T,
+    type: T = 'NOT_FOUND' as T,
     message: string = 'The requested resource could not be found.',
   ) {
     super(type, 404, message);
@@ -42,7 +42,7 @@ export class ConflictError<
   T extends ErrorType = ErrorType,
 > extends CustomError<T> {
   constructor(
-    type: T,
+    type: T = 'CONFLICT' as T,
     message: string = 'The request conflicts with the current state of the resource.',
   ) {
     super(type, 409, message);
@@ -52,7 +52,10 @@ export class ConflictError<
 export class UnauthorizedError<
   T extends ErrorType = ErrorType,
 > extends CustomError<T> {
-  constructor(type: T, message: string = 'Unauthorized access') {
+  constructor(
+    type: T = 'UNAUTHORIZED' as T,
+    message: string = 'You are not authorized to access this resource.',
+  ) {
     super(type, 401, message);
   }
 }
@@ -61,7 +64,7 @@ export class ForbiddenError<
   T extends ErrorType = ErrorType,
 > extends CustomError<T> {
   constructor(
-    type: T,
+    type: T = 'FORBIDDEN' as T,
     message: string = 'You do not have permission to perform this action.',
   ) {
     super(type, 403, message);
