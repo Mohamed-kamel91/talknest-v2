@@ -20,6 +20,21 @@ export const userErrorTypes = {
   MISSING_USER_ID: 'MISSING_USER_ID',
 } as const;
 
+export const commentErrorTypes = {
+  COMMENTS_NOT_FOUND: 'COMMENTS_NOT_FOUND',
+  COMMENT_NOT_FOUND: 'COMMENT_NOT_FOUND',
+  INVALID_COMMENT: 'INVALID_COMMENT',
+} as const;
+
+export const postErrorTypes = {
+  POST_NOT_FOUND: 'POST_NOT_FOUND',
+  POST_CREATION_FORBIDDEN: 'POST_CREATION_FORBIDDEN',
+} as const;
+
+export const memberErrorTypes = {
+  MEMBER_NOT_FOUND: 'MEMBER_NOT_FOUND',
+} as const;
+
 export const errorTypes = {
   ...applicationErrorTypes,
   ...serverErrorTypes,
