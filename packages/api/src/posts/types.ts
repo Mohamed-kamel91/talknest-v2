@@ -42,21 +42,24 @@ export type PostDTO = {
   id: string;
   postType: string;
   title: string;
-  content?: string;
-  link?: string;
-  dateCreated: string;
-  member: MemberDTO;
+  content?: string | undefined;
+  link?: string | undefined;
+  slug: string;
   numComments: number;
   voteScore: number;
+  member: MemberDTO;
+  dateCreated: string;
   lastUpdated: string;
-  slug: string;
 };
 
 // Get Posts Response
 export type GetPostsErrors =
   ServerError | NetworkError | RequestError;
 
-export type GetPostsResponse = APIResponse<PostDTO[], GetPostsErrors>;
+export type GetPostsAPIResponse = APIResponse<
+  PostDTO[],
+  GetPostsErrors
+>;
 
 // Create Post Response
 export type CreatePostError =
@@ -66,7 +69,7 @@ export type CreatePostError =
   | NetworkError
   | RequestError;
 
-export type CreatePostResponse = APIResponse<
+export type CreatePostAPIResponse = APIResponse<
   PostDTO,
   CreatePostError
 >;
@@ -74,7 +77,7 @@ export type CreatePostResponse = APIResponse<
 // Get Post by ID Response
 export type GetPostByIdError =
   ServerError | NetworkError | RequestError;
-export type GetPostByIdResponse = APIResponse<
+export type GetPostByIdAPIResponse = APIResponse<
   PostDTO,
   GetPostByIdError
 >;
@@ -83,7 +86,7 @@ export type GetPostByIdResponse = APIResponse<
 export type GetPostDetailsError =
   ServerError | NetworkError | RequestError;
 
-export type GetPostDetailsResponse = APIResponse<
+export type GetPostDetailsAPIResponse = APIResponse<
   PostDTO,
   GetPostDetailsError
 >;

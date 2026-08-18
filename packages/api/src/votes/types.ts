@@ -56,7 +56,7 @@ export type VoteOnPostError =
   | ServerError
   | NetworkError;
 
-export type VoteOnPostResponse = APIResponse<
+export type VoteOnPostAPIResponse = APIResponse<
   PostVoteDTO,
   VoteOnPostError
 >;

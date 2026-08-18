@@ -11,7 +11,7 @@ export const createPostSchema = z
       .min(5, 'Content must be at least 5 characters')
       .optional(),
 
-    link: z.string().url('Link must be a valid URL').optional(),
+    link: z.url('Link must be a valid URL').optional(),
 
     postType: z.enum(['text', 'link']),
   })

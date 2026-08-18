@@ -15,7 +15,12 @@ import { CreateUserInput } from './types';
 export class CreateUserCommand {
   private constructor(public props: CreateUserInput) {}
 
-  static fromRequest(body: unknown) {
+  static fromRequest(
+    body: unknown,
+  ): Result<
+    CreateUserCommand,
+    InvalidInputError | InvalidRequestBodyError
+  > {
     if (!TextUtil.isObject<CreateUserInput>(body)) {
       throw new MissingRequestBodyError();
     }

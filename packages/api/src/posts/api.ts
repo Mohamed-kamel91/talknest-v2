@@ -2,10 +2,10 @@ import axios from 'axios';
 
 import type {
   CreatePostInput,
-  CreatePostResponse,
+  CreatePostAPIResponse,
   GetPostsQueryInput,
-  GetPostsResponse,
-  GetPostByIdResponse,
+  GetPostsAPIResponse,
+  GetPostByIdAPIResponse,
 } from './types';
 import { getAuthHeaders } from '..';
 
@@ -15,9 +15,9 @@ export const createPostsAPI = (apiURL: string) => {
     create: async (
       input: CreatePostInput,
       authToken: string,
-    ): Promise<CreatePostResponse> => {
+    ): Promise<CreatePostAPIResponse> => {
       try {
-        const response = await axios.post<CreatePostResponse>(
+        const response = await axios.post<CreatePostAPIResponse>(
           `${apiURL}/posts/new`,
           input,
           getAuthHeaders(authToken),
@@ -26,7 +26,7 @@ export const createPostsAPI = (apiURL: string) => {
         return response.data;
       } catch (error: unknown) {
         if (
-          axios.isAxiosError<CreatePostResponse>(error) &&
+          axios.isAxiosError<CreatePostAPIResponse>(error) &&
           error.response
         ) {
           return error.response.data;
@@ -47,9 +47,9 @@ export const createPostsAPI = (apiURL: string) => {
     // Get Posts
     getPosts: async (
       query: GetPostsQueryInput,
-    ): Promise<GetPostsResponse> => {
+    ): Promise<GetPostsAPIResponse> => {
       try {
-        const response = await axios.get<GetPostsResponse>(
+        const response = await axios.get<GetPostsAPIResponse>(
           `${apiURL}/posts`,
           {
             params: {
@@ -61,7 +61,7 @@ export const createPostsAPI = (apiURL: string) => {
         return response.data;
       } catch (error: unknown) {
         if (
-          axios.isAxiosError<GetPostsResponse>(error) &&
+          axios.isAxiosError<GetPostsAPIResponse>(error) &&
           error.response
         ) {
           return error.response.data;
@@ -82,16 +82,16 @@ export const createPostsAPI = (apiURL: string) => {
     // Get Post By ID
     getPostById: async (
       postId: string,
-    ): Promise<GetPostByIdResponse> => {
+    ): Promise<GetPostByIdAPIResponse> => {
       try {
-        const response = await axios.get<GetPostByIdResponse>(
+        const response = await axios.get<GetPostByIdAPIResponse>(
           `${apiURL}/posts/${postId}`,
         );
 
         return response.data;
       } catch (error: unknown) {
         if (
-          axios.isAxiosError<GetPostByIdResponse>(error) &&
+          axios.isAxiosError<GetPostByIdAPIResponse>(error) &&
           error.response
         ) {
           return error.response.data;
@@ -112,16 +112,16 @@ export const createPostsAPI = (apiURL: string) => {
     // Get Post By Slug
     getPostBySlug: async (
       slug: string,
-    ): Promise<GetPostByIdResponse> => {
+    ): Promise<GetPostByIdAPIResponse> => {
       try {
-        const response = await axios.get<GetPostByIdResponse>(
+        const response = await axios.get<GetPostByIdAPIResponse>(
           `${apiURL}/posts/slug/${slug}`,
         );
 
         return response.data;
       } catch (error: unknown) {
         if (
-          axios.isAxiosError<GetPostByIdResponse>(error) &&
+          axios.isAxiosError<GetPostByIdAPIResponse>(error) &&
           error.response
         ) {
           return error.response.data;
