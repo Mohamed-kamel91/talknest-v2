@@ -1,19 +1,23 @@
-import { type IContactListAPI } from './ports/contact-list-api';
+import type { IContactListAPI } from './ports/contact-list-api';
 import { MailchimpContactList } from './adapters/contact-list-api/mail-chimp-contact-list';
-import { MarketingService } from './marketing-service';
+import { ContactListAPISpy } from './adapters/contact-list-api/contact-list-api-spy';
+import { MarketingService } from './application/marketing-service';
 import { MarketingController } from './marketing-controller';
 import { MarketingRouter } from './marketing-router';
-import { WebServer } from '../../shared/http';
-import { type Config } from '../../shared/config';
-import { FakeContactListAPI } from './adapters/contact-list-api/fake-contact-list-api';
 
-export class MarketingModule {
+import { type Config } from '../../shared/config';
+import { ApplicationModule } from '../../shared/modules/application-module';
+import { WebServer } from '../../shared/http';
+
+export class MarketingModule extends ApplicationModule {
   private contactListAPI: IContactListAPI;
   private marketingService: MarketingService;
   private marketingController: MarketingController;
   private marketingRouter: MarketingRouter;
 
-  private constructor(private config: Config) {
+  private constructor(config: Config) {
+    super(config);
+
     this.contactListAPI = this.createContactListAPI();
     this.marketingService = this.createMarketingService();
     this.marketingController = this.createMarketingController();
@@ -26,8 +30,16 @@ export class MarketingModule {
     return new MarketingModule(config);
   }
 
-  public getRouter() {
-    return this.marketingRouter.getRouter();
+  public getContactListAPI() {
+    return this.contactListAPI;
+  }
+
+  public getMarketingService() {
+    return this.marketingService;
+  }
+
+  public getMarketingController() {
+    return this.marketingController;
   }
 
   public mountRouter(webServer: WebServer) {
@@ -36,42 +48,27 @@ export class MarketingModule {
     webServer.mountRouter(path, router);
   }
 
-  public getMarketingController() {
-    return this.marketingController;
-  }
-
-  public getMarketingService() {
-    return this.marketingService;
-  }
-
-  public getContactListAPI() {
-    return this.contactListAPI;
-  }
-
-  private setupRoutes() {
-    this.marketingRouter.register();
-  }
-
   private createContactListAPI() {
     if (this.config.getScript() === 'test:unit') {
-      return new FakeContactListAPI();
+      return new ContactListAPISpy();
     }
 
     return new MailchimpContactList();
   }
 
   private createMarketingService() {
-    const contactListAPI = this.contactListAPI;
-    return new MarketingService(contactListAPI);
+    return new MarketingService(this.contactListAPI);
   }
 
   private createMarketingController() {
-    const marketingService = this.marketingService;
-    return new MarketingController(marketingService);
+    return new MarketingController(this.marketingService);
+  }
+
+  private setupRoutes() {
+    this.marketingRouter.register();
   }
 
   private createMarketingRouter() {
-    const marketingController = this.marketingController;
-    return new MarketingRouter(marketingController);
+    return new MarketingRouter(this.marketingController);
   }
 }

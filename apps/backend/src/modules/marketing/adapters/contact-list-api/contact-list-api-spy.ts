@@ -3,20 +3,21 @@ import { type EmailSubscription } from '@talknest/api/marketing';
 import { Spy } from '../../../../shared/test-doubles/spy';
 import { type IContactListAPI } from '../../ports/contact-list-api';
 
-export class FakeContactListAPI
+export class ContactListAPISpy
   extends Spy<IContactListAPI>
   implements IContactListAPI
 {
   constructor() {
-    super();
+    super();  
   }
 
   async addEmailToList(email: string): Promise<EmailSubscription> {
     console.log(
-      `FakeContactListAPI: Adding ${email} list... for unit testing usage.`,
+      `ContactListAPISpy: Adding ${email} list... this is for testing & development purposes.`,
     );
 
     this.addCall('addEmailToList', [email]);
+
     return { email, subscribed: true };
   }
 }

@@ -1,7 +1,8 @@
 import express from 'express';
 
-import { type MarketingService } from './marketing-service';
-import { AddEmailToListCommand } from './marketing-command';
+import { AddEmailToListCommand } from '@talknest/api/marketing';
+
+import { type MarketingService } from './application/marketing-service';
 
 export class MarketingController {
   constructor(private marketingService: MarketingService) {}
@@ -13,13 +14,15 @@ export class MarketingController {
   ) => {
     try {
       const command = AddEmailToListCommand.fromRequest(req.body);
+
       const data =
         await this.marketingService.addEmailToList(command);
 
-      return res.json({
+      return res.status(201).json({
+        success: true,
+        statusCode: 201,
         error: null,
         data: { subscription: data },
-        success: true,
       });
     } catch (error) {
       next(error);
