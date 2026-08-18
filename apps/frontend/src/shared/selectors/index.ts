@@ -1,27 +1,50 @@
 export const appSelectors = {
   registration: {
     registrationForm: {
-      email: { selector: '.registration.email', type: 'input' },
-      username: { selector: '.registration.username', type: 'input' },
-      firstname: {
-        selector: '.registration.first-name',
+      email: {
+        selector: '.registration-input.email',
         type: 'input',
       },
-      lastname: {
-        selector: '.registration.last-name',
+      username: {
+        selector: '.registration-input.username',
+        type: 'input',
+      },
+      firstName: {
+        selector: '.registration-input.first-name',
+        type: 'input',
+      },
+      lastName: {
+        selector: '.registration-input.last-name',
+        type: 'input',
+      },
+      password: {
+        selector: '.registration-input.password',
         type: 'input',
       },
       marketingCheckbox: {
-        selector: '.registration.marketing-emails',
-        type: 'checkbox',
+        selector: '.registration-input.marketing-emails',
+        type: 'input',
       },
       submit: {
         selector: '.registration.submit-button',
         type: 'button',
       },
+      successToast: {
+        selector: '#success-toast',
+        type: 'div',
+      },
+      failureToast: {
+        selector: '#failure-toast',
+        type: 'div',
+      },
     },
   },
-  header: { selector: '.header.username', type: 'div' },
+  header: {
+    username: {
+      selector: '#header-username',
+      type: 'div',
+    },
+  },
   notifications: {
     failure: '#failure-toast',
     success: '#success-toast',
