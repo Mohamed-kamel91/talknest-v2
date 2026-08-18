@@ -4,7 +4,7 @@ import './loadEnv';
 
 
 export interface IDatabase {
-  getConnection(): PrismaClient;
+  getClient(): PrismaClient;
   connect(): Promise<void>;
   disconnect(): Promise<void>;
 }
@@ -16,7 +16,7 @@ export class PrismaDatabase implements IDatabase {
     this.client = this.createClient();
   }
 
-  public getConnection() {
+  public getClient() {
     return this.client;
   }
 
