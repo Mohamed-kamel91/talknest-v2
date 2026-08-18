@@ -1,4 +1,5 @@
 import { createAPIClient } from '@talknest/api';
+import { CreateUserAPIResponse, UserDTO } from '@talknest/api/users';
 
 import { AuthStore } from '../../stores/authStore';
 
@@ -8,7 +9,7 @@ import { NavigationStore } from '@/shared/navigation/navigationStore';
 import { ToastAPI } from '@/shared/toast/toastAPI';
 
 function setupSuccessfulRegistration(presenter: RegistrationPresenter) {
-  const mockUserDTO = {
+  const mockUserDTO: UserDTO = {
     id: '123',
     email: 'khalil@essentialist.dev',
     username: 'khalilstemmler',
@@ -18,9 +19,11 @@ function setupSuccessfulRegistration(presenter: RegistrationPresenter) {
 
   presenter.toastAPI.showError = jest.fn();
   presenter.navigationStore.navigate = jest.fn();
-  presenter.authStore.apiClient.users.register = jest.fn(async () => {
-    return { success: true, data: mockUserDTO };
-  });
+  presenter.authStore.apiClient.users.register = jest.fn(
+    async (): Promise<CreateUserAPIResponse> => {
+      return { success: true, data: mockUserDTO, statusCode: 201, error: null };
+    },
+  );
 }
 
 describe('registrationPresenter', () => {
