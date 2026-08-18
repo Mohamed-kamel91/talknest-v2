@@ -2,8 +2,6 @@ import { Server as HttpServer } from 'http';
 import express, { ErrorRequestHandler, Express } from 'express';
 import cors from 'cors';
 
-// import { ErrorHandler } from '../errors/error-handler';
-
 interface WebServerConfig {
   port: number;
   env: string;
@@ -11,9 +9,11 @@ interface WebServerConfig {
 
 export class WebServer {
   private readonly app: Express;
+  private state: 'stopped' | 'started';
   private server: HttpServer | undefined;
 
   constructor(private config: WebServerConfig) {
+    this.state = 'stopped';
     this.app = express();
     this.addMiddlewares();
   }
@@ -35,12 +35,17 @@ export class WebServer {
     this.app.use(cors());
   }
 
+  isStarted() {
+    return this.state === 'started';
+  }
+
   public start() {
     return new Promise((resolve, reject) => {
       const port = this.config.port;
 
       this.server = this.app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
+        this.state = 'started';
         resolve(this.server);
       });
 
@@ -69,6 +74,7 @@ export class WebServer {
           return;
         }
 
+        this.state = 'stopped';
         resolve('Server stopped');
       });
     });

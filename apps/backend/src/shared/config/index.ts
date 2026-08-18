@@ -1,15 +1,7 @@
-type Environment =
-  | 'development'
-  | 'production'
-  | 'staging'
-  | 'ci';
+type Environment = 'development' | 'production' | 'staging' | 'ci';
 
 type Script =
-  | 'start'
-  | 'start:dev'
-  | 'test:unit'
-  | 'test:infra'
-  | 'test:e2e';
+  'start' | 'start:dev' | 'test:unit' | 'test:infra' | 'test:e2e';
 
 export class Config {
   private readonly env: Environment;
