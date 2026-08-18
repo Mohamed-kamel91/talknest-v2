@@ -45,7 +45,9 @@ export const LayoutComponent = ({
             >
               {vm.username && (
                 <div
-                  className={toClass(appSelectors.header.selector)}
+                  className={toClass(
+                    appSelectors.header.username.selector,
+                  )}
                 >
                   {`${vm.username} / `}
                 </div>
