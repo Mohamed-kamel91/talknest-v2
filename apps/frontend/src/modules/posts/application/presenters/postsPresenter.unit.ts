@@ -1,4 +1,4 @@
-import { createApiClient } from '@talknest/api';
+import { createAPIClient } from '@talknest/api';
 
 import { fakePostsData } from '../../__tests__/fakePostsData';
 import { FakePostsStore } from '../../stores/fakePostsStore';
@@ -11,7 +11,7 @@ import { AuthStore } from '@/modules/auth/stores/authStore';
 import { setupAuthStoreWithMember } from '@/shared/testUtils';
 
 describe('PostsPresenter', () => {
-  const stubbedAPI = createApiClient('');
+  const stubbedAPI = createAPIClient('');
   const loadedPostsVm: PostViewModel[] = [];
   const postsStore = new FakePostsStore(fakePostsData);
   let authStore: AuthStore;
