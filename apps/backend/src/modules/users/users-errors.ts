@@ -1,4 +1,4 @@
-import { userErrorTypes } from '@talknest/errors';
+import { userErrorTypes } from '@talknest/errors/types';
 import {
   NotFoundError,
   ConflictError,
@@ -8,17 +8,22 @@ import {
 export class UserNotFoundError extends NotFoundError<
   typeof userErrorTypes.USER_NOT_FOUND
 > {
-  constructor() {
-    super(userErrorTypes.USER_NOT_FOUND, 'User not found');
+  constructor(email?: string) {
+    super(
+      userErrorTypes.USER_NOT_FOUND,
+      email
+        ? 'User with email: ${email} not found'
+        : 'User not found',
+    );
   }
 }
 
 export class EmailAlreadyTakenError extends ConflictError<
-  typeof userErrorTypes.USER_NOT_FOUND
+  typeof userErrorTypes.EMAIL_ALREADY_TAKEN
 > {
   constructor(email: string) {
     super(
-      userErrorTypes.USER_NOT_FOUND,
+      userErrorTypes.EMAIL_ALREADY_TAKEN,
       `Email: ${email} is already taken`,
     );
   }
@@ -42,7 +47,6 @@ export class InvalidUserIdError extends BadRequestError<
     super(userErrorTypes.INVALID_USER_ID, 'User ID is invalid');
   }
 }
-new InvalidUserIdError().type;
 
 export class MissingUserIdError extends BadRequestError<
   typeof userErrorTypes.MISSING_USER_ID
