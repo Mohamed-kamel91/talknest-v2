@@ -38,11 +38,14 @@ class Editor extends React.Component<EditorProps, EditorState> {
     const limit = this.props.maxLength;
     const quill = this.quillRef;
 
-    quill.on('text-change', function (delta: any, old: any, source: any) {
-      if (quill.getLength() > limit) {
-        quill.deleteText(limit, quill.getLength());
-      }
-    });
+    quill.on(
+      'text-change',
+      function (delta: any, old: any, source: any) {
+        if (quill.getLength() > limit) {
+          quill.deleteText(limit, quill.getLength());
+        }
+      },
+    );
 
     this.props.handleChange(html);
   }
