@@ -5,6 +5,7 @@ import {
 } from '@talknest/errors/types';
 
 import { APIResponse } from '..';
+import { UUID } from 'node:crypto';
 
 // User Error Types
 export type EmailAlreadyTakenError =
@@ -25,7 +26,7 @@ export type DecodedIdToken = {
 
 // User Response DTO
 export type UserDTO = {
-  id: number;
+  id: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -45,7 +46,7 @@ export type CreateUserInput = {
 export type CreateUserError =
   EmailAlreadyTakenError | UsernameAlreadyTakenError | ServerError;
 
-export type CreateUserResponse = APIResponse<
+export type CreateUserAPIResponse = APIResponse<
   UserDTO,
   CreateUserError
 >;
@@ -54,7 +55,7 @@ export type CreateUserResponse = APIResponse<
 export type GetUserByEmailError =
   UserNotFoundError | RequestError | ServerError;
 
-export type GetUserByEmailResponse = APIResponse<
+export type GetUserByEmailAPIResponse = APIResponse<
   UserDTO,
   GetUserByEmailError
 >;

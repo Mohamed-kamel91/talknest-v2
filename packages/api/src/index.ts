@@ -35,6 +35,8 @@ export const getAuthHeaders = (token?: string) => ({
     : {},
 });
 
+export type APIClient = ReturnType<typeof createAPIClient>;
+
 export const createAPIClient = (apiURL: string) => {
   return {
     comments: createCommentsAPI(apiURL),

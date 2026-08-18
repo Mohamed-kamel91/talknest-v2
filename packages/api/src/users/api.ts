@@ -2,25 +2,25 @@ import axios from 'axios';
 
 import {
   CreateUserInput,
-  CreateUserResponse,
-  GetUserByEmailResponse,
+  CreateUserAPIResponse,
+  GetUserByEmailAPIResponse,
 } from './types';
 
 export const createUsersAPI = (apiURL: string) => {
   return {
     register: async (
       input: CreateUserInput,
-    ): Promise<CreateUserResponse> => {
+    ): Promise<CreateUserAPIResponse> => {
       try {
-        const response = await axios.post<CreateUserResponse>(
+        const response = await axios.post<CreateUserAPIResponse>(
           `${apiURL}/users`,
           input,
         );
 
         return response.data;
       } catch (err) {
-        if (axios.isAxiosError<CreateUserResponse>(err)) {
-          return err.response?.data as CreateUserResponse;
+        if (axios.isAxiosError<CreateUserAPIResponse>(err)) {
+          return err.response?.data as CreateUserAPIResponse;
         }
 
         throw err;
@@ -28,9 +28,9 @@ export const createUsersAPI = (apiURL: string) => {
     },
     getUserByEmail: async (
       email: string,
-    ): Promise<GetUserByEmailResponse> => {
+    ): Promise<GetUserByEmailAPIResponse> => {
       try {
-        const response = await axios.get<GetUserByEmailResponse>(
+        const response = await axios.get<GetUserByEmailAPIResponse>(
           `${apiURL}/users`,
           {
             params: { email },
@@ -39,8 +39,8 @@ export const createUsersAPI = (apiURL: string) => {
 
         return response.data;
       } catch (err) {
-        if (axios.isAxiosError<GetUserByEmailResponse>(err)) {
-          return err.response?.data as GetUserByEmailResponse;
+        if (axios.isAxiosError<GetUserByEmailAPIResponse>(err)) {
+          return err.response?.data as GetUserByEmailAPIResponse;
         }
 
         throw err;

@@ -48,7 +48,7 @@ export type CreateMemberError =
   | RequestError
   | NetworkError;
 
-export type CreateMemberResponse = APIResponse<
+export type CreateMemberAPIResponse = APIResponse<
   MemberDTO,
   CreateMemberError
 >;
@@ -57,9 +57,7 @@ export type CreateMemberResponse = APIResponse<
 export type GetMemberDetailsError =
   MemberNotFoundError | ServerError | 'NETWORK_ERROR';
 
-export type GetMemberDetailsResponse = APIResponse<
+export type GetMemberDetailsAPIResponse = APIResponse<
   MemberDTO,
   GetMemberDetailsError
 >;
-
-export type AnyMemberApiResponse = CreateMemberResponse;

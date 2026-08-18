@@ -10,7 +10,11 @@ export type ApplicationErrorTypes = ValueOf<
 >;
 export type ServerErrorType = ValueOf<typeof serverErrorTypes>;
 export type RequestErrorType = ValueOf<typeof requestErrorTypes>;
+
 export type UserErrorType = ValueOf<typeof userErrorTypes>;
+export type CommentErrorTypes = ValueOf<typeof commentErrorTypes>;
+export type PostErrorTypes = ValueOf<typeof postErrorTypes>;
+export type MemberErrorTypes = ValueOf<typeof memberErrorTypes>;
 
 export const userErrorTypes = {
   USERNAME_ALREADY_TAKEN: 'USERNAME_ALREADY_TAKEN',
@@ -29,10 +33,15 @@ export const commentErrorTypes = {
 export const postErrorTypes = {
   POST_NOT_FOUND: 'POST_NOT_FOUND',
   POST_CREATION_FORBIDDEN: 'POST_CREATION_FORBIDDEN',
+  INVALID_POST_TITLE: 'INVALID_POST_TITLE',
+  INVALID_POST_CONTENT: 'INVALID_POST_CONTENT',
+  INVALID_POST_LINK: 'INVALID_POST_LINK',
+  INVALID_POST_TYPE: 'INVALID_POST_TYPE',
 } as const;
 
 export const memberErrorTypes = {
   MEMBER_NOT_FOUND: 'MEMBER_NOT_FOUND',
+  INVALID_MEMBER_USERNAME: 'INVALID_MEMBER_USERNAME',
 } as const;
 
 export const errorTypes = {
@@ -40,4 +49,7 @@ export const errorTypes = {
   ...serverErrorTypes,
   ...requestErrorTypes,
   ...userErrorTypes,
+  ...memberErrorTypes,
+  ...commentErrorTypes,
+  ...postErrorTypes,
 } as const;

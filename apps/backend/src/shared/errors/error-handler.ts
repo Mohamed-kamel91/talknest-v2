@@ -12,17 +12,17 @@ import { ErrorType } from '@talknest/errors/types';
 
 export const errorHandler: ErrorRequestHandler = (
   err: unknown,
-  req: Request,
+  _: Request,
   res: Response<FailureResponse<ErrorType>>,
-  next: NextFunction,
+  _next: NextFunction,
 ) => {
   if (err instanceof CustomError) {
-    return res.status(err.code).json({
+    return res.status(err.statusCode).json({
       success: false,
+      statusCode: err.statusCode,
       data: null,
       error: {
         type: err.type,
-        code: err.code,
         message: err.message,
       },
     });
@@ -31,15 +31,15 @@ export const errorHandler: ErrorRequestHandler = (
   console.error('--- UNEXPECTED ERROR ---');
   console.error(err);
 
-  const internalServerError = new InternalServerError();
+  const { statusCode, type, message } = new InternalServerError();
 
-  return res.status(internalServerError.code).json({
+  return res.status(statusCode).json({
     success: false,
+    statusCode,
     data: null,
     error: {
-      type: internalServerError.type,
-      code: internalServerError.code,
-      message: internalServerError.message,
+      type,
+      message,
     },
   });
 };

@@ -3,8 +3,8 @@ import axios from 'axios';
 import { getAuthHeaders } from '..';
 import type {
   CreateMemberInput,
-  CreateMemberResponse,
-  GetMemberDetailsResponse,
+  CreateMemberAPIResponse,
+  GetMemberDetailsAPIResponse,
 } from './types';
 
 export const createMembersAPI = (apiURL: string) => {
@@ -12,9 +12,9 @@ export const createMembersAPI = (apiURL: string) => {
     register: async (
       input: CreateMemberInput,
       authToken: string,
-    ): Promise<CreateMemberResponse> => {
+    ): Promise<CreateMemberAPIResponse> => {
       try {
-        const response = await axios.post<CreateMemberResponse>(
+        const response = await axios.post<CreateMemberAPIResponse>(
           `${apiURL}/members`,
           input,
           getAuthHeaders(authToken),
@@ -23,7 +23,7 @@ export const createMembersAPI = (apiURL: string) => {
         return response.data;
       } catch (error: unknown) {
         if (
-          axios.isAxiosError<CreateMemberResponse>(error) &&
+          axios.isAxiosError<CreateMemberAPIResponse>(error) &&
           error.response
         ) {
           return error.response.data;
@@ -43,9 +43,9 @@ export const createMembersAPI = (apiURL: string) => {
 
     getMemberDetails: async (
       authToken: string,
-    ): Promise<GetMemberDetailsResponse> => {
+    ): Promise<GetMemberDetailsAPIResponse> => {
       try {
-        const response = await axios.get<GetMemberDetailsResponse>(
+        const response = await axios.get<GetMemberDetailsAPIResponse>(
           `${apiURL}/members/me`,
           getAuthHeaders(authToken),
         );
@@ -53,7 +53,7 @@ export const createMembersAPI = (apiURL: string) => {
         return response.data;
       } catch (error: unknown) {
         if (
-          axios.isAxiosError<GetMemberDetailsResponse>(error) &&
+          axios.isAxiosError<GetMemberDetailsAPIResponse>(error) &&
           error.response
         ) {
           return error.response.data;

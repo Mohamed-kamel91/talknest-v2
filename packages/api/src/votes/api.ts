@@ -1,15 +1,15 @@
 import axios from 'axios';
 
-import type { VoteOnPostInput, VoteOnPostResponse } from './types';
+import type { VoteOnPostInput, VoteOnPostAPIResponse } from './types';
 
 export const createVotesAPI = (apiUrl: string) => {
   return {
     voteOnPost: async (
       input: VoteOnPostInput,
       authToken: string,
-    ): Promise<VoteOnPostResponse> => {
+    ): Promise<VoteOnPostAPIResponse> => {
       try {
-        const response = await axios.post<VoteOnPostResponse>(
+        const response = await axios.post<VoteOnPostAPIResponse>(
           `${apiUrl}/posts/${input.postId}/votes`,
           input,
           {
@@ -22,7 +22,7 @@ export const createVotesAPI = (apiUrl: string) => {
         return response.data;
       } catch (error: unknown) {
         if (
-          axios.isAxiosError<VoteOnPostResponse>(error) &&
+          axios.isAxiosError<VoteOnPostAPIResponse>(error) &&
           error.response
         ) {
           return error.response.data;

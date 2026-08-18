@@ -45,7 +45,14 @@
     "@talknest/bus": "workspace:*",
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "express-jwt": "^8.5.1",
+    "firebase": "^12.17.1",
+    "firebase-admin": "^14.2.0",
+    "jwks-rsa": "^4.1.0",
+    "uuid": "^14.0.1",
+    "zod": "^4.4.3",
+    "nodemailer": "^9.0.5"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.9.0",
@@ -53,9 +60,11 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/supertest": "^6.0.3",
+    "@types/nodemailer": "^8.0.1",
     "dotenv-cli": "^11.0.0",
     "nodemon": "^3.1.11",
     "prisma": "^7.3.0",
-    "supertest": "^7.2.2"
+    "supertest": "^7.2.2",
+    "tsx": "^4.21.0"
   }
 }
