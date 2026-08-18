@@ -1,13 +1,13 @@
 import { Request } from 'express';
 
-import { type GetPostsParams } from '@talknest/api/posts';
+import { type GetPostsQueryInput } from '@talknest/api/posts';
 import {
   InvalidRequestQueryParamsError,
   MissingRequestQueryParamsError,
 } from '@talknest/errors/request';
 
 export class getPostsQuery {
-  private constructor(public props: GetPostsParams) {}
+  private constructor(public props: GetPostsQueryInput) {}
 
   static fromRequest(query: Request['query']) {
     const { sort } = query;

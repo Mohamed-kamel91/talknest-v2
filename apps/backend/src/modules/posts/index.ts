@@ -1,1 +1,1 @@
-export * from './post-module';
+export * from './posts-module';
