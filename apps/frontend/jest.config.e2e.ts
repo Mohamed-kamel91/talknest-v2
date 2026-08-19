@@ -6,9 +6,7 @@ export default async (): Promise<JestConfigWithTsJest> => ({
   transform: {
     '^.+\\.(t|j)sx?$': ['ts-jest', { diagnostics: false }],
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!.*uuid)',
-  ],
+  transformIgnorePatterns: ['node_modules/(?!.*uuid)'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },

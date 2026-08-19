@@ -1,0 +1,42 @@
+import { makeAutoObservable } from 'mobx';
+
+import {
+  CreateUserError,
+  CreateUserInput,
+  UserDTO,
+} from '@talknest/api/users';
+import { fail, Result } from '@talknest/core/application';
+
+import { RegistrationVm } from '../viewModels/registrationVm';
+
+import { AuthStore } from '@/modules/auth/stores/authStore';
+import { NavigationStore } from '@/shared/navigation/navigationStore';
+import { ToastAPI } from '@/shared/toast/toastAPI';
+
+export class RegistrationPresenter {
+  public vm: RegistrationVm = new RegistrationVm();
+
+  constructor(
+    public navigationStore: NavigationStore,
+    public authStore: AuthStore,
+    public toastAPI: ToastAPI,
+  ) {
+    makeAutoObservable(this);
+    <s></s>;
+  }
+
+  /**
+   * @desc This method acts as the equivalent of an application layer use case on the backend.
+   * @param input
+   * @param allowMarketingEmails
+   */
+
+  async submitRegistrationForm(
+    input: CreateUserInput,
+    allowMarketingEmails: boolean,
+  ): Promise<Result<UserDTO, CreateUserError>> {
+    // Implement
+    // @ts-ignore
+    return fail();
+  }
+}

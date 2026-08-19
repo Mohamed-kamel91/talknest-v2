@@ -16,7 +16,7 @@
     "clean": "turbo run clean",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    "clean:deps": "pnpm -r --if-present run clean:deps && rimraf node_modules",
+    "clean:deps": "node scripts/clean-deps.mjs",
     "start": "pnpm --filter @talknest/backend run start",
     "dev:front": "pnpm --filter @talknest/frontend run start:dev",
     "dev:back": "pnpm --filter @talknest/backend run start:dev",
