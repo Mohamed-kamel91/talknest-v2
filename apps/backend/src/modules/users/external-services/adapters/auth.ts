@@ -28,7 +28,7 @@ export function createJwtCheck(config: Config) {
         decodedToken.uid,
       );
 
-      (req as any).user = decodedToken;
+      req.user = decodedToken;
 
       next();
     } catch (error) {
