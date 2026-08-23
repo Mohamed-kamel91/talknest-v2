@@ -59,3 +59,34 @@ export class AuthStore {
     this.authState.member = null;
   }
 }
+
+// public async getToken(): Promise<string | null> {
+//   const user = auth.currentUser;
+//   if (!user) return null;
+//   return await user.getIdToken();
+// }
+
+// public async register(
+//     input: CreateUserInput,
+//     _allowMarketingEmails: boolean,
+//   ): Promise<CreateUserAPIResponse> {
+//     try {
+//       // Create the Firebase auth account (also signs the user in).
+//       await createUserWithEmailAndPassword(
+//         auth,
+//         input.email,
+//         input.password,
+//       );
+
+//       // Persist the user in the backend.
+//       const response = await this.apiClient.users.register(input);
+
+//       if (response.success && response.data) {
+//         this.setupInitialUserAndMember(response.data);
+//       }
+
+//       return response;
+//     } catch (err) {
+//       throw err;
+//     }
+//   }
