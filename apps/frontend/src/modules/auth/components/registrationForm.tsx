@@ -24,6 +24,7 @@ export const RegistrationForm = ({
     lastName: '',
     password: '',
   });
+
   const [allowMarketingEmails, setAllowMarketingEmails] =
     useState(false);
 
