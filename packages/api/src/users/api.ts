@@ -1,50 +1,26 @@
-import axios from 'axios';
-
-import {
+import { apiRequest } from '../api-request';
+import { type HttpClient } from '../client';
+import type {
   CreateUserInput,
   CreateUserAPIResponse,
   GetUserByEmailAPIResponse,
 } from './types';
 
-export const createUsersAPI = (apiURL: string) => {
+export const createUsersAPI = (client: HttpClient) => {
   return {
-    register: async (
-      input: CreateUserInput,
-    ): Promise<CreateUserAPIResponse> => {
-      try {
-        const response = await axios.post<CreateUserAPIResponse>(
-          `${apiURL}/users`,
-          input,
-        );
+    authenticate: (code: string) =>
+      apiRequest(() => client.post('/users/authenticate', { code })),
 
-        return response.data;
-      } catch (err) {
-        if (axios.isAxiosError<CreateUserAPIResponse>(err)) {
-          return err.response?.data as CreateUserAPIResponse;
-        }
+    register: (input: CreateUserInput) =>
+      apiRequest(() =>
+        client.post<CreateUserAPIResponse>('/users', input),
+      ),
 
-        throw err;
-      }
-    },
-    getUserByEmail: async (
-      email: string,
-    ): Promise<GetUserByEmailAPIResponse> => {
-      try {
-        const response = await axios.get<GetUserByEmailAPIResponse>(
-          `${apiURL}/users`,
-          {
-            params: { email },
-          },
-        );
-
-        return response.data;
-      } catch (err) {
-        if (axios.isAxiosError<GetUserByEmailAPIResponse>(err)) {
-          return err.response?.data as GetUserByEmailAPIResponse;
-        }
-
-        throw err;
-      }
-    },
+    getUserByEmail: (email: string) =>
+      apiRequest(() =>
+        client.get<GetUserByEmailAPIResponse>('/users', {
+          params: { email },
+        }),
+      ),
   };
 };

@@ -1,26 +1,26 @@
 import {
-  type RequestErrorType,
-  type ServerErrorType,
-  userErrorTypes,
-} from '@talknest/errors/types';
+  userErrorCodes,
+  type RequestErrorCode,
+  type ServerErrorCode,
+} from '@talknest/errors';
 
-import { APIResponse } from '..';
+import { APIResponse } from '../types';
 import { UUID } from 'node:crypto';
 
 // User Error Types
-export type EmailAlreadyTakenError =
-  typeof userErrorTypes.EMAIL_ALREADY_TAKEN;
+type EmailAlreadyTakenError =
+  typeof userErrorCodes.EMAIL_ALREADY_TAKEN;
 
-export type UsernameAlreadyTakenError =
-  typeof userErrorTypes.USERNAME_ALREADY_TAKEN;
+type UsernameAlreadyTakenError =
+  typeof userErrorCodes.USERNAME_ALREADY_TAKEN;
 
-export type UserNotFoundError = typeof userErrorTypes.USER_NOT_FOUND;
+type UserNotFoundError = typeof userErrorCodes.USER_NOT_FOUND;
 
-export type ServerError = ServerErrorType;
-export type RequestError = RequestErrorType;
+type RequestError = RequestErrorCode;
+type ServerError = ServerErrorCode;
 
 export type DecodedIdToken = {
-  email: string;
+  email?: string;
   uid: string;
 };
 

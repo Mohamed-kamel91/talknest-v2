@@ -1,14 +1,14 @@
-import type {
-  RequestErrorType,
-  ServerErrorType,
-} from '@talknest/errors/types';
+import {
+  type RequestErrorCode,
+  type ServerErrorCode,
+} from '@talknest/errors';
 
-import { type APIResponse } from '..';
+import { APIResponse } from '../types';
 
 // Errors
-export type RequestError = RequestErrorType;
-export type ServerError = ServerErrorType;
-export type NetworkError = 'NETWORK_ERROR';
+type RequestError = RequestErrorCode;
+type ServerError = ServerErrorCode;
+type NetworkError = 'NETWORK_ERROR';
 
 // DTOs
 export type EmailSubscription = {

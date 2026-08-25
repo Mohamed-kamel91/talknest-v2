@@ -1,23 +1,22 @@
-import type {
-  memberErrorTypes,
-  postErrorTypes,
-  RequestErrorType,
-  ServerErrorType,
-} from '@talknest/errors/types';
+import {
+  memberErrorCodes,
+  postErrorCodes,
+  type RequestErrorCode,
+  type ServerErrorCode,
+} from '@talknest/errors';
 
-import { type APIResponse } from '..';
+import { type APIResponse } from '../types';
 import { MemberDTO } from '../members';
 
 // Error types
-export type MemberNotFoundError =
-  typeof memberErrorTypes.MEMBER_NOT_FOUND;
+type MemberNotFoundError = typeof memberErrorCodes.MEMBER_NOT_FOUND;
 
-export type PostCreationForbiddenError =
-  typeof postErrorTypes.POST_CREATION_FORBIDDEN;
+type PostCreationForbiddenError =
+  typeof postErrorCodes.POST_CREATION_FORBIDDEN;
 
-export type RequestError = RequestErrorType;
-export type ServerError = ServerErrorType;
-export type NetworkError = 'NETWORK_ERROR';
+type RequestError = RequestErrorCode;
+type ServerError = ServerErrorCode;
+type NetworkError = 'NETWORK_ERROR';
 
 // Post Types
 export type PostType = 'link' | 'text';

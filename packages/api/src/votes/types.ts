@@ -1,28 +1,27 @@
 import {
-  commentErrorTypes,
-  memberErrorTypes,
-  postErrorTypes,
-  type RequestErrorType,
-  type ServerErrorType,
-} from '@talknest/errors/types';
-import { applicationErrorTypes } from '@talknest/errors/application';
+  applicationErrorCodes,
+  commentErrorCodes,
+  postErrorCodes,
+  memberErrorCodes,
+  type RequestErrorCode,
+  type ServerErrorCode,
+} from '@talknest/errors';
 
-import { type APIResponse } from '..';
+import { type APIResponse } from '../types';
 
 // Errors
-export type CommentNotFoundError =
-  typeof commentErrorTypes.COMMENT_NOT_FOUND;
+type CommentNotFoundError =
+  typeof commentErrorCodes.COMMENT_NOT_FOUND;
 
-export type PostNotFoundError = typeof postErrorTypes.POST_NOT_FOUND;
+type PostNotFoundError = typeof postErrorCodes.POST_NOT_FOUND;
 
-export type MemberNotFoundError =
-  typeof memberErrorTypes.MEMBER_NOT_FOUND;
+type MemberNotFoundError = typeof memberErrorCodes.MEMBER_NOT_FOUND;
 
-export type ForbiddenError = typeof applicationErrorTypes.FORBIDDEN;
+type ForbiddenError = typeof applicationErrorCodes.FORBIDDEN;
 
-export type ServerError = ServerErrorType;
-export type RequestError = RequestErrorType;
-export type NetworkError = 'NETWORK_ERROR';
+type RequestError = RequestErrorCode;
+type ServerError = ServerErrorCode;
+type NetworkError = 'NETWORK_ERROR';
 
 // Vote Types
 export type VoteType = 'upvote' | 'downvote';

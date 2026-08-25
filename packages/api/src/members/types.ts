@@ -1,19 +1,20 @@
 import {
-  memberErrorTypes,
-  RequestErrorType,
-  ServerErrorType,
-} from '@talknest/errors/types';
+  memberErrorCodes,
+  userErrorCodes,
+  type RequestErrorCode,
+  type ServerErrorCode,
+} from '@talknest/errors';
 
-import { type APIResponse } from '..';
-import { type UsernameAlreadyTakenError } from '../users';
+import { type APIResponse } from '../types';
 
 // Errors
-export type MemberNotFoundError =
-  typeof memberErrorTypes.MEMBER_NOT_FOUND;
+type MemberNotFoundError = typeof memberErrorCodes.MEMBER_NOT_FOUND;
+type UsernameAlreadyTakenError =
+  typeof userErrorCodes.USERNAME_ALREADY_TAKEN;
 
-export type RequestError = RequestErrorType;
-export type ServerError = ServerErrorType;
-export type NetworkError = 'NETWORK_ERROR';
+type RequestError = RequestErrorCode;
+type ServerError = ServerErrorCode;
+type NetworkError = 'NETWORK_ERROR';
 
 // Reputation
 export const reputationLevel = {
