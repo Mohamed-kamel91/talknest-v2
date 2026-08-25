@@ -11,11 +11,11 @@ import {
   GetMemberDetailsError,
 } from './use-cases/get-member-details/get-member-details';
 import { Member } from '../domain/member';
-import { MembersRepository } from '../repos/ports/members-repository';
+import { IMembersRepository } from '../repos/ports/members-repository';
 
 export class MemberService {
   constructor(
-    private membersRepository: MembersRepository,
+    private membersRepository: IMembersRepository,
     private eventBus: EventBus,
   ) {}
 
