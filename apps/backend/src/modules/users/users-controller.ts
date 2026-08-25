@@ -38,7 +38,7 @@ export class UsersController {
 
       const response: CreateUserAPIResponse = {
         success: true,
-        statusCode: 201,
+        status: 201,
         data: temporaryUserResponseDTO,
         error: null,
       };
