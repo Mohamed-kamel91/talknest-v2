@@ -1,5 +1,5 @@
-import { CustomError } from './custom';
-import { ErrorType } from './types';
+import { type ErrorCode } from '../error-codes';
+import { CustomError } from '../custom';
 
 export type ApplicationError =
   | BadRequestError
@@ -8,65 +8,57 @@ export type ApplicationError =
   | UnauthorizedError
   | ForbiddenError;
 
-export const applicationErrorTypes = {
-  BAD_REQUEST: 'BAD_REQUEST',
-  NOT_FOUND: 'NOT_FOUND',
-  CONFLICT: 'CONFLICT',
-  UNAUTHORIZED: 'UNAUTHORIZED',
-  FORBIDDEN: 'FORBIDDEN',
-} as const;
-
 export class BadRequestError<
-  T extends ErrorType = ErrorType,
+  T extends ErrorCode = ErrorCode,
 > extends CustomError<T> {
   constructor(
-    type: T = 'BAD_REQUEST' as T,
+    code: T = 'BAD_REQUEST' as T,
     message: string = 'The request could not be processed.',
   ) {
-    super(type, 400, message);
+    super(code, 400, message);
   }
 }
 
 export class NotFoundError<
-  T extends ErrorType = ErrorType,
+  T extends ErrorCode = ErrorCode,
 > extends CustomError<T> {
   constructor(
-    type: T = 'NOT_FOUND' as T,
+    code: T = 'NOT_FOUND' as T,
     message: string = 'The requested resource could not be found.',
   ) {
-    super(type, 404, message);
+    super(code, 404, message);
   }
 }
 
 export class ConflictError<
-  T extends ErrorType = ErrorType,
+  T extends ErrorCode = ErrorCode,
 > extends CustomError<T> {
   constructor(
-    type: T = 'CONFLICT' as T,
+    code: T = 'CONFLICT' as T,
     message: string = 'The request conflicts with the current state of the resource.',
   ) {
-    super(type, 409, message);
+    super(code, 409, message);
   }
 }
 
 export class UnauthorizedError<
-  T extends ErrorType = ErrorType,
+  T extends ErrorCode = ErrorCode,
 > extends CustomError<T> {
   constructor(
-    type: T = 'UNAUTHORIZED' as T,
+    code: T = 'UNAUTHORIZED' as T,
     message: string = 'You are not authorized to access this resource.',
   ) {
-    super(type, 401, message);
+    super(code, 401, message);
   }
 }
 
 export class ForbiddenError<
-  T extends ErrorType = ErrorType,
+  T extends ErrorCode = ErrorCode,
 > extends CustomError<T> {
   constructor(
-    type: T = 'FORBIDDEN' as T,
+    code: T = 'FORBIDDEN' as T,
     message: string = 'You do not have permission to perform this action.',
   ) {
-    super(type, 403, message);
+    super(code, 403, message);
   }
 }
