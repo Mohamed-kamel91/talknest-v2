@@ -19,7 +19,9 @@ import { ToastAPI } from './shared/toast/toastAPI';
 
 configure({ enforceActions: 'never' });
 
-const apiClient = createAPIClient('http://localhost:3000');
+const apiClient = createAPIClient({
+  baseURL: 'http://localhost:3000',
+});
 
 const toastAPI = new ToastAPI();
 
