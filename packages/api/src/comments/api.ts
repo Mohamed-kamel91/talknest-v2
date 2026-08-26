@@ -1,48 +1,27 @@
-import axios from 'axios';
-
+import { getAuthHeaders, type HttpClient } from '../client';
+import { apiRequest } from '../api-request';
 import type {
   PostCommentInput,
-  PostCommentResponse,
-  GetCommentsByPostIdResponse,
+  PostCommentAPIResponse,
+  GetCommentsByPostIdAPIResponse,
 } from './types';
 
-export const createCommentsAPI = (apiURL: string) => {
+export const createCommentsAPI = (client: HttpClient) => {
   return {
-    getCommentsByPostId: async (
-      postId: string,
-    ): Promise<GetCommentsByPostIdResponse> => {
-      try {
-        const response = await axios.get<GetCommentsByPostIdResponse>(
-          `${apiURL}/posts/${postId}/comments`,
-        );
-
-        return response.data;
-      } catch (err) {
-        if (axios.isAxiosError<GetCommentsByPostIdResponse>(err)) {
-          return err.response?.data as GetCommentsByPostIdResponse;
-        }
-
-        throw err;
-      }
-    },
-
-    postComment: async (
-      input: PostCommentInput,
-    ): Promise<PostCommentResponse> => {
-      try {
-        const response = await axios.post<PostCommentResponse>(
-          `${apiURL}/comments`,
+    postComment: (input: PostCommentInput, authToken: string) =>
+      apiRequest(() =>
+        client.post<PostCommentAPIResponse>(
+          `/posts/${input.postId}/comments`,
           input,
-        );
+          getAuthHeaders(authToken),
+        ),
+      ),
 
-        return response.data;
-      } catch (err) {
-        if (axios.isAxiosError<PostCommentResponse>(err)) {
-          return err.response?.data as PostCommentResponse;
-        }
-
-        throw err;
-      }
-    },
+    getCommentsByPostId: (postId: string) =>
+      apiRequest(() =>
+        client.get<GetCommentsByPostIdAPIResponse>(
+          `/posts/${postId}/comments`,
+        ),
+      ),
   };
 };

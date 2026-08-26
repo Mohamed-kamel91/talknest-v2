@@ -7,9 +7,9 @@ import {
   type GetPostsAPIResponse,
   PostDTO,
 } from '@talknest/api/posts';
+import { type SuccessAPIResponse } from '@talknest/api';
 
 import { type PostsService } from './application/posts-service';
-import { type SuccessResponse } from '@talknest/api';
 
 export class PostsController {
   constructor(private postsService: PostsService) {}
@@ -26,7 +26,7 @@ export class PostsController {
 
       const response: GetPostsAPIResponse = {
         success: true,
-        statusCode: 200,
+        status: 200,
         data: posts.map((p) => p.toDTO()),
         error: null,
       };
@@ -63,9 +63,9 @@ export class PostsController {
         newPost.id,
       );
 
-      const response: SuccessResponse<PostDTO | null> = {
+      const response: SuccessAPIResponse<PostDTO | null> = {
         success: true,
-        statusCode: 200,
+        status: 200,
         data: postDetails?.getValue().toDTO() ?? null,
         error: null,
       };
@@ -94,7 +94,7 @@ export class PostsController {
 
       return res.status(200).json({
         success: true,
-        statusCode: 200,
+        status: 200,
         data: postResult.getValue().toDTO(),
         error: null,
       });

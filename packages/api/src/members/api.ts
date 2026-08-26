@@ -1,74 +1,28 @@
-import axios from 'axios';
-
-import { getAuthHeaders } from '..';
+import { getAuthHeaders, type HttpClient } from '../client';
+import { apiRequest } from '../api-request';
 import type {
   CreateMemberInput,
   CreateMemberAPIResponse,
   GetMemberDetailsAPIResponse,
 } from './types';
 
-export const createMembersAPI = (apiURL: string) => {
+export const createMembersAPI = (client: HttpClient) => {
   return {
-    register: async (
-      input: CreateMemberInput,
-      authToken: string,
-    ): Promise<CreateMemberAPIResponse> => {
-      try {
-        const response = await axios.post<CreateMemberAPIResponse>(
-          `${apiURL}/members`,
+    register: (input: CreateMemberInput, authToken: string) =>
+      apiRequest(() =>
+        client.post<CreateMemberAPIResponse>(
+          '/members',
           input,
           getAuthHeaders(authToken),
-        );
+        ),
+      ),
 
-        return response.data;
-      } catch (error: unknown) {
-        if (
-          axios.isAxiosError<CreateMemberAPIResponse>(error) &&
-          error.response
-        ) {
-          return error.response.data;
-        }
-
-        return {
-          success: false,
-          statusCode: 503,
-          data: null,
-          error: {
-            message: 'Network or server unreachable',
-            type: 'NETWORK_ERROR',
-          },
-        };
-      }
-    },
-
-    getMemberDetails: async (
-      authToken: string,
-    ): Promise<GetMemberDetailsAPIResponse> => {
-      try {
-        const response = await axios.get<GetMemberDetailsAPIResponse>(
-          `${apiURL}/members/me`,
+    getMemberDetails: (authToken: string) =>
+      apiRequest(() =>
+        client.get<GetMemberDetailsAPIResponse>(
+          '/members/me',
           getAuthHeaders(authToken),
-        );
-
-        return response.data;
-      } catch (error: unknown) {
-        if (
-          axios.isAxiosError<GetMemberDetailsAPIResponse>(error) &&
-          error.response
-        ) {
-          return error.response.data;
-        }
-
-        return {
-          success: false,
-          statusCode: 503,
-          data: null,
-          error: {
-            message: 'Network or server unreachable',
-            type: 'NETWORK_ERROR',
-          },
-        };
-      }
-    },
+        ),
+      ),
   };
 };

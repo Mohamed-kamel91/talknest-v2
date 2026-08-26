@@ -11,7 +11,7 @@ import { AuthStore } from '@/modules/auth/stores/authStore';
 import { setupAuthStoreWithMember } from '@/shared/testUtils';
 
 describe('PostsPresenter', () => {
-  const stubbedAPI = createAPIClient('');
+  const stubbedAPI = createAPIClient({ baseURL: '' });
   const loadedPostsVm: PostViewModel[] = [];
   const postsStore = new FakePostsStore(fakePostsData);
   let authStore: AuthStore;

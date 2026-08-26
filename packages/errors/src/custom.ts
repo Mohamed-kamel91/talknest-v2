@@ -1,11 +1,11 @@
-import { ErrorType } from './types';
+import { type ErrorCode } from './error-codes';
 
 export abstract class CustomError<
-  T extends ErrorType = ErrorType,
+  T extends ErrorCode = ErrorCode,
 > extends Error {
   constructor(
-    public readonly type: T,
-    public readonly statusCode: number,
+    public readonly code: T,
+    public readonly status: number,
     message: string,
   ) {
     super(message);

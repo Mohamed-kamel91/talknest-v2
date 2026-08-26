@@ -1,24 +1,23 @@
-import type {
-  commentErrorTypes,
-  postErrorTypes,
-  RequestErrorType,
-  ServerErrorType,
-} from '@talknest/errors/types';
+import {
+  commentErrorCodes,
+  postErrorCodes,
+  type RequestErrorCode,
+  type ServerErrorCode,
+} from '@talknest/errors';
 
-import { type APIResponse } from '..';
+import { type APIResponse } from '../types';
 import { type MemberDTO } from '../members';
 
 // Comment Errors
-export type CommentsNotFoundError =
-  typeof commentErrorTypes.COMMENTS_NOT_FOUND;
+type CommentsNotFoundError =
+  typeof commentErrorCodes.COMMENTS_NOT_FOUND;
 
-export type InvalidCommentError =
-  typeof commentErrorTypes.INVALID_COMMENT;
+type InvalidCommentError = typeof commentErrorCodes.INVALID_COMMENT;
 
-export type PostNotFoundError = typeof postErrorTypes.POST_NOT_FOUND;
+type PostNotFoundError = typeof postErrorCodes.POST_NOT_FOUND;
 
-export type RequestError = RequestErrorType;
-export type ServerError = ServerErrorType;
+type RequestError = RequestErrorCode;
+type ServerError = ServerErrorCode;
 
 // Comment DTO
 export type CommentDTO = {
@@ -45,7 +44,7 @@ export type PostCommentInput = {
 export type GetCommentsByPostIdError =
   CommentsNotFoundError | RequestError | ServerError;
 
-export type GetCommentsByPostIdResponse = APIResponse<
+export type GetCommentsByPostIdAPIResponse = APIResponse<
   CommentDTO[],
   GetCommentsByPostIdError
 >;
@@ -57,7 +56,7 @@ export type PostCommentError =
   | RequestError
   | ServerError;
 
-export type PostCommentResponse = APIResponse<
+export type PostCommentAPIResponse = APIResponse<
   CommentDTO,
   PostCommentError
 >;

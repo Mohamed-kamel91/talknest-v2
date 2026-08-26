@@ -20,7 +20,7 @@ export class MarketingController {
 
       return res.status(201).json({
         success: true,
-        statusCode: 201,
+        status: 201,
         error: null,
         data: { subscription: data },
       });

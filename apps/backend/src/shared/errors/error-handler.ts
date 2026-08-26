@@ -5,24 +5,23 @@ import {
   ErrorRequestHandler,
 } from 'express';
 
-import { FailureResponse } from '@talknest/api';
+import { FailureAPIResponse } from '@talknest/api';
 import { InternalServerError } from '@talknest/errors/server';
-import { CustomError } from '@talknest/errors/custom';
-import { ErrorType } from '@talknest/errors/types';
+import { CustomError, ErrorCode } from '@talknest/errors';
 
 export const errorHandler: ErrorRequestHandler = (
   err: unknown,
   _: Request,
-  res: Response<FailureResponse<ErrorType>>,
+  res: Response<FailureAPIResponse<ErrorCode>>,
   _next: NextFunction,
 ) => {
   if (err instanceof CustomError) {
-    return res.status(err.statusCode).json({
+    return res.status(err.status).json({
       success: false,
-      statusCode: err.statusCode,
+      status: err.status,
       data: null,
       error: {
-        type: err.type,
+        code: err.code,
         message: err.message,
       },
     });
@@ -31,14 +30,14 @@ export const errorHandler: ErrorRequestHandler = (
   console.error('--- UNEXPECTED ERROR ---');
   console.error(err);
 
-  const { statusCode, type, message } = new InternalServerError();
+  const { status, code, message } = new InternalServerError();
 
-  return res.status(statusCode).json({
+  return res.status(status).json({
     success: false,
-    statusCode,
+    status,
     data: null,
     error: {
-      type,
+      code,
       message,
     },
   });

@@ -2,23 +2,23 @@ import {
   BadRequestError,
   NotFoundError,
 } from '@talknest/errors/application';
-import { memberErrorTypes } from '@talknest/errors/types';
+import { memberErrorCodes } from '@talknest/errors/domain';
 
 export class InvalidMemberUsernameError extends BadRequestError<
-  typeof memberErrorTypes.INVALID_MEMBER_USERNAME
+  typeof memberErrorCodes.INVALID_MEMBER_USERNAME
 > {
   constructor() {
     super(
-      memberErrorTypes.INVALID_MEMBER_USERNAME,
+      memberErrorCodes.INVALID_MEMBER_USERNAME,
       'Member username is invalid',
     );
   }
 }
 
 export class MemberNotFoundError extends NotFoundError<
-  typeof memberErrorTypes.MEMBER_NOT_FOUND
+  typeof memberErrorCodes.MEMBER_NOT_FOUND
 > {
   constructor() {
-    super(memberErrorTypes.MEMBER_NOT_FOUND, 'Member not found');
+    super(memberErrorCodes.MEMBER_NOT_FOUND, 'Member not found');
   }
 }

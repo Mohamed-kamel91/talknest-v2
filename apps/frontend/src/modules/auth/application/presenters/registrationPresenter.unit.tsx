@@ -21,13 +21,13 @@ function setupSuccessfulRegistration(presenter: RegistrationPresenter) {
   presenter.navigationStore.navigate = jest.fn();
   presenter.authStore.apiClient.users.register = jest.fn(
     async (): Promise<CreateUserAPIResponse> => {
-      return { success: true, data: mockUserDTO, statusCode: 201, error: null };
+      return { success: true, data: mockUserDTO, status: 201, error: null };
     },
   );
 }
 
 describe('registrationPresenter', () => {
-  const apiClient = createAPIClient('http://localhost:3000');
+  const apiClient = createAPIClient({ baseURL: 'http://localhost:3000' });
   const toastAPI = new ToastAPI();
   const authStore = new AuthStore(apiClient);
   const navigationStore = new NavigationStore();

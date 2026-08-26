@@ -3,8 +3,8 @@ import z from 'zod';
 import {
   BadRequestError,
   NotFoundError,
-  postErrorTypes,
-} from '@talknest/errors';
+} from '@talknest/errors/application';
+import { postErrorCodes } from '@talknest/errors/domain';
 import { CreatePostInput } from '@talknest/api/posts';
 
 export type PostCreationError =
@@ -38,53 +38,53 @@ export function mapPostValidationError(
 }
 
 export class InvalidPostTitleError extends BadRequestError<
-  typeof postErrorTypes.INVALID_POST_TITLE
+  typeof postErrorCodes.INVALID_POST_TITLE
 > {
   constructor(message: string) {
     super(
-      postErrorTypes.INVALID_POST_TITLE,
+      postErrorCodes.INVALID_POST_TITLE,
       `Invalid post title: ${message}`,
     );
   }
 }
 
 export class InvalidPostContentError extends BadRequestError<
-  typeof postErrorTypes.INVALID_POST_CONTENT
+  typeof postErrorCodes.INVALID_POST_CONTENT
 > {
   constructor(message: string) {
     super(
-      postErrorTypes.INVALID_POST_CONTENT,
+      postErrorCodes.INVALID_POST_CONTENT,
       `Invalid post content: ${message}`,
     );
   }
 }
 
 export class InvalidPostLinkError extends BadRequestError<
-  typeof postErrorTypes.INVALID_POST_LINK
+  typeof postErrorCodes.INVALID_POST_LINK
 > {
   constructor(message: string) {
     super(
-      postErrorTypes.INVALID_POST_LINK,
+      postErrorCodes.INVALID_POST_LINK,
       `Invalid post link: ${message}`,
     );
   }
 }
 
 export class InvalidPostTypeError extends BadRequestError<
-  typeof postErrorTypes.INVALID_POST_TYPE
+  typeof postErrorCodes.INVALID_POST_TYPE
 > {
   constructor(type: string) {
     super(
-      postErrorTypes.INVALID_POST_TYPE,
+      postErrorCodes.INVALID_POST_TYPE,
       `Invalid Post type: ${type}`,
     );
   }
 }
 
 export class PostNotFoundError extends NotFoundError<
-  typeof postErrorTypes.POST_NOT_FOUND
+  typeof postErrorCodes.POST_NOT_FOUND
 > {
   constructor() {
-    super(postErrorTypes.POST_NOT_FOUND, 'Post not foud');
+    super(postErrorCodes.POST_NOT_FOUND, 'Post not foud');
   }
 }

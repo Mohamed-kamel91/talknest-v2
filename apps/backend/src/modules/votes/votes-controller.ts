@@ -31,7 +31,7 @@ export class VotesController {
       const postVote = result.getValue();
       const response: VoteOnPostAPIResponse = {
         success: true,
-        statusCode: 200,
+        status: 200,
         data: postVote.toDTO(),
         error: null,
       };

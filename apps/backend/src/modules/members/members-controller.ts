@@ -39,13 +39,13 @@ export class MembersController {
       if (result.isSuccess()) {
         return res.status(200).json({
           success: true,
-          statusCode: 200,
+          status: 200,
           data: result.getValue().toDTO(),
         } as CreateMemberAPIResponse);
       } else {
         return res.status(400).json({
           data: null,
-          statusCode: 400,
+          status: 400,
           success: false,
           error: result.getError(),
         } as CreateMemberAPIResponse);
