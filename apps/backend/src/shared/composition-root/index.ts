@@ -10,7 +10,7 @@ import { MembersModule } from '../../modules/members';
 import { CommentsModule } from '../../modules/comments';
 
 import { type Config } from '../config';
-import { WebServer } from '../http';
+import { WebServer } from '../infra/http';
 import { Application } from '../application';
 import { errorHandler } from '../errors/error-handler';
 
