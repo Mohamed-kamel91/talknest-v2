@@ -1,4 +1,4 @@
-import { type Result, success, type UseCase } from '@talknest/core';
+import { Result, success, type UseCase } from '@talknest/core';
 
 import { PostReadModel } from '../../../domain/post-read-model';
 import { PostNotFoundError } from '../../../posts-errors';
@@ -19,9 +19,9 @@ export class GetPostDetails implements UseCase<
     const post = await this.postsRepo.getPostDetailsById(id);
 
     if (post === null) {
-      return fail(new PostNotFoundError());
+      return Result.failure(new PostNotFoundError());
     }
 
-    return success(post);
+    return Result.success(post);
   }
 }
