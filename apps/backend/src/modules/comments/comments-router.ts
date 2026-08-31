@@ -1,5 +1,5 @@
 import { type CommentsController } from './comments-controller';
-import { BaseRouter } from '../../shared/http/base-router';
+import { BaseRouter } from '../../shared/infra/http/base-router';
 
 export class CommentsRouter extends BaseRouter {
   public readonly basePath: string = '/posts';

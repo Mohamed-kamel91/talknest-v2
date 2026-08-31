@@ -1,4 +1,4 @@
-import { BaseRouter } from '../../shared/http/base-router';
+import { BaseRouter } from '../../shared/infra/http/base-router';
 import { type UsersController } from './users-controller';
 
 export class UsersRouter extends BaseRouter {
