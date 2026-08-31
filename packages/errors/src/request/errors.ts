@@ -1,4 +1,4 @@
-import { BadRequestError } from '../application';
+import { ValidationError } from '../application';
 import { requestErrorCodes } from './codes';
 
 export type RequestError =
@@ -8,57 +8,44 @@ export type RequestError =
   | InvalidRequestQueryParamsError
   | InvalidInputError;
 
-export class MissingRequestBodyError extends BadRequestError<
-  typeof requestErrorCodes.MISSING_REQUEST_BODY
-> {
+export class MissingRequestBodyError extends ValidationError {
+  readonly code = requestErrorCodes.MISSING_REQUEST_BODY;
+
   constructor() {
-    super(
-      requestErrorCodes.MISSING_REQUEST_BODY,
-      'Request body is missing',
-    );
+    super('Request body is missing');
   }
 }
 
-export class InvalidRequestBodyError extends BadRequestError<
-  typeof requestErrorCodes.INVALID_REQUEST_BODY
-> {
+export class InvalidRequestBodyError extends ValidationError {
+  readonly code = requestErrorCodes.INVALID_REQUEST_BODY;
+
   constructor(missingKeys: string[]) {
-    super(
-      requestErrorCodes.INVALID_REQUEST_BODY,
-      'Body is missing required key: ' + missingKeys.join(', '),
-    );
+    super('Body is missing required key: ' + missingKeys.join(', '));
   }
 }
 
-export class MissingRequestQueryParamsError extends BadRequestError<
-  typeof requestErrorCodes.MISSING_REQUEST_QUERY_PARAMS
-> {
+export class MissingRequestQueryParamsError extends ValidationError {
+  readonly code = requestErrorCodes.MISSING_REQUEST_QUERY_PARAMS;
+
   constructor(missingparams: string[]) {
     super(
-      requestErrorCodes.MISSING_REQUEST_QUERY_PARAMS,
       'Query is missing required params: ' + missingparams.join(', '),
     );
   }
 }
 
-export class InvalidRequestQueryParamsError extends BadRequestError<
-  typeof requestErrorCodes.INVALID_REQUEST_QUERY_PARAMS
-> {
+export class InvalidRequestQueryParamsError extends ValidationError {
+  readonly code = requestErrorCodes.INVALID_REQUEST_QUERY_PARAMS;
+
   constructor(invalidParams: string[]) {
-    super(
-      requestErrorCodes.INVALID_REQUEST_QUERY_PARAMS,
-      'Query has invalid params: ' + invalidParams.join(', '),
-    );
+    super('Query has invalid params: ' + invalidParams.join(', '));
   }
 }
 
-export class InvalidInputError extends BadRequestError<
-  typeof requestErrorCodes.INVALID_INPUT
-> {
+export class InvalidInputError extends ValidationError {
+  readonly code = requestErrorCodes.INVALID_INPUT;
+
   constructor(fields: string[]) {
-    super(
-      requestErrorCodes.INVALID_INPUT,
-      'Invalid input: ' + fields.join(', '),
-    );
+    super('Invalid input: ' + fields.join(', '));
   }
 }

@@ -8,3 +8,7 @@ export const userErrorCodes = {
 
 export type UserErrorCode =
   (typeof userErrorCodes)[keyof typeof userErrorCodes];
+
+export type UserErrorCodes = {
+  [K in keyof typeof userErrorCodes]: (typeof userErrorCodes)[K];
+};
