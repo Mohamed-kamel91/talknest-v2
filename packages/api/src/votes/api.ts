@@ -1,4 +1,6 @@
-import type { VoteOnPostInput, VoteOnPostAPIResponse } from './types';
+import { type VoteOnPostInput } from './inputs';
+import type { VoteOnPostAPIResponse } from './responses';
+
 import { HttpClient } from '../client';
 import { apiRequest } from '../api-request';
 

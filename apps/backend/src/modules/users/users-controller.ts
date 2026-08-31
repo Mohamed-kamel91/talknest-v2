@@ -1,8 +1,4 @@
-import {
-  type Request,
-  type Response,
-  type NextFunction,
-} from 'express';
+import { type Request, type Response } from 'express';
 import { randomUUID } from 'node:crypto';
 
 import {
@@ -11,41 +7,30 @@ import {
   UserDTO,
 } from '@talknest/api/users';
 
-export class UsersController {
-  constructor() {}
+import { BaseController } from '../../shared/infra/http';
 
-  public async createUser(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const command = CreateUserCommand.fromRequest(req.body);
+export class UsersController extends BaseController {
+  constructor() {
+    super();
+  }
 
-      if (!command.isSuccess()) {
-        return next(command.getError());
-      }
+  public async createUser(req: Request, res: Response) {
+    const command = CreateUserCommand.fromRequest(req.body);
 
-      const commandValue = command.getValue();
-
-      const temporaryUserResponseDTO: UserDTO = {
-        id: randomUUID(),
-        email: commandValue.email,
-        firstName: commandValue.firstName,
-        lastName: commandValue.lastName,
-        username: commandValue.username,
-      };
-
-      const response: CreateUserAPIResponse = {
-        success: true,
-        status: 201,
-        data: temporaryUserResponseDTO,
-        error: null,
-      };
-
-      return res.status(201).json(response);
-    } catch (error) {
-      next(error);
+    if (command.isFailure()) {
+      return this.fail(res, command.getError());
     }
+
+    const user = command.getValue();
+
+    const temporaryUserResponseDTO: UserDTO = {
+      id: randomUUID(),
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+    };
+
+    return this.created(res, temporaryUserResponseDTO);
   }
 }

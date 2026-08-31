@@ -1,6 +1,9 @@
+type FieldError = { field: string; message: string };
+
 export type APIError<U extends string> = {
   code: U;
   message: string;
+  fields?: FieldError[];
 };
 
 export type SuccessAPIResponse<Data> = {

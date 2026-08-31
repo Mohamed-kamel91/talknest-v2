@@ -1,23 +1,22 @@
-import { type ErrorCode } from '../error-codes';
-import { CustomError } from '../custom';
+import { CustomError, errorCategories } from '../custom';
 import { serverErrorCodes } from './codes';
 
 export type ServerError = InternalServerError | DatabaseError;
 
 export class InternalServerError extends CustomError {
-  constructor(
-    code: ErrorCode = serverErrorCodes.INTERNAL_SERVER_ERROR,
-    message: string = 'Something went wrong on our end',
-  ) {
-    super(code, 500, message);
+  readonly code = serverErrorCodes.INTERNAL_SERVER_ERROR;
+  readonly category = errorCategories.INTERNAL;
+
+  constructor(message?: string) {
+    super(message || 'Something went wrong on our end');
   }
 }
 
 export class DatabaseError extends CustomError {
-  constructor(
-    code: ErrorCode = serverErrorCodes.DATABASE_ERROR,
-    message: string = 'A database error occurred',
-  ) {
-    super(code, 500, message);
+  readonly code = serverErrorCodes.DATABASE_ERROR;
+  readonly category = errorCategories.INTERNAL;
+
+  constructor(message?: string) {
+    super(message || 'A database error occurred');
   }
 }

@@ -9,3 +9,7 @@ export const postErrorCodes = {
 
 export type PostErrorCode =
   (typeof postErrorCodes)[keyof typeof postErrorCodes];
+
+export type PostErrorCodes = {
+  [K in keyof typeof postErrorCodes]: (typeof postErrorCodes)[K];
+};

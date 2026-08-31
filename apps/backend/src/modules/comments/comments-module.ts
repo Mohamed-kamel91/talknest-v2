@@ -13,7 +13,7 @@ import type { IMembersRepository } from '../members/repos/ports/members-reposito
 
 import { ApplicationModule } from '../../shared/modules/application-module';
 import { Config } from '../../shared/config';
-import { WebServer } from '../../shared/http';
+import { WebServer } from '../../shared/infra/http';
 
 export class CommentsModule extends ApplicationModule {
   private commentsRepository: ICommentRepository;
@@ -38,7 +38,7 @@ export class CommentsModule extends ApplicationModule {
 
     this.setupRoutes();
   }
-
+  
   public static build(
     db: IDatabase,
     eventBus: EventBus,

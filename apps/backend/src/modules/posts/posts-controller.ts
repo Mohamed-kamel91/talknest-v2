@@ -4,102 +4,69 @@ import {
   GetPostsQuery,
   GetPostByIdQuery,
   CreatePostCommand,
-  type GetPostsAPIResponse,
-  PostDTO,
 } from '@talknest/api/posts';
-import { type SuccessAPIResponse } from '@talknest/api';
 
+import { BaseController } from '../../shared/infra/http';
 import { type PostsService } from './application/posts-service';
 
-export class PostsController {
-  constructor(private postsService: PostsService) {}
+export class PostsController extends BaseController {
+  constructor(private postsService: PostsService) {
+    super();
+  }
 
-  public async getPosts(
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) {
-    try {
-      const query = GetPostsQuery.fromRequest(req.query);
+  public async getPosts(req: express.Request, res: express.Response) {
+    const query = GetPostsQuery.fromRequest(req.query);
 
-      const posts = await this.postsService.getPosts(query);
+    const result = await this.postsService.getPosts(query);
+    const posts = result.map((p) => p.toDTO());
 
-      const response: GetPostsAPIResponse = {
-        success: true,
-        status: 200,
-        data: posts.map((p) => p.toDTO()),
-        error: null,
-      };
-
-      return res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
+    return this.ok(res, posts);
   }
 
   public async createPost(
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction,
   ) {
-    try {
-      const commandOrError = CreatePostCommand.fromRequest(req.body);
+    const command = CreatePostCommand.fromRequest(req.body);
 
-      if (!commandOrError.isSuccess()) {
-        return next(commandOrError.getError());
-      }
-
-      const result = await this.postsService.createPost(
-        commandOrError.getValue(),
-      );
-
-      if (!result.isSuccess()) {
-        return next(result.getError());
-      }
-
-      const newPost = result.getValue();
-
-      const postDetails = await this.postsService.getPostDetailsById(
-        newPost.id,
-      );
-
-      const response: SuccessAPIResponse<PostDTO | null> = {
-        success: true,
-        status: 200,
-        data: postDetails?.getValue().toDTO() ?? null,
-        error: null,
-      };
-
-      return res.status(200).json(response);
-    } catch (err) {
-      next(err);
+    if (command.isFailure()) {
+      return this.fail(res, command.getError());
     }
+
+    const createPostresult = await this.postsService.createPost(
+      command.getValue(),
+    );
+
+    if (createPostresult.isFailure()) {
+      return this.fail(res, createPostresult.getError());
+    }
+
+    const newPost = createPostresult.getValue();
+
+    const postDetailsResult =
+      await this.postsService.getPostDetailsById(newPost.id);
+
+    if (postDetailsResult.isFailure()) {
+      return this.fail(res, postDetailsResult.getError());
+    }
+
+    return this.ok(res, postDetailsResult.getValue().toDTO());
   }
 
   public async getPostById(
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction,
   ) {
-    try {
-      const query = GetPostByIdQuery.fromRequest(req);
+    const query = GetPostByIdQuery.fromRequest(req);
 
-      const postResult = await this.postsService.getPostDetailsById(
-        query.postId,
-      );
+    const result = await this.postsService.getPostDetailsById(
+      query.postId,
+    );
 
-      if (!postResult.isSuccess) {
-        return next(postResult.getError());
-      }
-
-      return res.status(200).json({
-        success: true,
-        status: 200,
-        data: postResult.getValue().toDTO(),
-        error: null,
-      });
-    } catch (error) {
-      next(error);
+    if (result.isFailure()) {
+      return this.fail(res, result.getError());
     }
+
+    return this.ok(res, result.getValue().toDTO());
   }
 }

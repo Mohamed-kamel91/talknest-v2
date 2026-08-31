@@ -1,49 +1,25 @@
-import { Result, success, fail, type Request } from '@talknest/core';
-import {
-  InvalidInputError,
-  InvalidRequestBodyError,
-} from '@talknest/errors/request';
+import { Result, success, fail } from '@talknest/core';
+import { InvalidInputError } from '@talknest/errors/request';
 
-import type { PostCommentInput } from './types';
 import { type DecodedIdToken } from '../users';
+import {
+  type PostCommentInput,
+  postCommentInputSchema,
+} from './inputs';
 
 export class PostCommentCommand {
   private constructor(public readonly props: PostCommentInput) {}
 
-  static fromRequest(
-    body: Request['body'],
-    decodedToken: DecodedIdToken | undefined,
-  ): Result<
-    PostCommentCommand,
-    InvalidRequestBodyError | InvalidInputError
-  > {
-    const input: PostCommentInput = {
-      postId: body.postId,
-      text: body.text,
-      parentCommentId: body.parentCommentId,
-      memberId: body.memberId,
-    };
-
-    return this.create(input);
-  }
-
   static create(
-    input: PostCommentInput,
+    input: unknown,
+    // decodedToken: DecodedIdToken | undefined,
   ): Result<PostCommentCommand, InvalidInputError> {
-    const { postId, text, memberId } = input;
+    const result = postCommentInputSchema.safeParse(input);
 
-    if (!postId) {
-      return fail(new InvalidInputError(['postId']));
+    if (!result.success) {
+      return fail(new InvalidInputError(result.error.issues));
     }
 
-    if (!text || text.length > 1000) {
-      return fail(new InvalidInputError(['text']));
-    }
-
-    if (!memberId) {
-      return fail(new InvalidInputError(['memberId']));
-    }
-
-    return success(new PostCommentCommand(input));
+    return success(new PostCommentCommand(result.data));
   }
 }

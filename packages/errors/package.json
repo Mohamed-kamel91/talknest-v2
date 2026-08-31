@@ -36,8 +36,8 @@
       "types": "./src/domain/index.ts"
     },
     "./domain/*": {
-      "default": "./src/domain/*/index.ts",
-      "types": "./src/domain/*/index.ts"
+      "default": "./src/domain/*.ts",
+      "types": "./src/domain/*.ts"
     }
   }
 }

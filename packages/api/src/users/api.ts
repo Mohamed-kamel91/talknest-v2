@@ -1,10 +1,10 @@
 import { apiRequest } from '../api-request';
 import { type HttpClient } from '../client';
+import { type CreateUserInput } from './inputs';
 import type {
-  CreateUserInput,
   CreateUserAPIResponse,
   GetUserByEmailAPIResponse,
-} from './types';
+} from './responses';
 
 export const createUsersAPI = (client: HttpClient) => {
   return {

@@ -1,12 +1,15 @@
 import { getAuthHeaders, type HttpClient } from '../client';
 import { apiRequest } from '../api-request';
+
+import {
+  type CreatePostInput,
+  type GetPostsQueryInput,
+} from './inputs';
 import type {
-  CreatePostInput,
   CreatePostAPIResponse,
-  GetPostsQueryInput,
   GetPostsAPIResponse,
   GetPostByIdAPIResponse,
-} from './types';
+} from './responses';
 
 export const createPostsAPI = (client: HttpClient) => {
   return {

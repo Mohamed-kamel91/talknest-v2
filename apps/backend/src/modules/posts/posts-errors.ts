@@ -1,7 +1,7 @@
 import z from 'zod';
 
 import {
-  BadRequestError,
+  ValidationError,
   NotFoundError,
 } from '@talknest/errors/application';
 import { postErrorCodes } from '@talknest/errors/domain';
@@ -37,54 +37,42 @@ export function mapPostValidationError(
   }
 }
 
-export class InvalidPostTitleError extends BadRequestError<
-  typeof postErrorCodes.INVALID_POST_TITLE
-> {
+export class InvalidPostTitleError extends ValidationError {
+  readonly code = postErrorCodes.INVALID_POST_TITLE;
+
   constructor(message: string) {
-    super(
-      postErrorCodes.INVALID_POST_TITLE,
-      `Invalid post title: ${message}`,
-    );
+    super(`Invalid post title: ${message}`);
   }
 }
 
-export class InvalidPostContentError extends BadRequestError<
-  typeof postErrorCodes.INVALID_POST_CONTENT
-> {
+export class InvalidPostContentError extends ValidationError {
+  readonly code = postErrorCodes.INVALID_POST_CONTENT;
+
   constructor(message: string) {
-    super(
-      postErrorCodes.INVALID_POST_CONTENT,
-      `Invalid post content: ${message}`,
-    );
+    super(`Invalid post content: ${message}`);
   }
 }
 
-export class InvalidPostLinkError extends BadRequestError<
-  typeof postErrorCodes.INVALID_POST_LINK
-> {
+export class InvalidPostLinkError extends ValidationError {
+  readonly code = postErrorCodes.INVALID_POST_LINK;
+
   constructor(message: string) {
-    super(
-      postErrorCodes.INVALID_POST_LINK,
-      `Invalid post link: ${message}`,
-    );
+    super(`Invalid post link: ${message}`);
   }
 }
 
-export class InvalidPostTypeError extends BadRequestError<
-  typeof postErrorCodes.INVALID_POST_TYPE
-> {
+export class InvalidPostTypeError extends ValidationError {
+  readonly code = postErrorCodes.INVALID_POST_TYPE;
+
   constructor(type: string) {
-    super(
-      postErrorCodes.INVALID_POST_TYPE,
-      `Invalid Post type: ${type}`,
-    );
+    super(`Invalid Post type: ${type}`);
   }
 }
 
-export class PostNotFoundError extends NotFoundError<
-  typeof postErrorCodes.POST_NOT_FOUND
-> {
+export class PostNotFoundError extends NotFoundError {
+  readonly code = postErrorCodes.POST_NOT_FOUND;
+
   constructor() {
-    super(postErrorCodes.POST_NOT_FOUND, 'Post not foud');
+    super('Post not foud');
   }
 }

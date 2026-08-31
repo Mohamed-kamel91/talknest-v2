@@ -8,6 +8,10 @@ import {
 import { FailureAPIResponse } from '@talknest/api';
 import { InternalServerError } from '@talknest/errors/server';
 import { CustomError, ErrorCode } from '@talknest/errors';
+import {
+  CATEGORY_TO_STATUS,
+  httpStatus,
+} from '../infra/http/http-status';
 
 export const errorHandler: ErrorRequestHandler = (
   err: unknown,
@@ -16,9 +20,11 @@ export const errorHandler: ErrorRequestHandler = (
   _next: NextFunction,
 ) => {
   if (err instanceof CustomError) {
-    return res.status(err.status).json({
+    const status = CATEGORY_TO_STATUS[err.category];
+
+    return res.status(status).json({
       success: false,
-      status: err.status,
+      status,
       data: null,
       error: {
         code: err.code,
@@ -30,7 +36,8 @@ export const errorHandler: ErrorRequestHandler = (
   console.error('--- UNEXPECTED ERROR ---');
   console.error(err);
 
-  const { status, code, message } = new InternalServerError();
+  const { code, message } = new InternalServerError();
+  const status = httpStatus.INTERNAL_SERVER_ERROR;
 
   return res.status(status).json({
     success: false,

@@ -6,3 +6,9 @@ export const commentErrorCodes = {
 
 export type CommentErrorCode =
   (typeof commentErrorCodes)[keyof typeof commentErrorCodes];
+
+export type CommentErrorCodes = {
+  [
+    K in keyof typeof commentErrorCodes
+  ]: (typeof commentErrorCodes)[K];
+};

@@ -4,10 +4,10 @@ import {
   MissingRequestQueryParamsError,
 } from '@talknest/errors/request';
 
-import type {
-  GetPostsQueryInput,
-  GetPostsQueryOption,
-} from './types';
+import {
+  type GetPostsQueryInput,
+  type GetPostsQueryOption,
+} from './inputs';
 
 // Get Post By ID
 export class GetPostByIdQuery {

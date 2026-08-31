@@ -5,3 +5,7 @@ export const memberErrorCodes = {
 
 export type MemberErrorCode =
   (typeof memberErrorCodes)[keyof typeof memberErrorCodes];
+
+export type MemberErrorCodes = {
+  [K in keyof typeof memberErrorCodes]: (typeof memberErrorCodes)[K];
+};

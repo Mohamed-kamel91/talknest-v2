@@ -1,7 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { APIResponse } from './types';
-import { NetworkErrorCode } from '@talknest/errors/network';
+import type { APIResponse } from './types';
+import {
+  type NetworkErrorCode,
+  networkErrorCodes,
+} from '@talknest/errors/network';
 
 export async function apiRequest<T, U extends string>(
   request: () => Promise<AxiosResponse<APIResponse<T, U>>>,
@@ -21,7 +24,7 @@ export async function apiRequest<T, U extends string>(
           success: false,
           error: {
             message: 'Request timed out',
-            code: 'TIMEOUT_ERROR',
+            code: networkErrorCodes.timeoutError,
           },
         };
       }
@@ -31,8 +34,8 @@ export async function apiRequest<T, U extends string>(
           success: false,
           data: null,
           error: {
+            code: networkErrorCodes.networkError,
             message: 'No response received from server',
-            code: 'NETWORK_ERROR',
           },
         };
       }
@@ -40,14 +43,20 @@ export async function apiRequest<T, U extends string>(
       return {
         success: false,
         data: null,
-        error: { message: error.message, code: 'REQUEST_ERROR' },
+        error: {
+          code: networkErrorCodes.requestError,
+          message: error.message,
+        },
       };
     }
 
     return {
       success: false,
       data: null,
-      error: { message: 'Unexpected error', code: 'UNKNOWN_ERROR' },
+      error: {
+        code: networkErrorCodes.unknownError,
+        message: 'Unexpected error',
+      },
     };
   }
 }
