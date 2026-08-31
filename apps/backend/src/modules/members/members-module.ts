@@ -9,7 +9,7 @@ import { MembersRouter } from './members-routers';
 
 import { ApplicationModule } from '../../shared/modules/application-module';
 import { Config } from '../../shared/config';
-import { WebServer } from '../../shared/http';
+import { WebServer } from '../../shared/infra/http';
 
 export class MembersModule extends ApplicationModule {
   private membersRepository: IMembersRepository;

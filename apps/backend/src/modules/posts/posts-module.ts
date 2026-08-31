@@ -11,7 +11,7 @@ import { PostsRouter } from './posts-router';
 
 import { type Config } from '../../shared/config';
 import { ApplicationModule } from '../../shared/modules/application-module';
-import { WebServer } from '../../shared/http';
+import { WebServer } from '../../shared/infra/http';
 
 export class PostsModule extends ApplicationModule {
   private postsRepository: IPostsRepository;

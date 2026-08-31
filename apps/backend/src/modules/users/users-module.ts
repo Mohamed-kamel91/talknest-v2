@@ -5,7 +5,7 @@ import { UsersController } from './users-controller';
 import { UsersRouter } from './users-router';
 
 import { type Config } from '../../shared/config';
-import { WebServer } from '../../shared/http';
+import { WebServer } from '../../shared/infra/http';
 
 export class UsersModule {
   private identityServiceAPI: IdentityServiceAPI;

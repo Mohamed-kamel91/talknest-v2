@@ -11,7 +11,7 @@ import { IMembersRepository } from '../members/repos/ports/members-repository';
 import { ICommentRepository } from '../comments/repos/ports/comment-repository';
 import { IPostsRepository } from '../posts/repos/ports/posts-repository';
 
-import { WebServer } from '../../shared/http';
+import { WebServer } from '../../shared/infra/http';
 import { Config } from '../../shared/config';
 import { ApplicationModule } from '../../shared/modules/application-module';
 import { VotesRouter } from './votes-router';
