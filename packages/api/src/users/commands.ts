@@ -10,7 +10,7 @@ import {
   MissingRequestBodyError,
 } from '@talknest/errors/request';
 
-import { CreateUserInput } from './types';
+import { type CreateUserInput } from './inputs';
 
 export class CreateUserCommand {
   private constructor(public props: CreateUserInput) {}

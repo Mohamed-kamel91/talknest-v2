@@ -1,7 +1,10 @@
 import { type Request } from '@talknest/core/application';
 import { InvalidRequestBodyError } from '@talknest/errors/request';
 
-import type { VoteOnCommentInput, VoteOnPostInput } from './types';
+import {
+  type VoteOnCommentInput,
+  type VoteOnPostInput,
+} from './inputs';
 
 // Update Member Reputation
 export class UpdateMemberReputationScoreCommand {

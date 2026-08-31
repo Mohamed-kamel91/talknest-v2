@@ -1,11 +1,12 @@
 import { z } from 'zod';
 
 import { type Request, Result } from '@talknest/core/application';
-import { InvalidRequestBodyError } from '@talknest/errors/request';
-import { BadRequestError } from '@talknest/errors/application';
+import {
+  InvalidRequestBodyError,
+  MissingRequestBodyError,
+} from '@talknest/errors/request';
 
-import type { CreatePostInput } from './types';
-import { createPostSchema } from './schemas';
+import { type CreatePostInput, createPostSchema } from './inputs';
 
 export class CreatePostCommand {
   private constructor(private readonly props: CreatePostInput) {}
@@ -16,7 +17,10 @@ export class CreatePostCommand {
 
   static create(
     input: CreatePostInput,
-  ): Result<CreatePostCommand, InvalidRequestBodyError> {
+  ): Result<
+    CreatePostCommand,
+    InvalidRequestBodyError | MissingRequestBodyError
+  > {
     try {
       const result = createPostSchema.parse(input);
 
@@ -34,13 +38,16 @@ export class CreatePostCommand {
         );
       }
 
-      return Result.failure(new BadRequestError());
+      return Result.failure(new MissingRequestBodyError());
     }
   }
 
   static fromRequest(
     body: Request['body'],
-  ): Result<CreatePostCommand, InvalidRequestBodyError> {
+  ): Result<
+    CreatePostCommand,
+    InvalidRequestBodyError | MissingRequestBodyError
+  > {
     const { title, postType, memberId } = body;
 
     if (!memberId) {
@@ -59,10 +66,6 @@ export class CreatePostCommand {
       );
     }
 
-    return Result.success(
-      new CreatePostCommand({
-        ...body,
-      }),
-    );
+    return this.create(body);
   }
 }

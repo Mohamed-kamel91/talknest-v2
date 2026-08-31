@@ -1,10 +1,11 @@
 import { getAuthHeaders, type HttpClient } from '../client';
 import { apiRequest } from '../api-request';
+
+import { type CreateMemberInput } from './inputs';
 import type {
-  CreateMemberInput,
   CreateMemberAPIResponse,
   GetMemberDetailsAPIResponse,
-} from './types';
+} from './responses';
 
 export const createMembersAPI = (client: HttpClient) => {
   return {

@@ -6,8 +6,8 @@ import {
 } from '@talknest/core/application';
 import { InvalidRequestBodyError } from '@talknest/errors/request';
 
-import type { CreateMemberInput } from './types';
 import { type DecodedIdToken } from '../users';
+import { type CreateMemberInput } from './inputs';
 
 export class CreateMemberCommand {
   private constructor(public readonly props: CreateMemberInput) {}

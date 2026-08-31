@@ -1,10 +1,11 @@
 import { getAuthHeaders, type HttpClient } from '../client';
 import { apiRequest } from '../api-request';
+
+import { type PostCommentInput } from './inputs';
 import type {
-  PostCommentInput,
   PostCommentAPIResponse,
   GetCommentsByPostIdAPIResponse,
-} from './types';
+} from './responses';
 
 export const createCommentsAPI = (client: HttpClient) => {
   return {
