@@ -8,13 +8,25 @@ export const decodedIdTokenSchema = z.object({
 export type DecodedIdToken = z.infer<typeof decodedIdTokenSchema>;
 
 export const createUserInputSchema = z.object({
-  firstName: z.string().trim().min(1, 'First name is required'),
-  lastName: z.string().trim().min(1, 'Last name is required'),
+  firstName: z
+    .string()
+    .trim()
+    .min(1, 'First name is required')
+    .max(50, 'First name cannot exceed 50 characters'),
+
+  lastName: z
+    .string()
+    .trim()
+    .min(1, 'Last name is required')
+    .max(50, 'Last name cannot exceed 50 characters'),
+
   email: z.email('Invalid email address'),
+
   username: z
     .string()
     .trim()
-    .min(5, 'Username must be at least 5 characters'),
+    .min(5, 'Username must be at least 5 characters')
+    .max(20, 'Username cannot exceed 20 characters'),
 
   password: z
     .string()
