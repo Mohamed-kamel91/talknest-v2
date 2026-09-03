@@ -1,7 +1,12 @@
-import { Result, success, fail } from '@talknest/core';
-import { InvalidInputError } from '@talknest/errors/request';
+import {
+  success,
+  fail,
+  type Result,
+} from '@talknest/core/application';
+import { type InvalidRequestInputError } from '@talknest/errors/request';
 
 import { type DecodedIdToken } from '../users';
+import { validateCommandInput } from '../validate-command-input';
 import {
   type PostCommentInput,
   postCommentInputSchema,
@@ -13,13 +18,16 @@ export class PostCommentCommand {
   static create(
     input: unknown,
     // decodedToken: DecodedIdToken | undefined,
-  ): Result<PostCommentCommand, InvalidInputError> {
-    const result = postCommentInputSchema.safeParse(input);
+  ): Result<PostCommentCommand, InvalidRequestInputError> {
+    const inputOrError = validateCommandInput(
+      postCommentInputSchema,
+      input,
+    );
 
-    if (!result.success) {
-      return fail(new InvalidInputError(result.error.issues));
+    if (inputOrError.isFailure) {
+      return fail(inputOrError.getError());
     }
 
-    return success(new PostCommentCommand(result.data));
+    return success(new PostCommentCommand(inputOrError.getValue()));
   }
 }
