@@ -2,10 +2,12 @@ import express from 'express';
 
 import {
   CustomError,
+  FieldError,
   ValidationError,
   type ErrorCode,
 } from '@talknest/errors';
 import {
+  APIError,
   type FailureAPIResponse,
   type SuccessAPIResponse,
 } from '@talknest/api';
@@ -33,7 +35,7 @@ export abstract class BaseController {
     return this.ok(res, dto, 201);
   }
 
-  public fail(
+  public fail<E extends ErrorCode>(
     res: express.Response<FailureAPIResponse<ErrorCode>>,
     error: CustomError,
   ) {
@@ -52,7 +54,7 @@ export abstract class BaseController {
           message: error.message,
           fields: error.fieldErrors,
         },
-      });
+      } as FailureAPIResponse<E>);
     }
 
     return res.status(status).json({
@@ -62,7 +64,7 @@ export abstract class BaseController {
       error: {
         code: error.code,
         message: error.message,
-      },
+      } as Exclude<APIError<ErrorCode>, { fields: FieldError[] }>,
     });
   }
 
