@@ -1,24 +1,30 @@
-import { TextUtil } from '@talknest/core/utils';
+import { type InvalidRequestInputError } from '@talknest/errors/request';
 import {
-  InvalidRequestBodyError,
-  MissingRequestBodyError,
-} from '@talknest/errors/request';
+  success,
+  fail,
+  type Result,
+} from '@talknest/core/application';
+
+import { validateCommandInput } from '../validate-command-input';
+import { AddEmailToListInput, addEmailToListSchema } from './inputs';
 
 export class AddEmailToListCommand {
-  private constructor(public email: string) {}
+  private constructor(public readonly props: AddEmailToListInput) {}
 
-  static fromRequest(body: unknown) {
-    if (!TextUtil.isObject<{ email: string }>(body)) {
-      throw new MissingRequestBodyError();
+  static create(
+    input: unknown,
+  ): Result<AddEmailToListCommand, InvalidRequestInputError> {
+    const inputOrError = validateCommandInput(
+      addEmailToListSchema,
+      input,
+    );
+
+    if (inputOrError.isFailure) {
+      return fail(inputOrError.getError());
     }
 
-    const requiredKeys = ['email'];
-    const missingKeys = TextUtil.getMissingKeys(body, requiredKeys);
-
-    if (missingKeys.length > 0) {
-      throw new InvalidRequestBodyError(requiredKeys);
-    }
-
-    return new AddEmailToListCommand(body.email);
+    return success(
+      new AddEmailToListCommand(inputOrError.getValue()),
+    );
   }
 }
