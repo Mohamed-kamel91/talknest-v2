@@ -1,71 +1,31 @@
-import { z } from 'zod';
-
-import { type Request, Result } from '@talknest/core/application';
 import {
-  InvalidRequestBodyError,
-  MissingRequestBodyError,
-} from '@talknest/errors/request';
+  type Result,
+  success,
+  fail,
+} from '@talknest/core/application';
+import { InvalidRequestInputError } from '@talknest/errors/request';
 
-import { type CreatePostInput, createPostSchema } from './inputs';
+import { validateCommandInput } from '../validate-command-input';
+import {
+  createPostInputSchema,
+  type CreatePostInput,
+} from './inputs';
 
 export class CreatePostCommand {
-  private constructor(private readonly props: CreatePostInput) {}
-
-  getProps(): CreatePostInput {
-    return this.props;
-  }
+  private constructor(public readonly props: CreatePostInput) {}
 
   static create(
-    input: CreatePostInput,
-  ): Result<
-    CreatePostCommand,
-    InvalidRequestBodyError | MissingRequestBodyError
-  > {
-    try {
-      const result = createPostSchema.parse(input);
+    input: unknown,
+  ): Result<CreatePostCommand, InvalidRequestInputError> {
+    const inputOrError = validateCommandInput(
+      createPostInputSchema,
+      input,
+    );
 
-      return Result.success(
-        new CreatePostCommand(result as CreatePostInput),
-      );
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const invalidKeys = Object.keys(
-          z.flattenError(error).fieldErrors,
-        );
-
-        return Result.failure(
-          new InvalidRequestBodyError(invalidKeys),
-        );
-      }
-
-      return Result.failure(new MissingRequestBodyError());
-    }
-  }
-
-  static fromRequest(
-    body: Request['body'],
-  ): Result<
-    CreatePostCommand,
-    InvalidRequestBodyError | MissingRequestBodyError
-  > {
-    const { title, postType, memberId } = body;
-
-    if (!memberId) {
-      return Result.failure(
-        new InvalidRequestBodyError(['memberId']),
-      );
+    if (inputOrError.isFailure) {
+      return fail(inputOrError.getError());
     }
 
-    if (!title) {
-      return Result.failure(new InvalidRequestBodyError(['title']));
-    }
-
-    if (!postType) {
-      return Result.failure(
-        new InvalidRequestBodyError(['postType']),
-      );
-    }
-
-    return this.create(body);
+    return success(new CreatePostCommand(inputOrError.getValue()));
   }
 }
