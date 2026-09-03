@@ -4,12 +4,11 @@ import { z } from 'zod';
 const TextPostSchema = z.object({
   title: z
     .string()
-    .min(5, 'Post title must be at least 5 characters')
-    .max(100, 'Post title must not exceed 100 characters'),
-
+    .min(5, 'Title must be at least 5 characters')
+    .max(100, 'Title must not exceed 100 characters'),
   content: z
     .string()
-    .min(5, 'Post content must be at least 5 characters')
+    .min(1, 'Post content cannot be empty')
     .max(3000, 'Post content must not exceed 3000 characters'),
   postType: z.literal('text'),
   memberId: z.string().min(1, 'Member ID is required'),
@@ -18,8 +17,8 @@ const TextPostSchema = z.object({
 const LinkPostSchema = z.object({
   title: z
     .string()
-    .min(5, 'Post title must be at least 5 characters')
-    .max(100, 'Post title must not exceed 100 characters'),
+    .min(1, 'Title must be at least 5 characters')
+    .max(100, 'Title must not exceed 100 characters'),
   link: z.url('Post link must be a valid URL'),
   postType: z.literal('link'),
   memberId: z.string().min(1, 'Member ID is required'),
@@ -43,4 +42,13 @@ export type GetPostsQueryInput = z.infer<
 
 export type GetPostsQueryOption = z.infer<
   typeof getPostsQueryInputSchema.shape.sort
+>;
+
+// Get Post by id
+export const getPostByIdQueryInputSchema = z.object({
+  postId: z.string().min(1),
+});
+
+export type GetPostByIdQueryInput = z.infer<
+  typeof getPostByIdQueryInputSchema
 >;
