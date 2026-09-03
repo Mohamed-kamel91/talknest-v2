@@ -4,9 +4,9 @@ import {
 } from '@talknest/api/posts';
 import { EventBus } from '@talknest/bus';
 
-import { CreatePost } from './use-cases/create-post/create-post';
 import { IMembersRepository } from '../../members/repos/ports/members-repository';
 import { IPostsRepository } from '../repos/ports/posts-repository';
+import { CreatePost } from './use-cases/create-post/create-post';
 import { GetPostDetails } from './use-cases/create-post/get-post-details';
 
 export class PostsService {

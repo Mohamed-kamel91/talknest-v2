@@ -1,5 +1,9 @@
-import { type ErrorCode } from '../error-codes';
 import { CustomError, errorCategories } from '../custom';
+
+export type FieldError = {
+  field: string;
+  message: string;
+};
 
 export type ApplicationError =
   | ValidationError
@@ -10,14 +14,10 @@ export type ApplicationError =
 
 export abstract class ValidationError extends CustomError {
   readonly category = errorCategories.VALIDATION;
-  abstract readonly code: ErrorCode;
 
   constructor(
     message: string,
-    readonly fieldErrors?: Array<{
-      field: string;
-      message: string;
-    }>,
+    readonly fieldErrors?: FieldError[],
   ) {
     super(message);
   }
@@ -25,7 +25,6 @@ export abstract class ValidationError extends CustomError {
 
 export abstract class NotFoundError extends CustomError {
   readonly category = errorCategories.NOT_FOUND;
-  abstract readonly code: ErrorCode;
 
   constructor(message: string) {
     super(message);
@@ -34,7 +33,6 @@ export abstract class NotFoundError extends CustomError {
 
 export abstract class ConflictError extends CustomError {
   readonly category = errorCategories.CONFLICT;
-  abstract readonly code: ErrorCode;
 
   constructor(message: string) {
     super(message);
@@ -43,7 +41,6 @@ export abstract class ConflictError extends CustomError {
 
 export abstract class UnauthorizedError extends CustomError {
   readonly category = errorCategories.UNAUTHORIZED;
-  abstract readonly code: ErrorCode;
 
   constructor(message: string) {
     super(message);
@@ -52,7 +49,6 @@ export abstract class UnauthorizedError extends CustomError {
 
 export abstract class ForbiddenError extends CustomError {
   readonly category = errorCategories.FORBIDDEN;
-  abstract readonly code: ErrorCode;
 
   constructor(message: string) {
     super(message);

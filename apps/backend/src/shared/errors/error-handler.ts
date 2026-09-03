@@ -8,10 +8,12 @@ import {
 import { FailureAPIResponse } from '@talknest/api';
 import { InternalServerError } from '@talknest/errors/server';
 import { CustomError, ErrorCode } from '@talknest/errors';
+
 import {
   CATEGORY_TO_STATUS,
   httpStatus,
 } from '../infra/http/http-status';
+import { toApiError } from '../infra/http/to-api-error';
 
 export const errorHandler: ErrorRequestHandler = (
   err: unknown,
@@ -26,10 +28,7 @@ export const errorHandler: ErrorRequestHandler = (
       success: false,
       status,
       data: null,
-      error: {
-        code: err.code,
-        message: err.message,
-      },
+      error: toApiError(err),
     });
   }
 

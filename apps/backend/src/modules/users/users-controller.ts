@@ -1,11 +1,7 @@
 import { type Request, type Response } from 'express';
 import { randomUUID } from 'node:crypto';
 
-import {
-  CreateUserCommand,
-  CreateUserAPIResponse,
-  UserDTO,
-} from '@talknest/api/users';
+import { CreateUserCommand, type UserDTO } from '@talknest/api/users';
 
 import { BaseController } from '../../shared/infra/http';
 
@@ -15,20 +11,20 @@ export class UsersController extends BaseController {
   }
 
   public async createUser(req: Request, res: Response) {
-    const command = CreateUserCommand.fromRequest(req.body);
+    const commandOrError = CreateUserCommand.create(req.body);
 
-    if (command.isFailure()) {
-      return this.fail(res, command.getError());
+    if (commandOrError.isFailure) {
+      return this.fail(res, commandOrError.getError());
     }
 
-    const user = command.getValue();
+    const user = commandOrError.getValue();
 
     const temporaryUserResponseDTO: UserDTO = {
       id: randomUUID(),
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
+      email: user.props.email,
+      firstName: user.props.firstName,
+      lastName: user.props.lastName,
+      username: user.props.username,
     };
 
     return this.created(res, temporaryUserResponseDTO);

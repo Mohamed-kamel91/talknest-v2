@@ -1,10 +1,10 @@
-type FieldError = { field: string; message: string };
+import { errorCategories } from '@talknest/errors';
+import { type FieldError } from '@talknest/errors/application';
 
-export type APIError<U extends string> = {
-  code: U;
-  message: string;
-  fields?: FieldError[];
-};
+export type APIError<U extends string> =
+  U extends typeof errorCategories.VALIDATION
+    ? { message: string; code: U; fields: FieldError[] }
+    : { message: string; code: U; fields?: never };
 
 export type SuccessAPIResponse<Data> = {
   success: true;

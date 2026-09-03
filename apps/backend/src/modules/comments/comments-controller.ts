@@ -20,7 +20,7 @@ export class CommentsController extends BaseController {
       postId as string,
     );
 
-    if (result.isFailure()) {
+    if (result.isFailure) {
       return this.fail(res, result.getError());
     }
 
@@ -32,20 +32,17 @@ export class CommentsController extends BaseController {
     res: express.Response,
     next: express.NextFunction,
   ) {
-    const command = PostCommentCommand.fromRequest(
-      req.body,
-      req.user,
-    );
+    const commandOrError = PostCommentCommand.create(req.body);
 
-    if (command.isFailure()) {
-      return this.fail(res, command.getError());
+    if (commandOrError.isFailure) {
+      return this.fail(res, commandOrError.getError());
     }
 
     const result = await this.commentsService.postComment(
-      command.getValue(),
+      commandOrError.getValue(),
     );
 
-    if (result.isFailure()) {
+    if (result.isFailure) {
       return this.fail(res, result.getError());
     }
 

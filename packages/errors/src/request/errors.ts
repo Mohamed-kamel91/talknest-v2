@@ -1,4 +1,4 @@
-import { ValidationError } from '../application';
+import { FieldError, ValidationError } from '../application';
 import { requestErrorCodes } from './codes';
 
 export type RequestError =
@@ -6,7 +6,7 @@ export type RequestError =
   | InvalidRequestBodyError
   | MissingRequestQueryParamsError
   | InvalidRequestQueryParamsError
-  | InvalidInputError;
+  | InvalidRequestInputError;
 
 export class MissingRequestBodyError extends ValidationError {
   readonly code = requestErrorCodes.MISSING_REQUEST_BODY;
@@ -42,10 +42,10 @@ export class InvalidRequestQueryParamsError extends ValidationError {
   }
 }
 
-export class InvalidInputError extends ValidationError {
-  readonly code = requestErrorCodes.INVALID_INPUT;
+export class InvalidRequestInputError extends ValidationError {
+  readonly code = requestErrorCodes.INVALID_REQUEST_INPUT;
 
-  constructor(fields: string[]) {
-    super('Invalid input: ' + fields.join(', '));
+  constructor(fieldErrors: FieldError[]) {
+    super('One or more fields are invalid', fieldErrors);
   }
 }
