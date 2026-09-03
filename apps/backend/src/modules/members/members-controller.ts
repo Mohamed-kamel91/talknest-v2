@@ -18,20 +18,17 @@ export class MembersController extends BaseController {
     req: express.Request,
     res: express.Response,
   ) {
-    const command = CreateMemberCommand.fromRequest(
-      req.user,
-      req.body,
-    );
+    const commandOrError = CreateMemberCommand.create(req.body);
 
-    if (command.isFailure()) {
-      return this.fail(res, command.getError());
+    if (commandOrError.isFailure) {
+      return this.fail(res, commandOrError.getError());
     }
 
     const result = await this.memberService.createMember(
-      command.getValue(),
+      commandOrError.getValue(),
     );
 
-    if (result.isFailure()) {
+    if (result.isFailure) {
       return this.fail(res, result.getError());
     }
 

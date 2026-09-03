@@ -14,15 +14,21 @@ export class VotesController extends BaseController {
     req: express.Request,
     res: express.Response,
   ) {
-    const command = new VoteOnPostCommand({
+    const commandOrError = VoteOnPostCommand.create({
       postId: req.params.postId as string,
       voteType: req.body.voteType,
       memberId: req.body.memberId,
     });
 
-    const result = await this.votesService.castVoteOnPost(command);
+    if (commandOrError.isFailure) {
+      return this.fail(res, commandOrError.getError());
+    }
 
-    if (result.isFailure()) {
+    const result = await this.votesService.castVoteOnPost(
+      commandOrError.getValue(),
+    );
+
+    if (result.isFailure) {
       return this.fail(res, result.getError());
     }
 

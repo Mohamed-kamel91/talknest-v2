@@ -14,10 +14,11 @@ export class MarketingController extends BaseController {
     req: express.Request,
     res: express.Response,
   ) => {
-    const command = AddEmailToListCommand.fromRequest(req.body);
+    const commandOrError = AddEmailToListCommand.create(req.body);
 
-    const result =
-      await this.marketingService.addEmailToList(command);
+    const result = await this.marketingService.addEmailToList(
+      commandOrError.getValue(),
+    );
 
     return this.created(res, { subscription: result });
   };

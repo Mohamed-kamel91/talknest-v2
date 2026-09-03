@@ -14,30 +14,21 @@ export class PostsController extends BaseController {
     super();
   }
 
-  public async getPosts(req: express.Request, res: express.Response) {
-    const query = GetPostsQuery.fromRequest(req.query);
-
-    const result = await this.postsService.getPosts(query);
-    const posts = result.map((p) => p.toDTO());
-
-    return this.ok(res, posts);
-  }
-
   public async createPost(
     req: express.Request,
     res: express.Response,
   ) {
-    const command = CreatePostCommand.fromRequest(req.body);
+    const commandOrError = CreatePostCommand.create(req.body);
 
-    if (command.isFailure()) {
-      return this.fail(res, command.getError());
+    if (commandOrError.isFailure) {
+      return this.fail(res, commandOrError.getError());
     }
 
     const createPostresult = await this.postsService.createPost(
-      command.getValue(),
+      commandOrError.getValue(),
     );
 
-    if (createPostresult.isFailure()) {
+    if (createPostresult.isFailure) {
       return this.fail(res, createPostresult.getError());
     }
 
@@ -46,24 +37,42 @@ export class PostsController extends BaseController {
     const postDetailsResult =
       await this.postsService.getPostDetailsById(newPost.id);
 
-    if (postDetailsResult.isFailure()) {
+    if (postDetailsResult.isFailure) {
       return this.fail(res, postDetailsResult.getError());
     }
 
     return this.ok(res, postDetailsResult.getValue().toDTO());
   }
 
+  public async getPosts(req: express.Request, res: express.Response) {
+    const queryOrError = GetPostsQuery.create(req.query);
+
+    const result = await this.postsService.getPosts(
+      queryOrError.getValue(),
+    );
+
+    const posts = result.map((p) => p.toDTO());
+
+    return this.ok(res, posts);
+  }
+
   public async getPostById(
     req: express.Request,
     res: express.Response,
   ) {
-    const query = GetPostByIdQuery.fromRequest(req);
+    const params = req.query || req.params;
+
+    const queryOrError = GetPostByIdQuery.create(params);
+
+    if (queryOrError.isFailure) {
+      return this.fail(res, queryOrError.getError());
+    }
 
     const result = await this.postsService.getPostDetailsById(
-      query.postId,
+      queryOrError.getValue().props.postId,
     );
 
-    if (result.isFailure()) {
+    if (result.isFailure) {
       return this.fail(res, result.getError());
     }
 
