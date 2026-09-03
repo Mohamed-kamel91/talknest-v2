@@ -1,50 +1,32 @@
 import {
-  type Request,
-  Result,
   fail,
   success,
+  type Result,
 } from '@talknest/core/application';
-import { InvalidRequestBodyError } from '@talknest/errors/request';
+import { type InvalidRequestInputError } from '@talknest/errors/request';
 
 import { type DecodedIdToken } from '../users';
-import { type CreateMemberInput } from './inputs';
+import { validateCommandInput } from '../validate-command-input';
+import {
+  createMemberInputSchema,
+  type CreateMemberInput,
+} from './inputs';
 
 export class CreateMemberCommand {
   private constructor(public readonly props: CreateMemberInput) {}
 
   static create(
-    decodedToken: DecodedIdToken | undefined,
-    body: Request['body'],
-  ): Result<CreateMemberCommand, InvalidRequestBodyError> {
-    const email = decodedToken?.email || body.email;
-    const userId = decodedToken?.uid || body.userId;
-    const username = body.username;
-
-    if (!email) {
-      return fail(new InvalidRequestBodyError(['email']));
-    }
-
-    if (!userId) {
-      return fail(new InvalidRequestBodyError(['userId']));
-    }
-
-    if (!username) {
-      return fail(new InvalidRequestBodyError(['username']));
-    }
-
-    return success(
-      new CreateMemberCommand({
-        userId,
-        username,
-        email,
-      }),
+    input: unknown,
+  ): Result<CreateMemberCommand, InvalidRequestInputError> {
+    const inputOrError = validateCommandInput(
+      createMemberInputSchema,
+      input,
     );
-  }
 
-  static fromRequest(
-    decodedToken: DecodedIdToken | undefined,
-    body: Request['body'],
-  ): Result<CreateMemberCommand, InvalidRequestBodyError> {
-    return this.create(decodedToken, body);
+    if (inputOrError.isFailure) {
+      return fail(inputOrError.getError());
+    }
+
+    return success(new CreateMemberCommand(inputOrError.getValue()));
   }
 }
