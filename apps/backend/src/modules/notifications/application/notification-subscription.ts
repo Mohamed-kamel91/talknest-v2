@@ -1,10 +1,10 @@
 import { EventBus } from '@talknest/bus';
 
-import { NotificationsService } from './notifications-service';
-import { MemberReputationLevelUpgraded } from '../../members/domain/member-reputation-level-upgraded';
+import { MemberReputationLevelUpgraded } from '../../members/domain/events/member-reputation-level-upgraded';
 import { SendNotificationCommand } from '../notification-commands';
+import { NotificationsService } from './notifications-service';
 
-export class NotificationsSubscriptions {
+export class NotificationsSubscription {
   constructor(
     private eventBus: EventBus,
     private notificationService: NotificationsService,

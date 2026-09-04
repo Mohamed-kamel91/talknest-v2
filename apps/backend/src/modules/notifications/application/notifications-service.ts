@@ -1,6 +1,6 @@
-import { SendNotification } from './use-cases/send-notification/send-notification';
+import { SendNotificationUseCase } from './use-cases/send-notification/send-notification';
 
-import { ITransactionalEmailAPI } from '../external-services/ports/transactional-email-api';
+import { ITransactionalEmailAPI } from './ports/transactional-email-api';
 import { SendNotificationCommand } from '../notification-commands';
 
 export class NotificationsService {
@@ -11,8 +11,8 @@ export class NotificationsService {
   }
 
   public sendNotification(command: SendNotificationCommand) {
-    return new SendNotification(this.transactionalEmailApi).execute(
-      command,
-    );
+    return new SendNotificationUseCase(
+      this.transactionalEmailApi,
+    ).execute(command);
   }
 }

@@ -2,11 +2,11 @@ import { Result, UseCase } from '@talknest/core/application';
 import { NotFoundError } from '@talknest/errors/application';
 
 import { SendNotificationCommand } from '../../../notification-commands';
-import { ITransactionalEmailAPI } from '../../../external-services/ports/transactional-email-api';
+import { ITransactionalEmailAPI } from '../../ports/transactional-email-api';
 
 type SendNotificationError = NotFoundError;
 
-export class SendNotification implements UseCase<
+export class SendNotificationUseCase implements UseCase<
   SendNotificationCommand,
   Result<void, SendNotificationError>
 > {

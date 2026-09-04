@@ -1,18 +1,20 @@
 import { EventBus } from '@talknest/bus';
 
 import { ApplicationModule } from '../../shared/modules/application-module';
-import { NotificationsService } from './application/notifications-service';
-import { NotificationsSubscriptions } from './application/notification-subscriptions';
-import type { ITransactionalEmailAPI } from './external-services/ports/transactional-email-api';
-import { TransactionalEmailAPISpy } from './external-services/adapters/transactional-email-api/transactional-email-api-spy';
-import { MailjetTransactionalEmail } from './external-services/adapters/transactional-email-api/mailjet-transactional-email-api';
-
 import { type Config } from '../../shared/config';
+
+import {
+  MailjetTransactionalEmail,
+  TransactionalEmailAPISpy,
+} from './infra/mail-jet';
+import type { ITransactionalEmailAPI } from './application/ports/transactional-email-api';
+import { NotificationsService } from './application/notifications-service';
+import { NotificationsSubscription } from './application/notification-subscription';
 
 export class NotificationsModule extends ApplicationModule {
   private transactionalEmailApi: ITransactionalEmailAPI;
   private notificationsService: NotificationsService;
-  private notificationsSubscriptions: NotificationsSubscriptions;
+  private notificationsSubscriptions: NotificationsSubscription;
 
   private constructor(
     private eventBus: EventBus,
@@ -39,7 +41,7 @@ export class NotificationsModule extends ApplicationModule {
   }
 
   private createNotificationSubscriptions() {
-    return new NotificationsSubscriptions(
+    return new NotificationsSubscription(
       this.eventBus,
       this.notificationsService,
     );
