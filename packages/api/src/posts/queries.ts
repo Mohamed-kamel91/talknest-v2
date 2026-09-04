@@ -15,13 +15,7 @@ import { validateQueryInput } from '../validate-query-input';
 
 // Get Post By ID
 export class GetPostByIdQuery {
-  private constructor(
-    private readonly props: GetPostByIdQueryInput,
-  ) {}
-
-  get postId() {
-    return this.props.postId;
-  }
+  private constructor(public readonly props: GetPostByIdQueryInput) {}
 
   static create(
     input: unknown,
@@ -41,7 +35,7 @@ export class GetPostByIdQuery {
 
 // Get Posts
 export class GetPostsQuery {
-  constructor(private readonly props: GetPostsQueryInput) {}
+  constructor(public readonly props: GetPostsQueryInput) {}
 
   static create(
     input: unknown,
