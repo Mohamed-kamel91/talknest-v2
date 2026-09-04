@@ -3,8 +3,8 @@ import { type Auth, getAuth } from 'firebase-admin/auth';
 import { initializeApp, cert } from 'firebase-admin/app';
 
 import { User } from '../../domain/user';
-import { IdentityServiceAPI } from '../ports/identity-service-api';
-import { UserNotFoundError } from '../../users-errors';
+import { IdentityServiceAPI } from '../../application/ports/identity-service-api';
+import { UserNotFoundError } from '../../domain/errors/users-errors';
 
 export class FirebaseAuth implements IdentityServiceAPI {
   private firebaseAuth: Auth;

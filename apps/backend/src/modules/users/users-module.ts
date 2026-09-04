@@ -1,11 +1,11 @@
-import { IdentityServiceAPI } from './external-services/ports/identity-service-api';
-import { UserIdentityService } from './application/user-identity-service';
-import { FirebaseAuth } from './external-services/adapters/firebase-auth';
-import { UsersController } from './users-controller';
-import { UsersRouter } from './users-router';
-
 import { type Config } from '../../shared/config';
 import { WebServer } from '../../shared/infra/http';
+
+import type { IdentityServiceAPI } from './application/ports/identity-service-api';
+import { UserIdentityService } from './application/user-identity-service';
+import { FirebaseAuth } from './infra/firebase/firebase-auth';
+import { UsersController } from './presentation/http/controllers';
+import { UsersRouter } from './presentation/http/routes/users-router';
 
 export class UsersModule {
   private identityServiceAPI: IdentityServiceAPI;
@@ -19,7 +19,7 @@ export class UsersModule {
     this.usersController = this.createUserController();
     this.usersRouter = this.createUserRouter();
 
-    this.setupRoutes();
+    this.usersRouter.register();
   }
 
   public static build(config: Config) {
@@ -54,9 +54,5 @@ export class UsersModule {
 
   private createUserRouter() {
     return new UsersRouter(this.usersController);
-  }
-
-  private setupRoutes() {
-    this.usersRouter.register();
   }
 }

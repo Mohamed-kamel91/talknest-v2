@@ -1,5 +1,5 @@
-import { IdentityServiceAPI } from '../external-services/ports/identity-service-api';
-import { UserNotFoundError } from '../users-errors';
+import { IdentityServiceAPI } from './ports/identity-service-api';
+import { UserNotFoundError } from '../domain/errors/users-errors';
 import { UserDetails } from '../domain/user-details';
 
 export class UserIdentityService {

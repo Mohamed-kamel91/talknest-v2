@@ -1,16 +1,16 @@
-import { type Request, type Response } from 'express';
+import express from 'express';
 import { randomUUID } from 'node:crypto';
 
-import { CreateUserCommand, type UserDTO } from '@talknest/api/users';
+import { CreateUserCommand, UserDTO } from '@talknest/api/users';
 
-import { BaseController } from '../../shared/infra/http';
+import { BaseController } from '../../../../../shared/infra/http';
 
-export class UsersController extends BaseController {
+export class CreateUserController extends BaseController {
   constructor() {
     super();
   }
 
-  public async createUser(req: Request, res: Response) {
+  async executeImpl(req: express.Request, res: express.Response) {
     const commandOrError = CreateUserCommand.create(req.body);
 
     if (commandOrError.isFailure) {
@@ -27,6 +27,6 @@ export class UsersController extends BaseController {
       username: user.props.username,
     };
 
-    return this.created(res, temporaryUserResponseDTO);
+    this.created(res, temporaryUserResponseDTO);
   }
 }
