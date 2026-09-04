@@ -3,13 +3,13 @@ import { PostCommentCommand } from '@talknest/api/comments';
 import { EventBus } from '@talknest/bus';
 
 import {
-  PostComment,
+  PostCommentUseCase,
   PostCommentError,
 } from './use-cases/post-comment/post-comment';
-import { Comment } from '../domain/comment';
-import { ICommentRepository } from '../repos/ports/comment-repository';
-import { IPostsRepository } from '../../posts/repos/ports/posts-repository';
-import { IMembersRepository } from '../../members/repos/ports/members-repository';
+import { Comment } from '../domain/entities/comment';
+import { ICommentRepository } from './ports/comment-repository';
+import { IPostsRepository } from '../../posts/application/posts-repository';
+import { IMembersRepository } from '../../members/application/ports/members-repository';
 
 export class CommentsService {
   constructor(
@@ -19,10 +19,10 @@ export class CommentsService {
     private membersRepo: IMembersRepository,
   ) {}
 
-  async postComment(
+  public postComment(
     command: PostCommentCommand,
   ): Promise<Result<Comment, PostCommentError>> {
-    return new PostComment(
+    return new PostCommentUseCase(
       this.commentRepo,
       this.postRepo,
       this.membersRepo,
@@ -30,7 +30,7 @@ export class CommentsService {
     ).execute(command);
   }
 
-  async getCommentsByPostId(
+  public async getCommentsByPostId(
     postId: string,
   ): Promise<Result<Comment[], PostCommentError>> {
     const comments =

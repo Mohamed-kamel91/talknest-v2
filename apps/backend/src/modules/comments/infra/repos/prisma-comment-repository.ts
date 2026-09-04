@@ -1,9 +1,9 @@
 import { IDatabase, Prisma } from '@talknest/database';
 
-import { Comment } from '../../domain/comment';
-import { ICommentRepository } from '../ports/comment-repository';
+import { Comment } from '../../domain/entities/comment';
+import { ICommentRepository } from '../../application/ports/comment-repository';
 
-export class ProductionCommentsRepository implements ICommentRepository {
+export class PrismaCommentsRepository implements ICommentRepository {
   constructor(private database: IDatabase) {}
 
   async save(
