@@ -1,6 +1,6 @@
 import type { EmailSubscription } from '@talknest/api/marketing';
 
-import type { IContactListAPI } from '../../ports/contact-list-api';
+import type { IContactListAPI } from '../../application/ports/contact-list-api';
 
 export class MailchimpContactList implements IContactListAPI {
   async addEmailToList(email: string): Promise<EmailSubscription> {

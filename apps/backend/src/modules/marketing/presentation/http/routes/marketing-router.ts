@@ -1,5 +1,5 @@
-import { BaseRouter } from '../../shared/infra/http/base-router';
-import { type MarketingController } from './marketing-controller';
+import { BaseRouter } from '../../../../../shared/infra/http/base-router';
+import { MarketingController } from '../controllers';
 
 export class MarketingRouter extends BaseRouter {
   public readonly basePath: string = '/marketing';
@@ -9,6 +9,6 @@ export class MarketingRouter extends BaseRouter {
   }
 
   protected setupRoutes(): void {
-    this.router.post('/', this.controller.addEmailToList);
+    this.router.post('/', this.controller.addEmailToList().execute);
   }
 }
