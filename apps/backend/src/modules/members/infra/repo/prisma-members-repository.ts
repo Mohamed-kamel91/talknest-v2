@@ -1,9 +1,9 @@
 import { IDatabase, Prisma } from '@talknest/database';
 
 import { Member } from '../../domain/member';
-import { IMembersRepository } from '../ports/members-repository';
+import { IMembersRepository } from '../../application/ports/members-repository';
 
-export class ProductionMembersRepository implements IMembersRepository {
+export class PrismaMembersRepository implements IMembersRepository {
   constructor(private database: IDatabase) {}
 
   async getMemberByUserId(userId: string): Promise<Member | null> {

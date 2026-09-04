@@ -6,7 +6,7 @@ import { InMemoryEventBus } from '@talknest/bus';
 
 import { CreateMember } from './create-member';
 import { Member } from '../../../domain/member';
-import { ProductionMembersRepository } from '../../../repos/adapters/production-members-repository';
+import { ProductionMembersRepository } from '../../../infra/repo/prisma-members-repository';
 import { Config } from '../../../../../shared/config';
 
 describe('createMember', () => {

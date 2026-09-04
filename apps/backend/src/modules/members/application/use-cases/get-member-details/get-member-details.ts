@@ -4,12 +4,12 @@ import {
 } from '@talknest/core/application';
 import { NotFoundError } from '@talknest/errors/application';
 
-import { IMembersRepository } from '../../../repos/ports/members-repository';
+import { IMembersRepository } from '../../ports/members-repository';
 import { Member } from '../../../domain/member';
 
 export type GetMemberDetailsError = NotFoundError;
 
-export class GetMemberDetails implements UseCase<
+export class GetMemberDetailsUseCase implements UseCase<
   string,
   Result<Member, GetMemberDetailsError>
 > {

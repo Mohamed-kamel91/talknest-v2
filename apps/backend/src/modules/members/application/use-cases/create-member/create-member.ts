@@ -12,11 +12,11 @@ import { CreateMemberCommand } from '@talknest/api/members';
 import { EventBus } from '@talknest/bus';
 
 import { Member } from '../../../domain/member';
-import { IMembersRepository } from '../../../repos/ports/members-repository';
+import { IMembersRepository } from '../../ports/members-repository';
 
 export type CreateMemberError = NotFoundError | ConflictError;
 
-export class CreateMember implements UseCase<
+export class CreateMemberUseCase implements UseCase<
   CreateMemberCommand,
   Result<Member, CreateMemberError>
 > {

@@ -3,15 +3,15 @@ import { type Result } from '@talknest/core/application';
 import { EventBus } from '@talknest/bus';
 
 import {
-  CreateMember,
+  CreateMemberUseCase,
   CreateMemberError,
 } from './use-cases/create-member/create-member';
 import {
-  GetMemberDetails,
+  GetMemberDetailsUseCase,
   GetMemberDetailsError,
 } from './use-cases/get-member-details/get-member-details';
 import { Member } from '../domain/member';
-import { IMembersRepository } from '../repos/ports/members-repository';
+import { IMembersRepository } from './ports/members-repository';
 
 export class MemberService {
   constructor(
@@ -22,7 +22,7 @@ export class MemberService {
   public createMember(
     command: CreateMemberCommand,
   ): Promise<Result<Member, CreateMemberError>> {
-    return new CreateMember(
+    return new CreateMemberUseCase(
       this.membersRepository,
       this.eventBus,
     ).execute(command);
@@ -31,8 +31,8 @@ export class MemberService {
   public getMemberDetails(
     userId: string,
   ): Promise<Result<Member, GetMemberDetailsError>> {
-    return new GetMemberDetails(this.membersRepository).execute(
-      userId,
-    );
+    return new GetMemberDetailsUseCase(
+      this.membersRepository,
+    ).execute(userId);
   }
 }

@@ -1,15 +1,15 @@
 import { EventBus } from '@talknest/bus';
 import { IDatabase } from '@talknest/database';
 
-import { ProductionMembersRepository } from './repos/adapters/production-members-repository';
-import { IMembersRepository } from './repos/ports/members-repository';
-import { MemberService } from './application/members-service';
-import { MembersController } from './members-controller';
-import { MembersRouter } from './members-routers';
-
 import { ApplicationModule } from '../../shared/modules/application-module';
 import { Config } from '../../shared/config';
 import { WebServer } from '../../shared/infra/http';
+
+import { PrismaMembersRepository } from './infra/repo/prisma-members-repository';
+import { IMembersRepository } from './application/ports/members-repository';
+import { MemberService } from './application/members-service';
+import { MembersController } from './presentation/http/controllers';
+import { MembersRouter } from './presentation/http/routes/members-routers';
 
 export class MembersModule extends ApplicationModule {
   private membersRepository: IMembersRepository;
@@ -29,7 +29,7 @@ export class MembersModule extends ApplicationModule {
     this.membersController = this.createMembersController(config);
     this.membersRouter = this.createMembersRouter();
 
-    this.setupRoutes();
+    this.membersRouter.register();
   }
 
   public static build(
@@ -67,14 +67,10 @@ export class MembersModule extends ApplicationModule {
   }
 
   private createMembersRepository(db: IDatabase) {
-    return new ProductionMembersRepository(db);
+    return new PrismaMembersRepository(db);
   }
 
   private createMembersRouter() {
     return new MembersRouter(this.membersController);
-  }
-
-  private setupRoutes() {
-    this.membersRouter.register();
   }
 }

@@ -1,5 +1,5 @@
-import { BaseRouter } from '../../shared/infra/http/base-router';
-import { type MembersController } from './members-controller';
+import { BaseRouter } from '../../../../../shared/infra/http';
+import { MembersController } from '../controllers';
 
 export class MembersRouter extends BaseRouter {
   public readonly basePath: string = '/members';
@@ -9,6 +9,6 @@ export class MembersRouter extends BaseRouter {
   }
 
   protected setupRoutes(): void {
-    this.router.post('/', this.controller.createMember);
+    this.router.post('/', this.controller.createMember().execute);
   }
 }
