@@ -1,5 +1,5 @@
-import { BaseRouter } from '../../shared/infra/http/base-router';
-import { type VotesController } from './votes-controller';
+import { BaseRouter } from '../../../../../shared/infra/http';
+import { VotesController } from '../controllers';
 
 export class VotesRouter extends BaseRouter {
   public readonly basePath: string = '/votes';
@@ -11,7 +11,7 @@ export class VotesRouter extends BaseRouter {
   protected setupRoutes(): void {
     this.router.post(
       '/post/:postId/new',
-      this.controller.castVoteOnPost,
+      this.controller.castVoteOnPost().execute,
     );
   }
 }

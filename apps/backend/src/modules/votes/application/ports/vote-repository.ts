@@ -1,7 +1,7 @@
 import { CommentVote } from '../../domain/comment-vote';
 import { PostVote } from '../../domain/post-vote';
-import { MemberCommentVotesRoundup } from '../../domain/member-comment-votes-roundup';
-import { MemberPostVotesRoundup } from '../../domain/member-post-votes-roundup';
+import { MemberCommentVotesRoundup } from '../read-models/member-comment-votes-roundup';
+import { MemberPostVotesRoundup } from '../read-models/member-post-votes-roundup';
 
 export interface IVoteRepository {
   findVoteByMemberAndPostId(

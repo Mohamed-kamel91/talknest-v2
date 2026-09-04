@@ -1,11 +1,11 @@
 import { EventBus } from '@talknest/bus';
 import { UpdateMemberReputationScoreCommand } from '@talknest/api/votes';
 
-import { PostDownvoted } from '../domain/post-downvoted';
-import { PostUpvoted } from '../domain/post-upvoted';
-import { CommentUpvoted } from '../domain/comment-upvoted';
-import { CommentDownvoted } from '../domain/comment-downvoted';
-import { VotesService } from './votes-service';
+import { PostDownvoted } from '../../domain/events/post-downvoted';
+import { PostUpvoted } from '../../domain/events/post-upvoted';
+import { CommentUpvoted } from '../../domain/events/comment-upvoted';
+import { CommentDownvoted } from '../../domain/events/comment-downvoted';
+import { VotesService } from '../votes-service';
 
 export class VotesSubscriptions {
   constructor(

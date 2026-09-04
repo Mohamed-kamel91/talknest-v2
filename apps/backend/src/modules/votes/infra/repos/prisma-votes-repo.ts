@@ -1,12 +1,12 @@
 import { IDatabase, Prisma } from '@talknest/database';
 
-import { IVoteRepository } from '../ports/vote-repository';
+import { IVoteRepository } from '../../application/ports/vote-repository';
 import { CommentVote } from '../../domain/comment-vote';
 import { PostVote } from '../../domain/post-vote';
-import { MemberCommentVotesRoundup } from '../../domain/member-comment-votes-roundup';
-import { MemberPostVotesRoundup } from '../../domain/member-post-votes-roundup';
+import { MemberCommentVotesRoundup } from '../../application/read-models/member-comment-votes-roundup';
+import { MemberPostVotesRoundup } from '../../application/read-models/member-post-votes-roundup';
 
-export class ProductionVotesRepository implements IVoteRepository {
+export class PrismaVotesRepository implements IVoteRepository {
   constructor(private database: IDatabase) {}
 
   async getMemberCommentVotesRoundup(

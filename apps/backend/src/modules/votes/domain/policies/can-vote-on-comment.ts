@@ -1,7 +1,5 @@
-import {} from '@talknest/api/members';
-
-import { Comment } from '../../../../comments/domain/comment';
-import { Member } from '../../../../members/domain/member';
+import { Comment } from '../../../comments/domain/comment';
+import { Member } from '../../../members/domain/member';
 
 export class CanVoteOnCommentPolicy {
   public static isAllowed(member: Member, comment: Comment): boolean {

@@ -4,9 +4,9 @@ import { UpdateMemberReputationScoreCommand } from '@talknest/api/votes';
 import { DatabaseError } from '@talknest/errors/server';
 
 import { Member } from '../../../../members/domain/member';
-import { IVoteRepository } from '../../../../votes/repos/ports/vote-repository';
-import { IMembersRepository } from '../../../../members/repos/ports/members-repository';
-import { MemberNotFoundError } from '../../../../members/member-errors';
+import { IVoteRepository } from '../../ports/vote-repository';
+import { IMembersRepository } from '../../../../members/application/ports/members-repository';
+import { MemberNotFoundError } from '../../../../members/domain/errors/member-errors';
 
 type UpdateMemberReputationError =
   MemberNotFoundError | DatabaseError;

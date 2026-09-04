@@ -1,20 +1,20 @@
 import { IDatabase } from '@talknest/database';
 import { EventBus } from '@talknest/bus';
 
-import { VotesSubscriptions } from './application/votes-subscriptions';
-import { ProductionVotesRepository } from './repos/adapters/production-votes-repo';
-import type { IVoteRepository } from './repos/ports/vote-repository';
-import { VotesService } from './application/votes-service';
-import { VotesController } from './votes-controller';
-
-import { IMembersRepository } from '../members/repos/ports/members-repository';
-import { ICommentRepository } from '../comments/repos/ports/comment-repository';
-import { IPostsRepository } from '../posts/repos/ports/posts-repository';
-
 import { WebServer } from '../../shared/infra/http';
 import { Config } from '../../shared/config';
 import { ApplicationModule } from '../../shared/modules/application-module';
-import { VotesRouter } from './votes-router';
+
+import type { IMembersRepository } from '../members/application/ports/members-repository';
+import type { ICommentRepository } from '../comments/application/ports/comment-repository';
+import type { IPostsRepository } from '../posts/application/ports/posts-repository';
+
+import { VotesSubscriptions } from './application/subscriptions/votes-subscriptions';
+import type { IVoteRepository } from './application/ports/vote-repository';
+import { PrismaVotesRepository } from './infra/repos/prisma-votes-repo';
+import { VotesService } from './application/votes-service';
+import { VotesController } from './presentation/http/controllers';
+import { VotesRouter } from './presentation/http/routes/votes-router';
 
 export class VotesModule extends ApplicationModule {
   private votesRepository: IVoteRepository;
@@ -38,7 +38,7 @@ export class VotesModule extends ApplicationModule {
     this.votesController = this.createVotesController();
     this.votesRouter = this.createPostsRouter();
 
-    this.setupRoutes();
+    this.votesRouter.register();
   }
 
   public static build(
@@ -84,7 +84,7 @@ export class VotesModule extends ApplicationModule {
   private createVotesRepository() {
     if (this.votesRepository) return this.votesRepository;
 
-    return new ProductionVotesRepository(this.db);
+    return new PrismaVotesRepository(this.db);
   }
 
   private createVotesService() {
@@ -103,9 +103,5 @@ export class VotesModule extends ApplicationModule {
 
   private createPostsRouter() {
     return new VotesRouter(this.votesController);
-  }
-
-  private setupRoutes() {
-    this.votesRouter.register();
   }
 }

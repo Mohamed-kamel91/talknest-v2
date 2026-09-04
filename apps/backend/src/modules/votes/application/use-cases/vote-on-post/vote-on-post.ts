@@ -3,12 +3,12 @@ import { EventBus } from '@talknest/bus';
 import { Result, success, UseCase } from '@talknest/core';
 import { DatabaseError } from '@talknest/errors/server';
 
-import { IMembersRepository } from '../../../../members/repos/ports/members-repository';
+import { IMembersRepository } from '../../../../members/application/ports/members-repository';
 
 import { PostVote } from '../../../domain/post-vote';
-import { CanVoteOnPostPolicy } from './can-vote-on-post';
-import { IPostsRepository } from '../../../../posts/repos/ports/posts-repository';
-import { IVoteRepository } from '../../../repos/ports/vote-repository';
+import { CanVoteOnPostPolicy } from '../../../domain/policies/can-vote-on-post';
+import type { IPostsRepository } from '../../../../posts/application/ports/posts-repository';
+import type { IVoteRepository } from '../../ports/vote-repository';
 
 type VoteOnPostError = DatabaseError;
 

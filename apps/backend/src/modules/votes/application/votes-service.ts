@@ -5,14 +5,14 @@ import {
 } from '@talknest/api/votes';
 import { EventBus } from '@talknest/bus';
 
+import type { ICommentRepository } from '../../comments/application/ports/comment-repository';
+import type { IMembersRepository } from '../../members/application/ports/members-repository';
+import type { IPostsRepository } from '../../posts/application/ports/posts-repository';
+
 import { UpdateMemberReputationScore } from './use-cases/update-member-reputation/update-member-reputation-score';
 import { VoteOnPost } from './use-cases/vote-on-post/vote-on-post';
 import { VoteOnComment } from './use-cases/vote-on-comment/vote-on-comment';
-
-import { ICommentRepository } from '../../comments/repos/ports/comment-repository';
-import { IMembersRepository } from '../../members/repos/ports/members-repository';
-import { IPostsRepository } from '../../posts/repos/ports/posts-repository';
-import { IVoteRepository } from '../repos/ports/vote-repository';
+import { IVoteRepository } from './ports/vote-repository';
 
 export class VotesService {
   constructor(

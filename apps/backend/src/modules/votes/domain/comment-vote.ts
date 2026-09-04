@@ -3,8 +3,8 @@ import { randomUUID } from 'node:crypto';
 import { AggregateRoot } from '@talknest/core/domain';
 import { VoteType } from '@talknest/api/votes';
 
-import { CommentUpvoted } from './comment-upvoted';
-import { CommentDownvoted } from './comment-downvoted';
+import { CommentUpvoted } from './events/comment-upvoted';
+import { CommentDownvoted } from './events/comment-downvoted';
 
 type VoteState = 'Upvoted' | 'Downvoted' | 'Default';
 
