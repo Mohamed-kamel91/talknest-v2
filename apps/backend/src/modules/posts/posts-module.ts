@@ -1,17 +1,18 @@
 import { IDatabase } from '@talknest/database';
 import { EventBus } from '@talknest/bus';
 
-import { type IPostsRepository } from './repos/ports/posts-repository';
-import { ProductionPostsRepository } from './repos/adapters/production-posts-repository';
-import { InMemoryPostsRepository } from './repos/adapters/in-memory-posts-repository';
-import { type IMembersRepository } from '../members/repos/ports/members-repository';
-import { PostsService } from './application/posts-service';
-import { PostsController } from './posts-controller';
-import { PostsRouter } from './posts-router';
-
 import { type Config } from '../../shared/config';
 import { ApplicationModule } from '../../shared/modules/application-module';
 import { WebServer } from '../../shared/infra/http';
+
+import type { IMembersRepository } from '../members/application/ports/members-repository';
+
+import type { IPostsRepository } from './application/ports/posts-repository';
+import { PrismaPostsRepository } from './infra/repos/prisma-posts-repository';
+import { InMemoryPostsRepository } from './infra/repos/in-memory-posts-repository';
+import { PostsService } from './application/posts-service';
+import { PostsController } from './presentation/http/controllers';
+import { PostsRouter } from './presentation/http/routes/posts-router';
 
 export class PostsModule extends ApplicationModule {
   private postsRepository: IPostsRepository;
@@ -31,7 +32,7 @@ export class PostsModule extends ApplicationModule {
     this.postsController = this.createPostsController();
     this.postsRouter = this.createPostsRouter();
 
-    this.setupRoutes();
+    this.postsRouter.register();
   }
 
   public static build(
@@ -66,7 +67,7 @@ export class PostsModule extends ApplicationModule {
       return new InMemoryPostsRepository();
     }
 
-    return new ProductionPostsRepository(this.database);
+    return new PrismaPostsRepository(this.database);
   }
 
   private createPostsService(membersRepository: IMembersRepository) {
@@ -83,9 +84,5 @@ export class PostsModule extends ApplicationModule {
 
   private createPostsRouter() {
     return new PostsRouter(this.postsController);
-  }
-
-  private setupRoutes() {
-    this.postsRouter.register();
   }
 }

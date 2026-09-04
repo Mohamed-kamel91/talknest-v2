@@ -1,10 +1,10 @@
-import { CreatePost } from './create-post';
-import { ProductionMembersRepository } from '../../../../members/repos/adapters/production-members-repository';
+import { CreatePostUseCase } from './create-post';
+import { PrismaMembersRepository } from '../../../../members/infra/repo/prisma-members-repository';
 import { PrismaDatabase } from '@talknest/database';
 import { InMemoryEventBus } from '@talknest/bus';
 import { CreatePostCommand } from '@talknest/api/posts';
 
-import { ProductionPostsRepository } from '../../../repos/adapters/production-posts-repository';
+import { PrismaPostsRepository } from '../../../infra/repos/prisma-posts-repository';
 import { Config } from '../../../../../shared/config';
 
 import {
@@ -16,11 +16,11 @@ describe('createPost', () => {
   let config = new Config('test:unit');
   let database = new PrismaDatabase();
 
-  let membersRepo = new ProductionMembersRepository(database);
-  let postsRepo = new ProductionPostsRepository(database);
+  let membersRepo = new PrismaMembersRepository(database);
+  let postsRepo = new PrismaPostsRepository(database);
   let eventBus = new InMemoryEventBus();
 
-  const useCase = new CreatePost(postsRepo, membersRepo, eventBus);
+  const useCase = new CreatePostUseCase(postsRepo, membersRepo, eventBus);
 
   describe('permissions & identity', () => {
     test('if the member was not found, they should not be able to create the post', async () => {

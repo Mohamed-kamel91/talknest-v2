@@ -8,15 +8,16 @@ import { DatabaseError } from '@talknest/errors/server';
 import { GetPostsQuery } from '@talknest/api/posts';
 
 import { Post } from '../../domain/post';
-import { PostReadModel } from '../../domain/post-read-model';
-import { MemberReadModel } from '../../../members/domain/member-read-model';
-import { IPostsRepository } from '../ports/posts-repository';
+
+import { MemberReadModel } from '../../../members/application/read-models/member-read-model';
+import { PostReadModel } from '../../application/read-models/post-read-model';
+import { IPostsRepository } from '../../application/ports/posts-repository';
 
 type PostModelWithMember = PostModel & {
   memberPostedBy: MemberModel;
 };
 
-export class ProductionPostsRepository implements IPostsRepository {
+export class PrismaPostsRepository implements IPostsRepository {
   constructor(private database: IDatabase) {}
 
   async getPostById(id: string): Promise<Post | null> {
@@ -49,11 +50,13 @@ export class ProductionPostsRepository implements IPostsRepository {
       },
     };
 
-    if (query.sort === 'popular') {
+    const { sort } = query.props;
+
+    if (sort === 'popular') {
       sqlQuery.orderBy = { voteScore: 'desc' };
     }
 
-    if (query.sort === 'recent') {
+    if (sort === 'recent') {
       sqlQuery.orderBy = { dateCreated: 'desc' };
     }
 

@@ -4,10 +4,10 @@ import {
 } from '@talknest/api/posts';
 import { EventBus } from '@talknest/bus';
 
-import { IMembersRepository } from '../../members/repos/ports/members-repository';
-import { IPostsRepository } from '../repos/ports/posts-repository';
-import { CreatePost } from './use-cases/create-post/create-post';
-import { GetPostDetails } from './use-cases/create-post/get-post-details';
+import { IMembersRepository } from '../../members/application/ports/members-repository';
+import { IPostsRepository } from './ports/posts-repository';
+import { CreatePostUseCase } from './use-cases/create-post/create-post';
+import { GetPostDetailsUseCase } from './use-cases/get-post-details/get-post-details';
 
 export class PostsService {
   constructor(
@@ -21,7 +21,7 @@ export class PostsService {
   }
 
   async createPost(command: CreatePostCommand) {
-    return new CreatePost(
+    return new CreatePostUseCase(
       this.postsRepo,
       this.membersRepo,
       this.eventBus,
@@ -33,6 +33,6 @@ export class PostsService {
   }
 
   async getPostDetailsById(id: string) {
-    return new GetPostDetails(this.postsRepo).execute(id);
+    return new GetPostDetailsUseCase(this.postsRepo).execute(id);
   }
 }

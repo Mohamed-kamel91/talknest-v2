@@ -2,8 +2,8 @@ import { DatabaseError } from '@talknest/errors/server';
 import { GetPostsQuery } from '@talknest/api/posts';
 import { DomainEvent } from '@talknest/core/domain';
 
+import { PostReadModel } from '../read-models/post-read-model';
 import { Post } from '../../domain/post';
-import { PostReadModel } from '../../domain/post-read-model';
 
 export interface IPostsRepository {
   findPosts(query: GetPostsQuery): Promise<PostReadModel[]>;

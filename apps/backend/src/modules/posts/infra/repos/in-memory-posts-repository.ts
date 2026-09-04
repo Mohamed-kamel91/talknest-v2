@@ -3,8 +3,8 @@ import { DatabaseError } from '@talknest/errors/server';
 import { DomainEvent } from '@talknest/core/domain';
 
 import { Post } from '../../domain/post';
-import { PostReadModel } from '../../domain/post-read-model';
-import { IPostsRepository } from '../ports/posts-repository';
+import { IPostsRepository } from '../../application/ports/posts-repository';
+import { PostReadModel } from '../../application/read-models/post-read-model';
 
 export class InMemoryPostsRepository implements IPostsRepository {
   private posts: PostReadModel[];

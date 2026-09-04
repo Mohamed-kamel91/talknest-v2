@@ -1,7 +1,7 @@
 import { PostDTO, PostType } from '@talknest/api/posts';
 import { Post as PostModel } from '@talknest/database';
 
-import { MemberReadModel } from '../../members/domain/member-read-model';
+import { MemberReadModel } from '../../../members/application/read-models/member-read-model';
 
 interface PostReadModelProps {
   id: string;
