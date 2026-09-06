@@ -1,23 +1,34 @@
 import { EventBus } from '@talknest/bus';
-import { Result, UseCase } from '@talknest/core/application';
+import {
+  success,
+  fail,
+  type Result,
+  type IUseCase,
+} from '@talknest/core/application';
 import { UpdateMemberReputationScoreCommand } from '@talknest/api/votes';
 import { DatabaseError } from '@talknest/errors/server';
 
 import { Member } from '../../../../members/domain/member';
-import { IVoteRepository } from '../../ports/vote-repository';
-import { IMembersRepository } from '../../../../members/application/ports/members-repository';
+import type { IMembersRepository } from '../../../../members/application/ports/members-repository';
 import { MemberNotFoundError } from '../../../../members/domain/errors/member-errors';
 
-type UpdateMemberReputationError =
+import type { IVoteRepository } from '../../ports/vote-repository';
+
+export type UpdateMemberReputationError =
   MemberNotFoundError | DatabaseError;
+
+export type UpdateMemberReputationResponse = Result<
+  Member,
+  UpdateMemberReputationError
+>;
 
 // Note: This is also something which could be done on a cron job
 // We could have a cron job that runs every 24 hours and updates the reputation score of all members using
 // the read models. This would be a good way to ensure that the reputation score is always up to date.
 
-export class UpdateMemberReputationScore implements UseCase<
+export class UpdateMemberReputationScore implements IUseCase<
   UpdateMemberReputationScoreCommand,
-  Result<Member, UpdateMemberReputationError>
+  UpdateMemberReputationResponse
 > {
   constructor(
     private memberRepository: IMembersRepository,
@@ -27,7 +38,7 @@ export class UpdateMemberReputationScore implements UseCase<
 
   async execute(
     request: UpdateMemberReputationScoreCommand,
-  ): Promise<Result<Member, UpdateMemberReputationError>> {
+  ): Promise<UpdateMemberReputationResponse> {
     const { memberId } = request.props;
 
     const [memberOrNull, commentVotesRoundup, postVotesRoundup] =
@@ -38,7 +49,7 @@ export class UpdateMemberReputationScore implements UseCase<
       ]);
 
     if (memberOrNull === null) {
-      return Result.failure(new MemberNotFoundError());
+      return fail(new MemberNotFoundError());
     }
 
     // Get the current score from the read models for this member to calculate
@@ -58,9 +69,9 @@ export class UpdateMemberReputationScore implements UseCase<
       await this.eventBus.publishEvents(
         memberOrNull.getDomainEvents(),
       );
-      return Result.success(memberOrNull);
+      return success(memberOrNull);
     } catch (err) {
-      return Result.failure(new DatabaseError());
+      return fail(new DatabaseError());
     }
   }
 }
