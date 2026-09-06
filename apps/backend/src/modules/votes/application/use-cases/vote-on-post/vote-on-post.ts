@@ -1,6 +1,6 @@
 import { VoteOnPostCommand } from '@talknest/api/votes';
 import { EventBus } from '@talknest/bus';
-import { Result, success, UseCase } from '@talknest/core';
+import { type Result, type IUseCase } from '@talknest/core';
 import { DatabaseError } from '@talknest/errors/server';
 
 import { IMembersRepository } from '../../../../members/application/ports/members-repository';
@@ -10,11 +10,12 @@ import { CanVoteOnPostPolicy } from '../../../domain/policies/can-vote-on-post';
 import type { IPostsRepository } from '../../../../posts/application/ports/posts-repository';
 import type { IVoteRepository } from '../../ports/vote-repository';
 
-type VoteOnPostError = DatabaseError;
+export type VoteOnPostError = DatabaseError;
+export type VoteOnPostResponse = Result<PostVote, VoteOnPostError>;
 
-export class VoteOnPost implements UseCase<
+export class VoteOnPost implements IUseCase<
   VoteOnPostCommand,
-  Result<PostVote, VoteOnPostError>
+  VoteOnPostResponse
 > {
   constructor(
     private memberRepository: IMembersRepository,
@@ -25,7 +26,7 @@ export class VoteOnPost implements UseCase<
 
   async execute(
     request: VoteOnPostCommand,
-  ): Promise<Result<PostVote, VoteOnPostError>> {
+  ): Promise<VoteOnPostResponse> {
     // implement
     throw new Error('Not yet implemented');
   }
