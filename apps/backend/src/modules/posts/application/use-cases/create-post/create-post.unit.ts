@@ -7,10 +7,10 @@ import { CreatePostCommand } from '@talknest/api/posts';
 import { PrismaPostsRepository } from '../../../infra/repos/prisma-posts-repository';
 import { Config } from '../../../../../shared/config';
 
-import {
-  setupTestWithLevel1Member,
-  setupTestWithLevel2Member,
-} from '../../../../../../tests/fixtures/unit/members';
+// import {
+//   setupTestWithLevel1Member,
+//   setupTestWithLevel2Member,
+// } from '../../../../../../tests/fixtures/unit/members';
 
 describe('createPost', () => {
   let config = new Config('test:unit');
