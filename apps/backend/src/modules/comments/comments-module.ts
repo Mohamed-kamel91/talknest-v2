@@ -5,7 +5,7 @@ import { ApplicationModule } from '../../shared/modules/application-module';
 import { Config } from '../../shared/config';
 import { WebServer } from '../../shared/infra/http';
 
-import type { IPostsRepository } from '../posts/application/posts-repository';
+import type { IPostsRepository } from '../posts/application/ports/posts-repository';
 import type { IMembersRepository } from '../members/application/ports/members-repository';
 
 import type { ICommentRepository } from './application/ports/comment-repository';
