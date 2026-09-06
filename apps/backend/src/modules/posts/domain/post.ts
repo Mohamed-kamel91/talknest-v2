@@ -5,12 +5,12 @@ import { AggregateRoot } from '@talknest/core/domain';
 import { type CreatePostInput } from '@talknest/api/posts';
 import { Post as PostModel } from '@talknest/database';
 
-import { PostCreated } from './post-created';
+import { PostCreated } from './events/post-created';
 import { PostSlug } from './post-slug';
 import {
   mapPostValidationError,
   type PostCreationError,
-} from '../posts-errors';
+} from './errors/posts-errors';
 
 interface BasePostProps {
   id: string;

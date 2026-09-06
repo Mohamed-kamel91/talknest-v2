@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { AggregateRoot } from '@talknest/core/domain';
 import { Comment as CommentModel } from '@talknest/database';
 
-import { CommentPosted } from './comment-posted';
+import { CommentPosted } from './events/comment-posted';
 
 export interface CommentProps {
   id: string;

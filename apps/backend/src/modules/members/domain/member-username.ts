@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { ValueObject } from '@talknest/core';
-import { InvalidMemberUsernameError } from '../member-errors';
+import { InvalidMemberUsernameError } from './errors/member-errors';
 
 // Note: It's debatable whether you should validate the commands or validate the
 // value objects in the use cases.

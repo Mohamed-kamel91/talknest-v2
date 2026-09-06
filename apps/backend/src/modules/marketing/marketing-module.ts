@@ -1,13 +1,13 @@
-import type { IContactListAPI } from './ports/contact-list-api';
-import { MailchimpContactList } from './adapters/contact-list-api/mail-chimp-contact-list';
-import { ContactListAPISpy } from './adapters/contact-list-api/contact-list-api-spy';
-import { MarketingService } from './application/marketing-service';
-import { MarketingController } from './marketing-controller';
-import { MarketingRouter } from './marketing-router';
-
 import { type Config } from '../../shared/config';
 import { ApplicationModule } from '../../shared/modules/application-module';
 import { WebServer } from '../../shared/infra/http';
+
+import type { IContactListAPI } from './application/ports/contact-list-api';
+import { MailchimpContactList } from './infra/contact-list-api/mail-chimp-contact-list';
+import { ContactListAPISpy } from './infra/contact-list-api/contact-list-api-spy';
+import { MarketingService } from './application/marketing-service';
+import { MarketingController } from './presentation/http/controllers';
+import { MarketingRouter } from './presentation/http/routes/marketing-router';
 
 export class MarketingModule extends ApplicationModule {
   private contactListAPI: IContactListAPI;
@@ -23,7 +23,7 @@ export class MarketingModule extends ApplicationModule {
     this.marketingController = this.createMarketingController();
     this.marketingRouter = this.createMarketingRouter();
 
-    this.setupRoutes();
+    this.marketingRouter.register();
   }
 
   static build(config: Config) {
@@ -62,10 +62,6 @@ export class MarketingModule extends ApplicationModule {
 
   private createMarketingController() {
     return new MarketingController(this.marketingService);
-  }
-
-  private setupRoutes() {
-    this.marketingRouter.register();
   }
 
   private createMarketingRouter() {

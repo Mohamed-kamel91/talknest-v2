@@ -3,18 +3,17 @@ import {
   type EmailSubscription,
 } from '@talknest/api/marketing';
 
-import { type IContactListAPI } from '../ports/contact-list-api';
+import { type IContactListAPI } from './ports/contact-list-api';
+import { AddEmailToListUseCase } from './use-cases/add-email-to-list/add-email-to-list';
 
 export class MarketingService {
   constructor(private contactListAPI: IContactListAPI) {}
 
-  public async addEmailToList(
+  public addEmailToList(
     command: AddEmailToListCommand,
   ): Promise<EmailSubscription> {
-    const result = await this.contactListAPI.addEmailToList(
-      command.email,
+    return new AddEmailToListUseCase(this.contactListAPI).execute(
+      command,
     );
-
-    return result;
   }
 }

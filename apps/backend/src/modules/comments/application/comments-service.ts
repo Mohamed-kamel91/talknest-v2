@@ -1,15 +1,18 @@
-import { Result } from '@talknest/core';
 import { PostCommentCommand } from '@talknest/api/comments';
 import { EventBus } from '@talknest/bus';
 
+import type { IMembersRepository } from '../../members/application/ports/members-repository';
+import type { IPostsRepository } from '../../posts/application/ports/posts-repository';
+
+import { ICommentRepository } from './ports/comment-repository';
 import {
-  PostComment,
-  PostCommentError,
+  PostCommentUseCase,
+  PostCommentResponse,
 } from './use-cases/post-comment/post-comment';
-import { Comment } from '../domain/comment';
-import { ICommentRepository } from '../repos/ports/comment-repository';
-import { IPostsRepository } from '../../posts/repos/ports/posts-repository';
-import { IMembersRepository } from '../../members/repos/ports/members-repository';
+import {
+  GetCommentsByPostIdResponse,
+  getCommentsByPostIdUseCase,
+} from './use-cases/get-comments-by-post-id/get-comments-by-post-id';
 
 export class CommentsService {
   constructor(
@@ -19,10 +22,10 @@ export class CommentsService {
     private membersRepo: IMembersRepository,
   ) {}
 
-  async postComment(
+  public postComment(
     command: PostCommentCommand,
-  ): Promise<Result<Comment, PostCommentError>> {
-    return new PostComment(
+  ): Promise<PostCommentResponse> {
+    return new PostCommentUseCase(
       this.commentRepo,
       this.postRepo,
       this.membersRepo,
@@ -30,11 +33,11 @@ export class CommentsService {
     ).execute(command);
   }
 
-  async getCommentsByPostId(
+  public async getCommentsByPostId(
     postId: string,
-  ): Promise<Result<Comment[], PostCommentError>> {
-    const comments =
-      await this.commentRepo.getCommentsByPostId(postId);
-    return Result.success(comments);
+  ): Promise<GetCommentsByPostIdResponse> {
+    return new getCommentsByPostIdUseCase(this.commentRepo).execute(
+      postId,
+    );
   }
 }

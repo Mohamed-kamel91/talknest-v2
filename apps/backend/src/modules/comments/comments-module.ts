@@ -1,23 +1,21 @@
 import { EventBus } from '@talknest/bus';
 import { IDatabase } from '@talknest/database';
 
-import { ProductionCommentsRepository } from './repos/adapters/production-comment-repository';
-import type { ICommentRepository } from './repos/ports/comment-repository';
-import { CommentsService } from './application/comments-service';
-import { CommentsController } from './comments-controller';
-import { CommentsRouter } from './comments-router';
-
-import { ProductionPostsRepository } from '../posts/repos/adapters/production-posts-repository';
-import type { IPostsRepository } from '../posts/repos/ports/posts-repository';
-import type { IMembersRepository } from '../members/repos/ports/members-repository';
-
 import { ApplicationModule } from '../../shared/modules/application-module';
 import { Config } from '../../shared/config';
 import { WebServer } from '../../shared/infra/http';
 
+import type { IPostsRepository } from '../posts/application/ports/posts-repository';
+import type { IMembersRepository } from '../members/application/ports/members-repository';
+
+import type { ICommentRepository } from './application/ports/comment-repository';
+import { PrismaCommentsRepository } from './infra/repos/prisma-comment-repository';
+import { CommentsService } from './application/comments-service';
+import { CommentsController } from './presentation/http/controllers';
+import { CommentsRouter } from './presentation/http/routes/comments-router';
+
 export class CommentsModule extends ApplicationModule {
   private commentsRepository: ICommentRepository;
-  private postsRepository: IPostsRepository;
   private commentsService: CommentsService;
   private commentsController: CommentsController;
   private commentsRouter: CommentsRouter;
@@ -25,27 +23,34 @@ export class CommentsModule extends ApplicationModule {
   private constructor(
     private db: IDatabase,
     private membersRepository: IMembersRepository,
+    private postsRepository: IPostsRepository,
     private eventBus: EventBus,
     config: Config,
   ) {
     super(config);
 
     this.commentsRepository = this.createCommentsRepository();
-    this.postsRepository = this.createPostsRepository();
     this.commentsService = this.createCommentsService();
     this.commentsController = this.createCommentsController();
     this.commentsRouter = this.createCommentsRouter();
 
-    this.setupRoutes();
+    this.commentsRouter.register();
   }
-  
+
   public static build(
     db: IDatabase,
     eventBus: EventBus,
     membersRepo: IMembersRepository,
+    postsRepository: IPostsRepository,
     config: Config,
   ) {
-    return new CommentsModule(db, membersRepo, eventBus, config);
+    return new CommentsModule(
+      db,
+      membersRepo,
+      postsRepository,
+      eventBus,
+      config,
+    );
   }
 
   public getCommentsRepository() {
@@ -71,15 +76,7 @@ export class CommentsModule extends ApplicationModule {
       return this.commentsRepository;
     }
 
-    return new ProductionCommentsRepository(this.db);
-  }
-
-  private createPostsRepository() {
-    if (this.postsRepository) {
-      return this.postsRepository;
-    }
-
-    return new ProductionPostsRepository(this.db);
+    return new PrismaCommentsRepository(this.db);
   }
 
   private createCommentsService() {
@@ -97,9 +94,5 @@ export class CommentsModule extends ApplicationModule {
 
   private createCommentsRouter() {
     return new CommentsRouter(this.commentsController);
-  }
-
-  private setupRoutes() {
-    this.commentsRouter.register();
   }
 }

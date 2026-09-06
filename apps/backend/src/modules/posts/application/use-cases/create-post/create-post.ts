@@ -1,16 +1,17 @@
-import { Result, UseCase } from '@talknest/core';
+import { Result, IUseCase } from '@talknest/core';
 import { CreatePostCommand } from '@talknest/api/posts';
 import { EventBus } from '@talknest/bus';
 
-import { CanCreatePostPolicy } from './can-create-post';
+import type { IMembersRepository } from '../../../../members/application/ports/members-repository';
+
+import type { IPostsRepository } from '../../ports/posts-repository';
+import { CanCreatePostPolicy } from '../../../domain/policies/can-create-post';
 import { Post } from '../../../domain/post';
-import { IPostsRepository } from '../../../repos/ports/posts-repository';
-import { IMembersRepository } from '../../../../members/repos/ports/members-repository';
-import { PostCreationError } from '../../../posts-errors';
+import { PostCreationError } from '../../../domain/errors/posts-errors';
 
 export type CreatePostResponse = Result<Post, PostCreationError>;
 
-export class CreatePost implements UseCase<
+export class CreatePostUseCase implements IUseCase<
   CreatePostCommand,
   CreatePostResponse
 > {

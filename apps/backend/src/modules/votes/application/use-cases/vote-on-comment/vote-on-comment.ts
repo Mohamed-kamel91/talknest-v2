@@ -1,19 +1,23 @@
-import { UseCase, Result, success, fail } from '@talknest/core';
+import { type IUseCase, type Result } from '@talknest/core';
 import { EventBus } from '@talknest/bus';
 import { VoteOnCommentCommand } from '@talknest/api/votes';
 
-import { CanVoteOnCommentPolicy } from './can-vote-on-comment';
+import type { IMembersRepository } from '../../../../members/application/ports/members-repository';
+import type { ICommentRepository } from '../../../../comments/application/ports/comment-repository';
 
-import { IMembersRepository } from '../../../../members/repos/ports/members-repository';
-import { IVoteRepository } from '../../../repos/ports/vote-repository';
+import { CanVoteOnCommentPolicy } from '../../../domain/policies/can-vote-on-comment';
+import type { IVoteRepository } from '../../ports/vote-repository';
 import { CommentVote } from '../../../domain/comment-vote';
-import { ICommentRepository } from '../../../../comments/repos/ports/comment-repository';
 
-type VoteOnCommentError = '';
+export type VoteOnCommentError = '';
+export type VoteOnCommentResponse = Result<
+  CommentVote,
+  VoteOnCommentError
+>;
 
-export class VoteOnComment implements UseCase<
+export class VoteOnComment implements IUseCase<
   VoteOnCommentCommand,
-  Result<CommentVote, VoteOnCommentError>
+  VoteOnCommentResponse
 > {
   constructor(
     private memberRepository: IMembersRepository,
@@ -24,7 +28,7 @@ export class VoteOnComment implements UseCase<
 
   async execute(
     request: VoteOnCommentCommand,
-  ): Promise<Result<CommentVote, VoteOnCommentError>> {
+  ): Promise<VoteOnCommentResponse> {
     // implement
     throw new Error('Not yet implemented');
   }

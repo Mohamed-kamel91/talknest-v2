@@ -1,8 +1,6 @@
 import {
-  success,
-  fail,
   type Result,
-  type UseCase,
+  type IUseCase,
 } from '@talknest/core/application';
 import {
   ConflictError,
@@ -12,13 +10,14 @@ import { CreateMemberCommand } from '@talknest/api/members';
 import { EventBus } from '@talknest/bus';
 
 import { Member } from '../../../domain/member';
-import { IMembersRepository } from '../../../repos/ports/members-repository';
+import { IMembersRepository } from '../../ports/members-repository';
 
 export type CreateMemberError = NotFoundError | ConflictError;
+export type CreateMemberResonse = Result<Member, CreateMemberError>;
 
-export class CreateMember implements UseCase<
+export class CreateMemberUseCase implements IUseCase<
   CreateMemberCommand,
-  Result<Member, CreateMemberError>
+  CreateMemberResonse
 > {
   constructor(
     private memberRepository: IMembersRepository,
@@ -27,7 +26,7 @@ export class CreateMember implements UseCase<
 
   async execute(
     request: CreateMemberCommand,
-  ): Promise<Result<Member, CreateMemberError>> {
+  ): Promise<CreateMemberResonse> {
     // Implement
     throw new Error('Not yet implemented');
   }

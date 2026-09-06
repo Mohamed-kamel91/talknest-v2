@@ -4,18 +4,18 @@ import { DecodedIdToken } from '@talknest/api/users';
 import { PrismaDatabase } from '@talknest/database';
 import { InMemoryEventBus } from '@talknest/bus';
 
-import { CreateMember } from './create-member';
+import { CreateMemberUseCase } from './create-member';
 import { Member } from '../../../domain/member';
-import { ProductionMembersRepository } from '../../../repos/adapters/production-members-repository';
+import { PrismaMembersRepository } from '../../../infra/repo/prisma-members-repository';
 import { Config } from '../../../../../shared/config';
 
 describe('createMember', () => {
   let config = new Config('test:unit');
   let database = new PrismaDatabase();
-  let membersRepo = new ProductionMembersRepository(database);
+  let membersRepo = new PrismaMembersRepository(database);
   let eventBus = new InMemoryEventBus();
 
-  const useCase = new CreateMember(membersRepo, eventBus);
+  const useCase = new CreateMemberUseCase(membersRepo, eventBus);
 
   const mockToken: DecodedIdToken = {
     email: 'test@example.com',

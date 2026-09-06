@@ -1,23 +1,25 @@
 import {
   type Result,
-  type UseCase,
+  type IUseCase,
 } from '@talknest/core/application';
 import { NotFoundError } from '@talknest/errors/application';
 
-import { IMembersRepository } from '../../../repos/ports/members-repository';
+import type { IMembersRepository } from '../../ports/members-repository';
 import { Member } from '../../../domain/member';
 
 export type GetMemberDetailsError = NotFoundError;
+export type GetMemberDetailsResponse = Result<
+  Member,
+  GetMemberDetailsError
+>;
 
-export class GetMemberDetails implements UseCase<
+export class GetMemberDetailsUseCase implements IUseCase<
   string,
-  Result<Member, GetMemberDetailsError>
+  GetMemberDetailsResponse
 > {
   constructor(private memberRepository: IMembersRepository) {}
 
-  async execute(
-    userId: string,
-  ): Promise<Result<Member, GetMemberDetailsError>> {
+  async execute(userId: string): Promise<GetMemberDetailsResponse> {
     throw new Error('Implement');
     // Implement
   }

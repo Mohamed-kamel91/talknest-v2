@@ -13,9 +13,9 @@ import {
   reputationLevel,
 } from '@talknest/api/members';
 
-import { MemberReputationLevelUpgraded } from './member-reputation-level-upgraded';
+import { MemberReputationLevelUpgraded } from './events/member-reputation-level-upgraded';
 import { MemberUsername } from './member-username';
-import { InvalidMemberUsernameError } from '../member-errors';
+import { InvalidMemberUsernameError } from './errors/member-errors';
 
 interface MemberProps {
   id: string;

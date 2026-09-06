@@ -5,17 +5,16 @@ import { InMemoryEventBus } from '@talknest/bus';
 import { UpdateMemberReputationScoreCommand } from '@talknest/api/votes';
 import { reputationLevel, ReputationLevel } from '@talknest/api/members';
 
-import { UpdateMemberReputationScore } from './update-member-reputation-score';
+import { Config } from '../../../../../shared/config';
 
-import { MemberCommentVotesRoundup } from '../../../../votes/domain/member-comment-votes-roundup';
-import { MemberPostVotesRoundup } from '../../../../votes/domain/member-post-votes-roundup';
-import { ProductionVotesRepository } from '../../../../votes/repos/adapters/production-votes-repo';
-
+import { PrismaMembersRepository } from '../../../../members/infra/repo/prisma-members-repository';
 import { MemberUsername } from '../../../../members/domain/member-username';
 import { Member } from '../../../../members/domain/member';
-import { ProductionMembersRepository } from '../../../../members/repos/adapters/production-members-repository';
 
-import { Config } from '../../../../../shared/config';
+import { PrismaVotesRepository } from '../../../infra/repos/prisma-votes-repo';
+import { MemberCommentVotesRoundup } from '../../read-models/member-comment-votes-roundup';
+import { MemberPostVotesRoundup } from '../../read-models/member-post-votes-roundup';
+import { UpdateMemberReputationScore } from './update-member-reputation-score';
 
 function setupTest({
   useCase,
@@ -69,8 +68,8 @@ describe('updateMemberReputationScore', () => {
   let config = new Config('test:unit');
   let database = new PrismaDatabase();
 
-  let membersRepo = new ProductionMembersRepository(database);
-  let votesRepo = new ProductionVotesRepository(database);
+  let membersRepo = new PrismaMembersRepository(database);
+  let votesRepo = new PrismaVotesRepository(database);
   let eventBus = new InMemoryEventBus();
 
   const useCase = new UpdateMemberReputationScore(
@@ -105,7 +104,7 @@ describe('updateMemberReputationScore', () => {
 
       const response = await useCase.execute(command);
 
-      expect(response.isSuccess()).toBe(true);
+      expect(response.isSuccess).toBe(true);
       const updatedMember = response.getValue();
       expect(updatedMember.reputationScore).toBe(6);
       expect(updatedMember.reputationLevel).toBe(reputationLevel.Level2);
