@@ -1,19 +1,21 @@
-import { Result, UseCase, success, fail } from '@talknest/core';
+import { Result, type IUseCase } from '@talknest/core';
 import { NotFoundError } from '@talknest/errors/application';
 import { PostCommentCommand } from '@talknest/api/comments';
 import { EventBus } from '@talknest/bus';
 
+import type { IMembersRepository } from '../../../../members/application/ports/members-repository';
+import type { IPostsRepository } from '../../../../posts/application/ports/posts-repository';
+
+import type { ICommentRepository } from '../../ports/comment-repository';
 import { CanPostCommentPolicy } from '../../../domain/policies/can-post-comment';
-import { Comment } from '../../../domain/entities/comment';
-import { ICommentRepository } from '../../ports/comment-repository';
-import { IPostsRepository } from '../../../../posts/application/posts-repository';
-import { IMembersRepository } from '../../../../members/application/ports/members-repository';
+import { Comment } from '../../../domain/comment';
 
 export type PostCommentError = NotFoundError;
+export type PostCommentResponse = Result<Comment, PostCommentError>;
 
-export class PostCommentUseCase implements UseCase<
+export class PostCommentUseCase implements IUseCase<
   PostCommentCommand,
-  Result<Comment, PostCommentError>
+  PostCommentResponse
 > {
   constructor(
     private commentRepo: ICommentRepository,
@@ -24,7 +26,7 @@ export class PostCommentUseCase implements UseCase<
 
   async execute(
     command: PostCommentCommand,
-  ): Promise<Result<Comment, PostCommentError>> {
+  ): Promise<PostCommentResponse> {
     // Implement
     throw new Error('Not yet implemented');
   }
