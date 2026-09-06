@@ -4,21 +4,21 @@ import { PostCommentCommand } from '@talknest/api/comments';
 
 import { PostCommentUseCase } from './post-comment';
 import { CommentPosted } from '../../../domain/events/comment-posted';
-import { Comment } from '../../../domain/entities/comment';
-import { ProductionPostsRepository } from '../../../../posts/infra/repos/prisma-posts-repository';
-import { ProductionMembersRepository } from '../../../../members/infra/repo/prisma-members-repository';
+import { Comment } from '../../../domain/comment';
+import { PrismaPostsRepository } from '../../../../posts/infra/repos/prisma-posts-repository';
+import { PrismaMembersRepository } from '../../../../members/infra/repo/prisma-members-repository';
 import { PrismaCommentsRepository } from '../../../infra/repos/prisma-comment-repository';
 import { Config } from '../../../../../shared/config';
 
-import { setupTestWithLevel1Member } from '../../../../../../tests/fixtures/unit/members';
-import { withExistingPostByRandomMember } from '../../../../../../tests/fixtures/unit/posts';
+// import { setupTestWithLevel1Member } from '../../../../../../tests/fixtures/unit/members';
+// import { withExistingPostByRandomMember } from '../../../../../../tests/fixtures/unit/posts';
 
 describe('postComment', () => {
   const config = new Config('test:unit');
   const database = new PrismaDatabase();
   const commentsRepo = new PrismaCommentsRepository(database);
-  const postsRepo = new ProductionPostsRepository(database);
-  const membersRepo = new ProductionMembersRepository(database);
+  const postsRepo = new PrismaPostsRepository(database);
+  const membersRepo = new PrismaMembersRepository(database);
   const eventBus = new InMemoryEventBus();
   const useCase = new PostCommentUseCase(
     commentsRepo,
