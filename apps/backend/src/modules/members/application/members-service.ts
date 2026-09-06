@@ -1,17 +1,15 @@
 import { CreateMemberCommand } from '@talknest/api/members';
-import { type Result } from '@talknest/core/application';
 import { EventBus } from '@talknest/bus';
 
+import type { IMembersRepository } from './ports/members-repository';
 import {
   CreateMemberUseCase,
-  CreateMemberError,
+  CreateMemberResonse,
 } from './use-cases/create-member/create-member';
 import {
   GetMemberDetailsUseCase,
-  GetMemberDetailsError,
+  GetMemberDetailsResponse,
 } from './use-cases/get-member-details/get-member-details';
-import { Member } from '../domain/member';
-import { IMembersRepository } from './ports/members-repository';
 
 export class MemberService {
   constructor(
@@ -21,7 +19,7 @@ export class MemberService {
 
   public createMember(
     command: CreateMemberCommand,
-  ): Promise<Result<Member, CreateMemberError>> {
+  ): Promise<CreateMemberResonse> {
     return new CreateMemberUseCase(
       this.membersRepository,
       this.eventBus,
@@ -30,7 +28,7 @@ export class MemberService {
 
   public getMemberDetails(
     userId: string,
-  ): Promise<Result<Member, GetMemberDetailsError>> {
+  ): Promise<GetMemberDetailsResponse> {
     return new GetMemberDetailsUseCase(
       this.membersRepository,
     ).execute(userId);
