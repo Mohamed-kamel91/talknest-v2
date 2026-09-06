@@ -1,4 +1,4 @@
-import { Result, fail, success, type UseCase } from '@talknest/core';
+import { Result, fail, success, type IUseCase } from '@talknest/core';
 
 import { PostNotFoundError } from '../../../domain/errors/posts-errors';
 import { IPostsRepository } from '../../ports/posts-repository';
@@ -9,7 +9,7 @@ export type GetPostDetailsResponse = Result<
   PostNotFoundError
 >;
 
-export class GetPostDetailsUseCase implements UseCase<
+export class GetPostDetailsUseCase implements IUseCase<
   string,
   GetPostDetailsResponse
 > {
