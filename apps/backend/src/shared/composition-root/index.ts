@@ -136,6 +136,7 @@ export class CompositionRoot {
       this.database,
       this.eventBus,
       this.membersModule.getMembersRepository(),
+      this.postsModule.getPostsRepository(),
       this.config,
     );
   }
