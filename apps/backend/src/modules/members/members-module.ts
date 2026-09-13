@@ -7,13 +7,13 @@ import { WebServer } from '../../shared/infra/http';
 
 import { PrismaMembersRepository } from './infra/repo/prisma-members-repository';
 import { IMembersRepository } from './application/ports/members-repository';
-import { MemberService } from './application/members-service';
+import { MembersService } from './application/members-service';
 import { MembersController } from './presentation/http/controllers';
 import { MembersRouter } from './presentation/http/routes/members-routers';
 
 export class MembersModule extends ApplicationModule {
   private membersRepository: IMembersRepository;
-  private membersService: MemberService;
+  private membersService: MembersService;
   private membersController: MembersController;
   private membersRouter: MembersRouter;
 
@@ -59,7 +59,7 @@ export class MembersModule extends ApplicationModule {
   }
 
   private createMembersService() {
-    return new MemberService(this.membersRepository, this.eventBus);
+    return new MembersService(this.membersRepository, this.eventBus);
   }
 
   private createMembersController(config: Config) {
