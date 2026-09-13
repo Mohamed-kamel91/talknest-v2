@@ -11,7 +11,7 @@ import {
   GetMemberDetailsResponse,
 } from './use-cases/get-member-details/get-member-details';
 
-export class MemberService {
+export class MembersService {
   constructor(
     private membersRepository: IMembersRepository,
     private eventBus: EventBus,
