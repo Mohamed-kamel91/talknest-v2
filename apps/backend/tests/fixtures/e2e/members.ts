@@ -8,8 +8,8 @@ export async function setupLevel1Member(
   authToken: string,
   userId: string,
 ) {
-  const username = `khalilstemmler-${NumberUtil.generateRandomInteger(10000, 99999)}`;
-  const email = `${username}@test.com`;
+  const username = `moh${NumberUtil.generateRandomInteger(10000, 99999)}`;
+  const email = 'khalilstemmler@gmail.com';
 
   const response = await apiClient.members.register(
     {
@@ -19,6 +19,8 @@ export async function setupLevel1Member(
     },
     authToken,
   );
+
+  console.log({ response });
 
   if (!response.success) {
     throw new Error(`Failed to create member: ${response.error}`);
@@ -32,7 +34,7 @@ export async function setupLevel1Member(
   console.log(`Created a Level 1 member`);
   console.log(response);
 
-  return { member: response.data as MemberDTO };
+  return { member: response.data };
 }
 
 export async function setupLevel2Member(
