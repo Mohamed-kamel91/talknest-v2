@@ -61,7 +61,7 @@ export class Member extends AggregateRoot {
 
   public static create(
     props: CreateMemberProps,
-  ): Result<Member, void> {
+  ): Result<Member, never> {
     return success(
       new Member({
         ...props,
