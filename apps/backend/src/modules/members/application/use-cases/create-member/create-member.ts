@@ -13,10 +13,7 @@ import { MemberUsername } from '../../../domain/member-username';
 import { InvalidMemberUsernameError } from '../../../domain/errors/member-errors';
 
 export type CreateMemberError = InvalidMemberUsernameError;
-export type CreateMemberResponse = Result<
-  Member,
-  CreateMemberError | void
->;
+export type CreateMemberResponse = Result<Member, CreateMemberError>;
 
 export class CreateMemberUseCase implements IUseCase<
   CreateMemberCommand,
