@@ -7,8 +7,8 @@ import { memberErrorCodes } from '@talknest/errors/domain';
 export class InvalidMemberUsernameError extends ValidationError {
   readonly code = memberErrorCodes.INVALID_MEMBER_USERNAME;
 
-  constructor() {
-    super('Member username is invalid');
+  constructor(message: string) {
+    super(message);
   }
 }
 
