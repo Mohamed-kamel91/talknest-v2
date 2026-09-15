@@ -1,9 +1,9 @@
 import { DomainEvent } from '@talknest/core';
-import { EventBus } from '../ports/eventBus';
+import type { IEventBus } from '../ports/event-bus';
 
 type EventHandler<T extends DomainEvent> = (event: T) => void;
 
-export class InMemoryEventBus implements EventBus {
+export class InMemoryEventBus implements IEventBus {
   private subscriptions: Map<
     string,
     Array<EventHandler<DomainEvent>>
