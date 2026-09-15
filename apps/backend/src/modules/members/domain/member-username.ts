@@ -33,13 +33,12 @@ export class MemberUsername extends ValueObject<MemberUsernameProps> {
   ): Result<MemberUsername, InvalidMemberUsernameError> {
     const result = memberUsernameSchema.safeParse(input);
 
-    if (result.success) {
-      return success(new MemberUsername({ value: result.data }));
+    if (!result.success) {
+      const message =
+        result.error.issues[0]?.message ?? 'Invalid username';
+      return fail(new InvalidMemberUsernameError(message));
     }
 
-    const message =
-      result.error.issues[0]?.message ?? 'Invalid username';
-
-    return fail(new InvalidMemberUsernameError(message));
+    return success(new MemberUsername({ value: result.data }));
   }
 }
