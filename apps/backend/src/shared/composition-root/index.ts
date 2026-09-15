@@ -1,5 +1,5 @@
 import { type IDatabase, PrismaDatabase } from '@talknest/database';
-import { EventBus, InMemoryEventBus } from '@talknest/bus';
+import { type IEventBus, InMemoryEventBus } from '@talknest/bus';
 
 import { NotificationsModule } from '../../modules/notifications';
 import { MarketingModule } from '../../modules/marketing';
@@ -11,7 +11,7 @@ import { CommentsModule } from '../../modules/comments';
 
 import { type Config } from '../config';
 import { WebServer } from '../infra/http';
-import { Application } from '../application';
+import { IApplication } from '../application';
 import { errorHandler } from '../errors/error-handler';
 
 type ModuleName =
@@ -27,7 +27,7 @@ export class CompositionRoot {
 
   private config: Config;
 
-  private eventBus: EventBus;
+  private eventBus: IEventBus;
   private database: IDatabase;
   private webServer: WebServer;
 
@@ -40,7 +40,7 @@ export class CompositionRoot {
   private membersModule!: MembersModule;
   private commentsModule!: CommentsModule;
 
-  public static createCompositionRoot(config: Config) {
+  public static create(config: Config) {
     if (!CompositionRoot.instance) {
       CompositionRoot.instance = new this(config);
     }
@@ -182,9 +182,10 @@ export class CompositionRoot {
     this.webServer.useErrorHandler(errorHandler);
   }
 
-  public getApplication(): Application {
+  public getApplication(): IApplication {
     return {
       users: this.usersModule.getUsersService(),
+      members: this.membersModule.getMembersService(),
       posts: this.postsModule.getPostsService(),
       marketing: this.marketingModule.getMarketingService(),
       notifications:
