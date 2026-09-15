@@ -1,9 +1,9 @@
-import { Config } from '@talknest/config';
-import { PrismaDatabase } from '@talknest/database';
+import './load-env';
 
-const config = Config();
-const database = new PrismaDatabase(config);
-const prisma = database.getConnection();
+import { PrismaDatabase } from '../src';
+
+const database = new PrismaDatabase();
+const prisma = database.getClient();
 
 async function main() {
   console.log('Starting database reset...');
