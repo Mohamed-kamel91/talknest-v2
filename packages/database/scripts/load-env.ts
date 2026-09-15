@@ -10,7 +10,7 @@ import dotenv from 'dotenv';
  * a file is a no-op there (dotenv never overrides already-set variables by default).
  */
 export const loadEnv = ((): void => {
-  const env = process.env.NODE_ENV || 'development';
+  const env = process.env.NODE_ENV ?? 'development';
   const envPath = path.join(__dirname, `../.env.${env}`);
   dotenv.config({ path: envPath });
 })();
