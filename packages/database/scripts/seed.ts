@@ -1,9 +1,9 @@
-import { Config } from '@talknest/config';
+import './load-env';
+
 import { PrismaDatabase } from '@talknest/database';
 
-const config = Config();
-const database = new PrismaDatabase(config);
-const prisma = database.getConnection();
+const database = new PrismaDatabase();
+const prisma = database.getClient();
 
 async function main() {
   console.log('Starting seed...');
