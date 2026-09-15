@@ -1,5 +1,5 @@
-import { EventBus } from './eventBus';
-import { InMemoryEventBus } from '../adapters/inMemoryEventBus';
+import { IEventBus } from './event-bus';
+import { InMemoryEventBus } from '../adapters/in-memory-event-bus';
 import { DomainEvent } from '@talknest/core';
 
 class TestEvent extends DomainEvent {
@@ -15,7 +15,7 @@ class AnotherTestEvent extends DomainEvent {
 }
 
 describe('EventBus', () => {
-  let eventBus: EventBus;
+  let eventBus: IEventBus;
 
   beforeEach(() => {
     eventBus = new InMemoryEventBus();
