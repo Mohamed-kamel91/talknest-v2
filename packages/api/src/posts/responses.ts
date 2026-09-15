@@ -21,6 +21,7 @@ export type GetPostsAPIResponse = APIResponse<
 // Create Post Response
 export type CreatePostErrorCode =
   | MemberErrorCodes['MEMBER_NOT_FOUND']
+  | MemberErrorCodes['INSUFFICIENT_MEMBER_LEVEL']
   | PostErrorCodes['POST_CREATION_FORBIDDEN']
   | RequestErrorCode
   | ServerErrorCode
