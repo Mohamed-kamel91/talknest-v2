@@ -1,140 +1,233 @@
-import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient, Post, User, Vote, Comment } from './generated/client';
+import { PrismaDatabase } from '@talknest/database';
 
-const connectionString = `${process.env.DATABASE_URL}`;
-const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter });
+const database = new PrismaDatabase();
+const prisma = database.getClient();
 
-const initialUsers: User[] = [
-  {
-    id: 1,
-    email: 'bobvance@gmail.com',
-    firstName: 'Bob',
-    lastName: 'Vance',
-    username: 'bobvance',
-    password: '123',
-  },
-  {
-    id: 2,
-    email: 'tonysoprano@gmail.com',
-    firstName: 'Tony',
-    lastName: 'Soprano',
-    username: 'tonysoprano',
-    password: '123',
-  },
-  {
-    id: 3,
-    email: 'billburr@gmail.com',
-    firstName: 'Bill',
-    lastName: 'Burr',
-    username: 'billburr',
-    password: '123',
-  },
-];
+async function main() {
+  console.log('Starting seed...');
 
-const initialPosts: Post[] = [
-  {
-    id: 1,
-    title: 'First post!',
-    content: 'This is bob vances first post',
-    postType: 'Text',
-    dateCreated: new Date(),
-    memberId: 1,
-  },
-  {
-    id: 2,
-    title: 'Second post!',
-    content: 'This is bobs second post',
-    postType: 'Text',
-    dateCreated: new Date(),
-    memberId: 1,
-  },
-  {
-    id: 3,
-    title: 'another post',
-    content: 'This is tonys first post',
-    postType: 'Text',
-    dateCreated: new Date(),
-    memberId: 2,
-  },
-  {
-    id: 4,
-    title: 'Links',
-    content: 'This is a link post',
-    postType: 'https://khalilstemmler.com',
-    dateCreated: new Date(),
-    memberId: 2,
-  },
-];
-
-const initialPostVotes: Vote[] = [
-  // Everyone upvotes their own first post
-  { id: 1, postId: 1, voteType: 'Upvote', memberId: 1 },
-  { id: 2, postId: 2, voteType: 'Upvote', memberId: 1 },
-  { id: 3, postId: 3, voteType: 'Upvote', memberId: 2 },
-  { id: 4, postId: 4, voteType: 'Upvote', memberId: 2 },
-
-  // Tony's post upvoted by Bob
-  { id: 5, postId: 3, voteType: 'Upvote', memberId: 1 },
-
-  // Bob's second post downvoted by Bill
-  { id: 6, postId: 2, voteType: 'Downvote', memberId: 3 },
-];
-
-const initialPostComments: Comment[] = [
-  {
-    id: 1,
-    text: 'I posted this!',
-    memberId: 1,
-    postId: 1,
-    parentCommentId: null,
-  },
-  {
-    id: 2,
-    text: 'Nice',
-    memberId: 2,
-    postId: 2,
-    parentCommentId: null,
-  },
-];
-
-async function seed() {
-  for (const user of initialUsers) {
-    const newUser = await prisma.user.create({
-      data: user,
-    });
-
-    await prisma.member.create({
+  // Create three members
+  const [member1, member2, member3] = await Promise.all([
+    prisma.member.create({
       data: {
-        user: {
-          connect: { id: newUser.id },
+        id: 'seed-member-1',
+        userId: 'auth0|seed-user-1',
+        username: 'seeduser',
+        reputationLevel: 'Level1',
+        lastUpdated: new Date(),
+      },
+    }),
+    prisma.member.create({
+      data: {
+        id: 'seed-member-2',
+        userId: 'auth0|seed-user-2',
+        username: 'alice_ddd',
+        reputationLevel: 'Level1',
+        lastUpdated: new Date(),
+      },
+    }),
+    prisma.member.create({
+      data: {
+        id: 'seed-member-3',
+        userId: 'auth0|seed-user-3',
+        username: 'bob_developer',
+        reputationLevel: 'Level1',
+        lastUpdated: new Date(),
+      },
+    }),
+  ]);
+
+  console.log(
+    'Created seed members:',
+    [member1.username, member2.username, member3.username].join(', '),
+  );
+
+  // Create 5 posts with slugs and initial votes
+  const posts = await Promise.all([
+    prisma.post.create({
+      data: {
+        id: 'seed-post-1',
+        memberId: member1.id,
+        postType: 'text',
+        title: 'Introduction to Domain-Driven Design',
+        content:
+          'DDD is an approach to software development that centers the development on programming a domain model that has a rich understanding of the processes and rules of a domain...',
+        lastUpdated: new Date(),
+        slug: 'introduction-to-domain-driven-design',
+        voteScore: 1,
+        postVotes: {
+          create: {
+            memberId: member1.id,
+            value: 1,
+          },
         },
       },
-    });
-  }
+    }),
+    prisma.post.create({
+      data: {
+        id: 'seed-post-2',
+        memberId: member1.id,
+        postType: 'text',
+        title: 'How to implement Value Objects?',
+        content:
+          "I'm struggling with implementing value objects in my domain model. What's the best way to ensure immutability and equality comparison?",
+        lastUpdated: new Date(),
+        slug: 'how-to-implement-value-objects',
+        voteScore: 1,
+        postVotes: {
+          create: {
+            memberId: member1.id,
+            value: 1,
+          },
+        },
+      },
+    }),
+    prisma.post.create({
+      data: {
+        id: 'seed-post-3',
+        memberId: member1.id,
+        postType: 'link',
+        title: 'Great Article on Aggregate Design',
+        link: 'https://example.com/aggregate-design',
+        content: null,
+        lastUpdated: new Date(),
+        slug: 'great-article-on-aggregate-design',
+        voteScore: 1,
+        postVotes: {
+          create: {
+            memberId: member1.id,
+            value: 1,
+          },
+        },
+      },
+    }),
+    prisma.post.create({
+      data: {
+        id: 'seed-post-4',
+        memberId: member1.id,
+        postType: 'text',
+        title: 'Event Sourcing vs Traditional Architecture',
+        content:
+          "Let's discuss the pros and cons of event sourcing compared to traditional CRUD-based architectures...",
+        lastUpdated: new Date(),
+        slug: 'event-sourcing-vs-traditional-architecture',
+        voteScore: 1,
+        postVotes: {
+          create: {
+            memberId: member1.id,
+            value: 1,
+          },
+        },
+      },
+    }),
+    prisma.post.create({
+      data: {
+        id: 'seed-post-5',
+        memberId: member1.id,
+        postType: 'text',
+        title: 'Best Practices for Domain Events',
+        content:
+          'What are some best practices for handling domain events in a DDD application? How do you ensure proper event propagation?',
+        lastUpdated: new Date(),
+        slug: 'best-practices-for-domain-events',
+        voteScore: 1,
+        postVotes: {
+          create: {
+            memberId: member1.id,
+            value: 1,
+          },
+        },
+      },
+    }),
+  ]);
 
-  for (const post of initialPosts) {
-    await prisma.post.create({
-      data: post,
-    });
-  }
+  console.log(`Created ${posts.length} seed posts`);
 
-  for (const vote of initialPostVotes) {
-    await prisma.vote.create({
-      data: vote,
-    });
-  }
+  // Add comments from member2 and member3 to each post with initial votes
+  const comments = await Promise.all([
+    prisma.comment.create({
+      data: {
+        memberId: member2.id,
+        postId: posts[0].id,
+        text: 'Great introduction! I would also add that DDD is particularly useful for complex domains where the business logic is crucial.',
+        lastUpdated: new Date(),
+        voteScore: 1,
+        commentVotes: {
+          create: {
+            memberId: member2.id,
+            value: 1,
+          },
+        },
+      },
+    }),
+    prisma.comment.create({
+      data: {
+        memberId: member3.id,
+        postId: posts[0].id,
+        text: "I've been using DDD in my projects for a year now. It really helps with maintaining clean architecture.",
+        lastUpdated: new Date(),
+        voteScore: 1,
+        commentVotes: {
+          create: {
+            memberId: member3.id,
+            value: 1,
+          },
+        },
+      },
+    }),
+    prisma.comment.create({
+      data: {
+        memberId: member2.id,
+        postId: posts[1].id,
+        text: 'Make sure to implement equals() and hashCode() methods for proper value object comparison.',
+        lastUpdated: new Date(),
+        voteScore: 1,
+        commentVotes: {
+          create: {
+            memberId: member2.id,
+            value: 1,
+          },
+        },
+      },
+    }),
+    prisma.comment.create({
+      data: {
+        memberId: member3.id,
+        postId: posts[1].id,
+        text: "Consider using TypeScript's readonly modifier to enforce immutability.",
+        lastUpdated: new Date(),
+        voteScore: 1,
+        commentVotes: {
+          create: {
+            memberId: member3.id,
+            value: 1,
+          },
+        },
+      },
+    }),
+    prisma.comment.create({
+      data: {
+        memberId: member2.id,
+        postId: posts[2].id,
+        text: 'This article really helped me understand aggregate boundaries better.',
+        lastUpdated: new Date(),
+        voteScore: 1,
+        commentVotes: {
+          create: {
+            memberId: member2.id,
+            value: 1,
+          },
+        },
+      },
+    }),
+  ]);
 
-  for (const comment of initialPostComments) {
-    await prisma.comment.create({
-      data: comment,
-    });
-  }
+  console.log(`Created ${comments.length} comments`);
 }
 
-seed()
+main()
   .catch((e) => {
-    console.error(e);
+    console.error('Error while seeding database:', e);
     process.exit(1);
   })
   .finally(async () => {
