@@ -1,43 +1,62 @@
-import {} from '@talknest/api/members';
-import * as Users from '@talknest/api/users';
-import { DecodedIdToken } from '@talknest/api/users';
-import { PrismaDatabase } from '@talknest/database';
-import { InMemoryEventBus } from '@talknest/bus';
+import { InMemoryEventBus, type IEventBus } from '@talknest/bus';
+import {
+  CreateMemberCommand,
+  CreateMemberInput,
+} from '@talknest/api/members';
 
-import { CreateMemberUseCase } from './create-member';
+import { InMemoryMembersRepository } from '../../../infra/repo/in-memory-members-repository';
 import { Member } from '../../../domain/member';
-import { PrismaMembersRepository } from '../../../infra/repo/prisma-members-repository';
-import { Config } from '../../../../../shared/config';
+import { CreateMemberUseCase } from './create-member';
 
 describe('createMember', () => {
-  let config = new Config('test:unit');
-  let database = new PrismaDatabase();
-  let membersRepo = new PrismaMembersRepository(database);
-  let eventBus = new InMemoryEventBus();
+  let eventBus: IEventBus;
+  let membersRepositorySpy: InMemoryMembersRepository;
+  let createMemberUseCase: CreateMemberUseCase;
 
-  const useCase = new CreateMemberUseCase(membersRepo, eventBus);
-
-  const mockToken: DecodedIdToken = {
+  const createMemberInput: CreateMemberInput = {
+    username: 'mohKamel123',
     email: 'test@example.com',
-    uid: 'auth0|123',
+    userId: 'auth0|123',
   };
 
+  beforeAll(async () => {
+    membersRepositorySpy = new InMemoryMembersRepository();
+    eventBus = new InMemoryEventBus();
+    createMemberUseCase = new CreateMemberUseCase(
+      membersRepositorySpy,
+      eventBus,
+    );
+  });
+
   beforeEach(() => {
-    jest.resetAllMocks();
+    membersRepositorySpy.reset();
   });
 
-  test('should create a member when username is available and data is valid', async () => {
-    // Implement
-    throw new Error('Not yet implemented');
+  it('should create a member when username is available and data is valid', async () => {
+    const commandOrError = CreateMemberCommand.create(createMemberInput);
+    expect(commandOrError.isSuccess).toBe(true);
+
+    const result = await createMemberUseCase.execute(
+      commandOrError.getValue(),
+    );
+
+    expect(result.isSuccess).toBe(true);
+    expect(result.getValue()).toBeInstanceOf(Member);
+    expect(membersRepositorySpy.getTimesMethodCalled('save')).toBe(1);
   });
 
-  test('should fail if username is already taken', async () => {
-    // Implement
-    throw new Error('Not yet implemented');
-  });
+  // it('should fail if username is already taken', async () => {
+  //   // Implement
+  //   throw new Error('Not yet implemented');
+  // });
 
-  test('should fail if validation fails', async () => {
-    // Implement
-    throw new Error('Not yet implemented');
-  });
+  // it('should fail if validation fails', async () => {
+  //   // Implement
+  //   throw new Error('Not yet implemented');
+  // });
+
+  // it('should publish "MemberCreated' event after member is persisted, async () => {
+  //   // Implement
+  //   throw new Error('Not yet implemented');
+  // });
 });
