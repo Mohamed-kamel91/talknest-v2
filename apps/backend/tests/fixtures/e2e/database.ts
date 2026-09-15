@@ -10,7 +10,7 @@ export class DatabaseFixture {
       'members',
     ) as MembersModule;
     const membersRepo = membersModule.getMembersRepository();
-    return membersRepo.getMemberById(id);
+    return membersRepo.getById(id);
   }
 
   async resetDatabase() {
@@ -26,7 +26,8 @@ export class DatabaseFixture {
       ]);
     } catch (error) {
       console.error(error);
-    } finally {
+    } 
+    finally {
       await connection.$disconnect();
     }
   }
