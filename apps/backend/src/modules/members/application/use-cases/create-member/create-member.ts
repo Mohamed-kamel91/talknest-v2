@@ -1,33 +1,58 @@
 import {
+  success,
+  fail,
   type Result,
   type IUseCase,
 } from '@talknest/core/application';
-import {
-  ConflictError,
-  NotFoundError,
-} from '@talknest/errors/application';
 import { CreateMemberCommand } from '@talknest/api/members';
-import { EventBus } from '@talknest/bus';
+import { IEventBus } from '@talknest/bus';
 
 import { Member } from '../../../domain/member';
 import { IMembersRepository } from '../../ports/members-repository';
+import { MemberUsername } from '../../../domain/member-username';
+import { InvalidMemberUsernameError } from '../../../domain/errors/member-errors';
 
-export type CreateMemberError = NotFoundError | ConflictError;
-export type CreateMemberResonse = Result<Member, CreateMemberError>;
+export type CreateMemberError = InvalidMemberUsernameError;
+export type CreateMemberResponse = Result<
+  Member,
+  CreateMemberError | void
+>;
 
 export class CreateMemberUseCase implements IUseCase<
   CreateMemberCommand,
-  CreateMemberResonse
+  CreateMemberResponse
 > {
   constructor(
-    private memberRepository: IMembersRepository,
-    private eventBus: EventBus,
+    private membersRepository: IMembersRepository,
+    private eventBus: IEventBus,
   ) {}
 
   async execute(
-    request: CreateMemberCommand,
-  ): Promise<CreateMemberResonse> {
-    // Implement
-    throw new Error('Not yet implemented');
+    command: CreateMemberCommand,
+  ): Promise<CreateMemberResponse> {
+    const { username, userId } = command.props;
+
+    const userNameOrError = MemberUsername.create(username);
+
+    if (userNameOrError.isFailure) {
+      return fail(userNameOrError.getError());
+    }
+
+    const memberUsername = userNameOrError.getValue();
+
+    const memberOrError = Member.create({
+      username: memberUsername,
+      userId,
+    });
+
+    if (memberOrError.isFailure) {
+      return fail(memberOrError.getError());
+    }
+
+    const member = memberOrError.getValue();
+
+    await this.membersRepository.save(member);
+
+    return success(member);
   }
 }
