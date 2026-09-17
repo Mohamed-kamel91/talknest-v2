@@ -1,11 +1,9 @@
 import { InMemoryEventBus, type IEventBus } from '@talknest/bus';
-import {
-  CreateMemberCommand,
-  CreateMemberInput,
-} from '@talknest/api/members';
+import { CreateMemberCommand, CreateMemberInput } from '@talknest/api/members';
 
 import { InMemoryMembersRepository } from '../../../infra/repo/in-memory-members-repository';
 import { Member } from '../../../domain/member';
+import { MemberUsername } from '../../../domain/member-username';
 import { CreateMemberUseCase } from './create-member';
 
 describe('createMember', () => {
@@ -28,7 +26,7 @@ describe('createMember', () => {
     );
   });
 
-  beforeEach(() => {
+  afterEach(() => {
     membersRepositorySpy.reset();
   });
 
@@ -36,19 +34,43 @@ describe('createMember', () => {
     const commandOrError = CreateMemberCommand.create(createMemberInput);
     expect(commandOrError.isSuccess).toBe(true);
 
-    const result = await createMemberUseCase.execute(
-      commandOrError.getValue(),
-    );
+    const result = await createMemberUseCase.execute(commandOrError.getValue());
 
     expect(result.isSuccess).toBe(true);
     expect(result.getValue()).toBeInstanceOf(Member);
     expect(membersRepositorySpy.getTimesMethodCalled('save')).toBe(1);
   });
 
-  // it('should fail if username is already taken', async () => {
-  //   // Implement
-  //   throw new Error('Not yet implemented');
-  // });
+  it('should fail if username is already taken', async () => {
+    const { userId, username: duplicateUsername } = createMemberInput;
+
+    // Create Existing member in repo
+    const existingMemberUsername =
+      MemberUsername.create(duplicateUsername).getValue();
+    const existingMember = Member.create({
+      userId: 'auth0|12345',
+      username: existingMemberUsername,
+    });
+
+    membersRepositorySpy.seed([existingMember.getValue()]);
+
+    // Execute usecase
+    const commandOrError = CreateMemberCommand.create({
+      userId,
+      username: duplicateUsername,
+    });
+    expect(commandOrError.isSuccess).toBe(true);
+
+    const result = await createMemberUseCase.execute(commandOrError.getValue());
+
+    expect(result.isFailure).toBe(true);
+    expect(result.getError()).toBeDefined();
+    expect(result.getError()).toBeInstanceOf(MemberUsernameTakenError);
+    expect(result.getError().code).toBe('MEMBER_USERNAME_TAKEN');
+
+    expect(membersRepositorySpy.getTimesMethodCalled('save')).toBe(0);
+    expect(membersRepositorySpy.getTimesMethodCalled('getByUsername')).toBe(1);
+  });
 
   // it('should fail if validation fails', async () => {
   //   // Implement
