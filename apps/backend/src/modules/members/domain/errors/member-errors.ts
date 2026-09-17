@@ -13,11 +13,19 @@ export class InvalidMemberUsernameError extends ValidationError {
   }
 }
 
+export class MemberAlreadyExistsError extends ConflictError {
+  readonly code = memberErrorCodes.MEMBER_ALREADY_EXISTS;
+
+  constructor() {
+    super('A member already exists for this user');
+  }
+}
+
 export class MemberUsernameTakenError extends ConflictError {
   readonly code = memberErrorCodes.MEMBER_USERNAME_TAKEN;
 
-  constructor(message: string) {
-    super(message);
+  constructor(username: string) {
+    super(`Username "${username}" is already taken`);
   }
 }
 
