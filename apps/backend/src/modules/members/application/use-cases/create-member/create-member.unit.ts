@@ -56,10 +56,25 @@ describe('createMember', () => {
     expect(membersRepositorySpy.getTimesMethodCalled('getByUsername')).toBe(1);
   });
 
-  // it('should fail if member already exists', async () => {
-  //   // Implement
-  //   throw new Error('Not yet implemented');
-  // });
+  test('should fail if member already exists', async () => {
+    const existingMember = setupLevel1Member(membersRepositorySpy);
+
+    const memberInput = new CreateMemberInputBuilder()
+      .withUserId(existingMember.userId)
+      .build();
+
+    const commandOrError = CreateMemberCommand.create(memberInput);
+    expect(commandOrError.isSuccess).toBe(true);
+
+    const result = await createMemberUseCase.execute(commandOrError.getValue());
+
+    expect(result.isFailure).toBe(true);
+    expect(result.getError()).toBeInstanceOf(MemberAlreadyExistsError);
+    expect(result.getError().code).toBe(memberErrorCodes.MEMBER_ALREADY_EXISTS);
+
+    expect(membersRepositorySpy.getTimesMethodCalled('getByUserId')).toBe(1);
+    expect(membersRepositorySpy.getTimesMethodCalled('save')).toBe(0);
+  });
 
   // it('should fail if validation fails', async () => {
   //   // Implement
