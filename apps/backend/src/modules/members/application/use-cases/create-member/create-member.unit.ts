@@ -4,9 +4,13 @@ import { CreateMemberCommand } from '@talknest/api/members';
 import { InMemoryMembersRepository } from '../../../infra/repo/in-memory-members-repository';
 import { Member } from '../../../domain/member';
 import { CreateMemberUseCase } from './create-member';
-import { MemberUsernameTakenError } from '../../../domain/errors/member-errors';
+import {
+  MemberAlreadyExistsError,
+  MemberUsernameTakenError,
+} from '../../../domain/errors/member-errors';
 import { setupLevel1Member } from '../../../../../../tests/fixtures/unit/members';
 import { CreateMemberInputBuilder } from '../../../../../../tests/builders/create-member-input-builder';
+import { memberErrorCodes } from '@talknest/errors';
 
 describe('createMember', () => {
   let eventBus: IEventBus;
@@ -50,10 +54,10 @@ describe('createMember', () => {
     expect(result.isFailure).toBe(true);
     expect(result.getError()).toBeDefined();
     expect(result.getError()).toBeInstanceOf(MemberUsernameTakenError);
-    expect(result.getError().code).toBe('MEMBER_USERNAME_TAKEN');
+    expect(result.getError().code).toBe(memberErrorCodes.MEMBER_USERNAME_TAKEN);
 
-    expect(membersRepositorySpy.getTimesMethodCalled('save')).toBe(0);
     expect(membersRepositorySpy.getTimesMethodCalled('getByUsername')).toBe(1);
+    expect(membersRepositorySpy.getTimesMethodCalled('save')).toBe(0);
   });
 
   test('should fail if member already exists', async () => {
