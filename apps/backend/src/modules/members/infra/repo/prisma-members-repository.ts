@@ -23,7 +23,7 @@ export class PrismaMembersRepository implements IMembersRepository {
   async getByUsername(username: string): Promise<Member | null> {
     const connection = this.database.getClient();
     const memberData = await connection.member.findUnique({
-      where: { username: username },
+      where: { username },
     });
 
     if (!memberData) {
