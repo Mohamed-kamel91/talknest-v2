@@ -10,6 +10,11 @@ export class CreateMemberInputBuilder {
     userId: faker.string.uuid(),
   };
 
+  public withUserId(userId: string) {
+    this.props.userId = userId;
+    return this;
+  }
+
   public withUsername(username: string) {
     this.props.username = username;
     return this;
