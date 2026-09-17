@@ -1,5 +1,9 @@
 import { InMemoryEventBus, type IEventBus } from '@talknest/bus';
 import { CreateMemberCommand } from '@talknest/api/members';
+import { memberErrorCodes } from '@talknest/errors';
+
+import { setupLevel1Member } from '../../../../../../tests/fixtures/unit/members';
+import { CreateMemberInputBuilder } from '../../../../../../tests/builders/create-member-input-builder';
 
 import { InMemoryMembersRepository } from '../../../infra/repo/in-memory-members-repository';
 import { Member } from '../../../domain/member';
@@ -8,9 +12,6 @@ import {
   MemberAlreadyExistsError,
   MemberUsernameTakenError,
 } from '../../../domain/errors/member-errors';
-import { setupLevel1Member } from '../../../../../../tests/fixtures/unit/members';
-import { CreateMemberInputBuilder } from '../../../../../../tests/builders/create-member-input-builder';
-import { memberErrorCodes } from '@talknest/errors';
 
 describe('createMember', () => {
   let eventBus: IEventBus;
