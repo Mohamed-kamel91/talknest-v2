@@ -1,5 +1,5 @@
 import { IDatabase } from '@talknest/database';
-import { EventBus } from '@talknest/bus';
+import { IEventBus } from '@talknest/bus';
 
 import { type Config } from '../../shared/config';
 import { ApplicationModule } from '../../shared/modules/application-module';
@@ -23,7 +23,7 @@ export class PostsModule extends ApplicationModule {
   private constructor(
     config: Config,
     private database: IDatabase,
-    private eventBus: EventBus,
+    private eventBus: IEventBus,
     private membersRepository: IMembersRepository,
   ) {
     super(config);
@@ -37,7 +37,7 @@ export class PostsModule extends ApplicationModule {
 
   public static build(
     db: IDatabase,
-    eventBus: EventBus,
+    eventBus: IEventBus,
     membersRepository: IMembersRepository,
     config: Config,
   ) {
