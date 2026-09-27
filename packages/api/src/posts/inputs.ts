@@ -1,35 +1,56 @@
 import { z } from 'zod';
 
 // Create Post
-const TextPostSchema = z.object({
+const basePostFields = {
   title: z
-    .string()
-    .min(5, 'Title must be at least 5 characters')
-    .max(100, 'Title must not exceed 100 characters'),
+    .string({
+      error: 'Title is required',
+    })
+    .min(1, 'Title cannot be empty'),
+    
+  memberId: z
+    .string({
+      error: 'Member ID is required',
+    })
+    .min(1, 'Member ID cannot be empty'),
+};
+
+export const TextPostSchema = z.object({
+  ...basePostFields,
+
   content: z
-    .string()
-    .min(1, 'Post content cannot be empty')
-    .max(3000, 'Post content must not exceed 3000 characters'),
-  postType: z.literal('text'),
-  memberId: z.string().min(1, 'Member ID is required'),
+    .string({
+      error: 'Content is required',
+    })
+    .min(1, 'Content cannot be empty'),
+
+  postType: z.literal('text', {
+    error: 'Post type must be "text"',
+  }),
 });
 
-const LinkPostSchema = z.object({
-  title: z
-    .string()
-    .min(1, 'Title must be at least 5 characters')
-    .max(100, 'Title must not exceed 100 characters'),
-  link: z.url('Post link must be a valid URL'),
-  postType: z.literal('link'),
-  memberId: z.string().min(1, 'Member ID is required'),
+export const LinkPostSchema = z.object({
+  ...basePostFields,
+
+  link: z
+    .string({
+      error: 'Link is required',
+    })
+    .min(1, 'Link cannot be empty'),
+
+  postType: z.literal('link', {
+    error: 'Post type must be "link"',
+  }),
 });
 
 export const createPostInputSchema = z.discriminatedUnion(
   'postType',
   [TextPostSchema, LinkPostSchema],
+  { error: 'Post type must be "text" or "link"' },
 );
 
 export type CreatePostInput = z.infer<typeof createPostInputSchema>;
+export type PostTypeInput = CreatePostInput['postType'];
 
 // Get Posts
 export const getPostsQueryInputSchema = z.object({
