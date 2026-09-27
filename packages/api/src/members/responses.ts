@@ -1,6 +1,5 @@
 import {
   type MemberErrorCodes,
-  type UserErrorCodes,
   type RequestErrorCode,
   type ServerErrorCode,
   type NetworkErrorCode,
@@ -11,7 +10,9 @@ import { MemberDTO } from './dtos';
 
 // Create Member Response
 export type CreateMemberErrorCode =
-  | UserErrorCodes['USERNAME_ALREADY_TAKEN']
+  | MemberErrorCodes['MEMBER_USERNAME_TAKEN']
+  | MemberErrorCodes['INVALID_MEMBER_USERNAME']
+  | MemberErrorCodes['MEMBER_ALREADY_EXISTS']
   | RequestErrorCode
   | ServerErrorCode
   | NetworkErrorCode;
