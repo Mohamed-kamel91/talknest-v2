@@ -1,6 +1,6 @@
 import { IEventBus, InMemoryEventBus } from '@talknest/bus';
 import { memberErrorCodes } from '@talknest/errors';
-import { CreatePostCommand, CreatePostInput } from '@talknest/api/posts';
+import { CreatePostCommand } from '@talknest/api/posts';
 
 import { setupLevel1Member } from '../../../../../../tests/fixtures/unit/members';
 
@@ -11,6 +11,7 @@ import {
 } from '../../../../members/domain/errors/member-errors';
 import { InMemoryPostsRepository } from '../../../infra/repos/in-memory-posts-repository';
 import { CreatePostUseCase } from './create-post';
+import { CreatePostInputBuilder } from '../../../../../../tests/builders/create-post-input-builder';
 
 describe('createPost', () => {
   let eventBus: IEventBus;
@@ -36,12 +37,9 @@ describe('createPost', () => {
     test('as a level 1 member, I should not be able to create a new post', async () => {
       const member = setupLevel1Member(membersRepositorySpy);
 
-      const createPostInput: CreatePostInput = {
-        title: 'New Post',
-        content: 'This is a new post',
-        postType: 'text',
-        memberId: member.id,
-      };
+      const createPostInput = new CreatePostInputBuilder()
+        .withMemberId(member.id)
+        .build();
 
       const commandOrError = CreatePostCommand.create(createPostInput);
       expect(commandOrError.isSuccess).toBe(true);
@@ -61,12 +59,7 @@ describe('createPost', () => {
     });
 
     test('if the member was not found, they should not be able to create the post', async () => {
-      const createPostInput: CreatePostInput = {
-        title: 'New Post',
-        content: 'This is a new post',
-        postType: 'text',
-        memberId: 'non-existent-member-id',
-      };
+      const createPostInput = new CreatePostInputBuilder().build();
 
       const commandOrError = CreatePostCommand.create(createPostInput);
       expect(commandOrError.isSuccess).toBe(true);
