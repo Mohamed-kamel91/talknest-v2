@@ -5,7 +5,10 @@ import { CreatePostCommand, CreatePostInput } from '@talknest/api/posts';
 import { setupLevel1Member } from '../../../../../../tests/fixtures/unit/members';
 
 import { InMemoryMembersRepository } from '../../../../members/infra/repo/in-memory-members-repository';
-import { InsufficientMemberLevelError } from '../../../../members/domain/errors/member-errors';
+import {
+  InsufficientMemberLevelError,
+  MemberNotFoundError,
+} from '../../../../members/domain/errors/member-errors';
 import { InMemoryPostsRepository } from '../../../infra/repos/in-memory-posts-repository';
 import { CreatePostUseCase } from './create-post';
 
@@ -30,7 +33,7 @@ describe('createPost', () => {
   });
 
   describe('permissions & identity', () => {
-    test.skip('as a level 1 member, I should not be able to create a new post', async () => {
+    test('as a level 1 member, I should not be able to create a new post', async () => {
       const member = setupLevel1Member(membersRepositorySpy);
 
       const createPostInput: CreatePostInput = {
@@ -56,8 +59,6 @@ describe('createPost', () => {
       expect(postsRepositorySpy.wasMethodCalled('save')).toBe(false);
       expect(eventBus.publishEvents).not.toHaveBeenCalled();
     });
-
-    test.skip('if the member was not found, they should not be able to create the post', async () => {});
 
     test.skip('as a level 2 member, I should be able to create a new post', async () => {
       // Implement!
