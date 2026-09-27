@@ -3,7 +3,7 @@ import {
   GetPostByIdQuery,
   GetPostsQuery,
 } from '@talknest/api/posts';
-import { EventBus } from '@talknest/bus';
+import { type IEventBus } from '@talknest/bus';
 
 import type { IMembersRepository } from '../../members/application/ports/members-repository';
 import type { IPostsRepository } from './ports/posts-repository';
@@ -24,7 +24,7 @@ export class PostsService {
   constructor(
     private postsRepo: IPostsRepository,
     private membersRepo: IMembersRepository,
-    private eventBus: EventBus,
+    private eventBus: IEventBus,
   ) {}
 
   async getPosts(query: GetPostsQuery) {
