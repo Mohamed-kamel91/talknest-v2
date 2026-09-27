@@ -1,43 +1,86 @@
-import { GetPostsQuery } from '@talknest/api/posts';
-import { DatabaseError } from '@talknest/errors/server';
-import { DomainEvent } from '@talknest/core/domain';
+import { type GetPostsQuery } from '@talknest/api/posts';
 
+import { Spy } from '../../../../shared/test-doubles/spy';
+
+import { type PostReadModel } from '../../application/read-models/post-read-model';
 import { Post } from '../../domain/post';
 import { IPostsRepository } from '../../application/ports/posts-repository';
-import { PostReadModel } from '../../application/read-models/post-read-model';
 
-export class InMemoryPostsRepository implements IPostsRepository {
-  private posts: PostReadModel[];
+export class InMemoryPostsRepository
+  extends Spy<IPostsRepository>
+  implements IPostsRepository
+{
+  private posts: Post[] = [];
+  private readModels: PostReadModel[] = [];
 
-  constructor(posts?: PostReadModel[]) {
-    this.posts = posts ? posts : [];
+  // ---- Write side ----
+
+  public async getById(id: string): Promise<Post | null> {
+    this.addCall('getById', [id]);
+
+    return this.posts.find((post) => post.id === id) ?? null;
   }
-  getPostById(id: string): Promise<Post | null> {
-    throw new Error('Method not implemented.');
+
+  public async save(post: Post): Promise<void> {
+    this.addCall('save', [post]);
+
+    const existingIndex = this.posts.findIndex(
+      (p) => p.id === post.id,
+    );
+
+    if (existingIndex >= 0) {
+      this.posts[existingIndex] = post;
+    } else {
+      this.posts.push(post);
+    }
   }
 
-  async findPosts(query: GetPostsQuery): Promise<PostReadModel[]> {
-    return this.posts;
+  // ---- Read side ----
+
+  public async findPosts(
+    query: GetPostsQuery,
+  ): Promise<PostReadModel[]> {
+    this.addCall('findPosts', [query]);
+
+    return this.readModels;
+  }
+
+  public async getDetailsById(
+    id: string,
+  ): Promise<PostReadModel | null> {
+    this.addCall('getDetailsById', [id]);
+
+    return this.readModels.find((post) => post.id === id) ?? null;
+  }
+
+  public async getBySlug(
+    slug: string,
+  ): Promise<PostReadModel | null> {
+    this.addCall('getBySlug', [slug]);
+
+    return this.readModels.find((post) => post.slug === slug) ?? null;
+  }
+
+  // ---- Test setup helpers (no call tracking) ----
+
+  public seedPosts(posts: Post[]): void {
+    this.posts.push(...posts);
+  }
+
+  public seedReadModels(readModels: PostReadModel[]): void {
+    this.readModels.push(...readModels);
   }
 
   public static createWithSeedData(): InMemoryPostsRepository {
-    // Put seed data here
-    return new InMemoryPostsRepository();
+    const repo = new InMemoryPostsRepository();
+    // repo.seedPosts(...);
+    // repo.seedReadModels(...);
+    return repo;
   }
 
-  public async save(post: Post): Promise<void | DatabaseError> {
-    return Promise.resolve();
-  }
-
-  public async getPostDetailsById(
-    id: string,
-  ): Promise<PostReadModel | null> {
-    return this.posts.find((post) => post.id === id) || null;
-  }
-
-  public async getPostBySlug(
-    slug: string,
-  ): Promise<PostReadModel | null> {
-    return this.posts.find((post) => post.slug === slug) || null;
+  public async reset(): Promise<void> {
+    this.posts = [];
+    this.readModels = [];
+    this.calls = [];
   }
 }
