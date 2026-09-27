@@ -4,7 +4,7 @@ import { EventModel } from './eventModel';
 export type DomainEventStatus =
   'INITIAL' | 'RETRYING' | 'PUBLISHED' | 'FAILED';
 
-export class DomainEvent<T> {
+export class DomainEvent<T = unknown> {
   constructor(
     public readonly name: string,
     public readonly aggregateId: string,
