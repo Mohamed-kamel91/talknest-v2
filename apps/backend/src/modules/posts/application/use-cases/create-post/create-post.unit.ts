@@ -60,6 +60,29 @@ describe('createPost', () => {
       expect(eventBus.publishEvents).not.toHaveBeenCalled();
     });
 
+    test('if the member was not found, they should not be able to create the post', async () => {
+      const createPostInput: CreatePostInput = {
+        title: 'New Post',
+        content: 'This is a new post',
+        postType: 'text',
+        memberId: 'non-existent-member-id',
+      };
+
+      const commandOrError = CreatePostCommand.create(createPostInput);
+      expect(commandOrError.isSuccess).toBe(true);
+
+      const result = await createPostUseCase.execute(commandOrError.getValue());
+
+      expect(result.isSuccess).toBe(false);
+      expect(result.getError()).toBeDefined();
+      expect(result.getError()).toBeInstanceOf(MemberNotFoundError);
+      expect(result.getError().code).toBe(memberErrorCodes.MEMBER_NOT_FOUND);
+
+      expect(membersRepositorySpy.getTimesMethodCalled('getById')).toBe(1);
+      expect(postsRepositorySpy.wasMethodCalled('save')).toBe(false);
+      expect(eventBus.publishEvents).not.toHaveBeenCalled();
+    });
+
     test.skip('as a level 2 member, I should be able to create a new post', async () => {
       // Implement!
       throw new Error('To be implemented');
