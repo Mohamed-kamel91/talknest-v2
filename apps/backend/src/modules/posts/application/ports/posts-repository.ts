@@ -6,9 +6,9 @@ import { PostReadModel } from '../read-models/post-read-model';
 import { Post } from '../../domain/post';
 
 export interface IPostsRepository {
-  findPosts(query: GetPostsQuery): Promise<PostReadModel[]>;
   save(post: Post): Promise<void | DatabaseError>;
-  getPostById(id: string): Promise<Post | null>;
-  getPostDetailsById(id: string): Promise<PostReadModel | null>;
-  getPostBySlug(slug: string): Promise<PostReadModel | null>;
+  getById(id: string): Promise<Post | null>;
+  getBySlug(slug: string): Promise<PostReadModel | null>;
+  getDetailsById(id: string): Promise<PostReadModel | null>;
+  findPosts(query: GetPostsQuery): Promise<PostReadModel[]>;
 }
