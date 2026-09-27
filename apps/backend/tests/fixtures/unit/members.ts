@@ -8,21 +8,21 @@ import { PostCommentUseCase } from '../../../src/modules/comments/application/us
 import { CreateMemberInputBuilder } from '../../builders/create-member-input-builder';
 import { InMemoryMembersRepository } from '../../../src/modules/members/infra/repo/in-memory-members-repository';
 
-export function setupTestWithLevel1Member(
-  useCase: CreatePostUseCase | PostCommentUseCase,
+export function setupLevel1Member(
+  repositorySpy: InMemoryMembersRepository,
 ) {
-  const level1MemberOrError = Member.create({
-    userId: '8be25ac7-49ff-43be-9f22-3811e268e0bd',
-    username: 'jill1234',
-  });
+  const memberInput = new CreateMemberInputBuilder().build();
 
-  expect(level1MemberOrError.isSuccess).toBe(true);
+  const username = MemberUsername.create(
+    memberInput.username,
+  ).getValue();
 
-  const member = level1MemberOrError.getValue();
+  const member = Member.create({
+    userId: memberInput.userId,
+    username,
+  }).getValue();
 
-  useCase['membersRepository'].getMemberById = jest
-    .fn()
-    .mockResolvedValue(member);
+  repositorySpy.seed([member]);
 
   return member;
 }
@@ -45,23 +45,4 @@ export function setupTestWithLevel2Member(
     .mockResolvedValue(level2Member);
 
   return level2Member;
-}
-
-export function setupLevel1Member(
-  repositorySpy: InMemoryMembersRepository,
-) {
-  const memberInput = new CreateMemberInputBuilder().build();
-
-  const username = MemberUsername.create(
-    memberInput.username,
-  ).getValue();
-
-  const member = Member.create({
-    userId: memberInput.userId,
-    username,
-  }).getValue();
-
-  repositorySpy.seed([member]);
-
-  return member;
 }
