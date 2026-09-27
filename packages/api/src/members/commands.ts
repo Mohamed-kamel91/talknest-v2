@@ -5,7 +5,6 @@ import {
 } from '@talknest/core/application';
 import { type InvalidRequestInputError } from '@talknest/errors/request';
 
-import { type DecodedIdToken } from '../users';
 import { validateCommandInput } from '../validate-command-input';
 import {
   createMemberInputSchema,
