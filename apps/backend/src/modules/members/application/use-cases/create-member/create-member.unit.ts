@@ -18,17 +18,13 @@ describe('createMember', () => {
   let membersRepositorySpy: InMemoryMembersRepository;
   let createMemberUseCase: CreateMemberUseCase;
 
-  beforeAll(async () => {
+  beforeEach(() => {
     membersRepositorySpy = new InMemoryMembersRepository();
     eventBus = new InMemoryEventBus();
     createMemberUseCase = new CreateMemberUseCase(
       membersRepositorySpy,
       eventBus,
     );
-  });
-
-  afterEach(() => {
-    membersRepositorySpy.reset();
   });
 
   it('should create a member when username is available and data is valid', async () => {
@@ -80,14 +76,4 @@ describe('createMember', () => {
     expect(membersRepositorySpy.getTimesMethodCalled('getByUserId')).toBe(1);
     expect(membersRepositorySpy.getTimesMethodCalled('save')).toBe(0);
   });
-
-  // it('should fail if validation fails', async () => {
-  //   // Implement
-  //   throw new Error('Not yet implemented');
-  // });
-
-  // it('should publish "MemberCreated' event after member is persisted, async () => {
-  //   // Implement
-  //   throw new Error('Not yet implemented');
-  // });
 });
