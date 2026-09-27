@@ -20,5 +20,4 @@ services:
 
 volumes:
   pgdata:
-    external: true
     name: backend_pgdata
