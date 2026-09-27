@@ -17,7 +17,7 @@ export class InMemoryEventBus implements IEventBus {
     // No-op
   }
 
-  publishEvents(events: DomainEvent[]): void {
+  public publishEvents(events: DomainEvent[]): void {
     events.forEach((event) => {
       const eventType = event.constructor.name;
       const handlers = this.subscriptions.get(eventType);
@@ -29,7 +29,7 @@ export class InMemoryEventBus implements IEventBus {
     });
   }
 
-  subscribe<T extends DomainEvent>(
+  public subscribe<T extends DomainEvent>(
     eventTypeName: string,
     handler: EventHandler<T>,
   ): void {
@@ -38,7 +38,7 @@ export class InMemoryEventBus implements IEventBus {
     this.subscriptions.set(eventTypeName, handlers);
   }
 
-  unsubscribe(
+  public unsubscribe(
     eventTypeName: string,
     handler: EventHandler<DomainEvent>,
   ): void {
