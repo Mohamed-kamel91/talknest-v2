@@ -1,7 +1,7 @@
-import { DatabaseFixture } from './database';
 import { NumberUtil } from '@talknest/core/utils';
 import { type APIClient } from '@talknest/api';
-import { MemberDTO } from '@talknest/api/members';
+
+import { DatabaseFixture } from './database';
 
 export async function setupLevel1Member(
   apiClient: APIClient,
@@ -9,18 +9,14 @@ export async function setupLevel1Member(
   userId: string,
 ) {
   const username = `moh${NumberUtil.generateRandomInteger(10000, 99999)}`;
-  const email = 'khalilstemmler@gmail.com';
 
   const response = await apiClient.members.register(
     {
       username,
-      email,
       userId,
     },
     authToken,
   );
-
-  console.log({ response });
 
   if (!response.success) {
     throw new Error(`Failed to create member: ${response.error}`);
@@ -32,7 +28,6 @@ export async function setupLevel1Member(
   expect(response.data?.username).toBeDefined();
 
   console.log(`Created a Level 1 member`);
-  console.log(response);
 
   return { member: response.data };
 }
