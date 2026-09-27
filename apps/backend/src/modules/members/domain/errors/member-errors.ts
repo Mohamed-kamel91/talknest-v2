@@ -2,13 +2,14 @@ import {
   ValidationError,
   NotFoundError,
   ConflictError,
+  ForbiddenError,
 } from '@talknest/errors/application';
 import { memberErrorCodes } from '@talknest/errors/domain';
 
 export class InvalidMemberUsernameError extends ValidationError {
   readonly code = memberErrorCodes.INVALID_MEMBER_USERNAME;
 
-  constructor(message: string) {
+  constructor(message: string = 'Invalid username') {
     super(message);
   }
 }
@@ -34,5 +35,13 @@ export class MemberNotFoundError extends NotFoundError {
 
   constructor() {
     super('Member not found');
+  }
+}
+
+export class InsufficientMemberLevelError extends ForbiddenError {
+  readonly code = memberErrorCodes.INSUFFICIENT_MEMBER_LEVEL;
+
+  constructor(message: string) {
+    super(message);
   }
 }
