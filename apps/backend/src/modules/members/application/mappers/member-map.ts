@@ -12,14 +12,11 @@ import { Member as MemberModel } from '@talknest/database';
 import { Member } from '../../domain/member';
 import { MemberUsernameMap } from './member-username-map';
 
-type MemberPersistence = Omit<
-  MemberModel,
-  'dateCreated' | 'lastUpdated'
->;
+type MemberPersistence = Omit<MemberModel, 'createdAt' | 'updatedAt'>;
 
 class MemberMapper
   implements
-    IToDomainMapper<Member, MemberPersistence>,
+    IToDomainMapper<MemberModel, Member>,
     IToDtoMapper<Member, MemberDTO>,
     IToPersistenceMapper<Member, MemberPersistence>
 {
