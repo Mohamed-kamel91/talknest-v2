@@ -23,12 +23,6 @@ type CreateMemberProps = Omit<
 > &
   Partial<Pick<MemberProps, 'id'>>;
 
-export enum MemberReputationLevel {
-  Level1 = 'Level 1',
-  Level2 = 'Level 2',
-  Level3 = 'Level 3',
-}
-
 export class Member extends AggregateRoot {
   public static REPUTATION_SCORE_THRESH = {
     Level1: 5,
@@ -74,11 +68,7 @@ export class Member extends AggregateRoot {
 
   public static reconstitute(props: MemberProps): Member {
     return new Member({
-      id: props.id,
-      userId: props.userId,
-      username: props.username,
-      reputationScore: props.reputationScore,
-      reputationLevel: props.reputationLevel,
+      ...props,
     });
   }
 
