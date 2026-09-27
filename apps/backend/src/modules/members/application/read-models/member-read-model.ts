@@ -36,13 +36,13 @@ export class MemberReadModel {
     return this.props.reputationScore;
   }
 
-  public static fromPrisma(member: MemberModel) {
+  public static fromPersistence(member: MemberModel) {
     return new MemberReadModel({
       id: member.id,
       username: member.username,
-      reputationLevel: member.reputationLevel,
-      reputationScore: member.reputationScore,
       userId: member.userId,
+      reputationLevel: member.reputationLevel,
+      reputationScore: member.reputationScore, 
     });
   }
 
