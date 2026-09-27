@@ -22,7 +22,12 @@ export type GetPostsAPIResponse = APIResponse<
 export type CreatePostErrorCode =
   | MemberErrorCodes['MEMBER_NOT_FOUND']
   | MemberErrorCodes['INSUFFICIENT_MEMBER_LEVEL']
-  | PostErrorCodes['POST_CREATION_FORBIDDEN']
+  | PostErrorCodes['INVALID_LINK_POST']
+  | PostErrorCodes['INVALID_POST_CONTENT']
+  | PostErrorCodes['INVALID_POST_LINK']
+  | PostErrorCodes['INVALID_POST_TITLE']
+  | PostErrorCodes['INVALID_POST_TYPE']
+  | PostErrorCodes['INVALID_TEXT_POST']
   | RequestErrorCode
   | ServerErrorCode
   | NetworkErrorCode;
