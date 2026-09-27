@@ -3,12 +3,11 @@ import { type IToDomainMapper } from '@talknest/core/application';
 import { MemberUsername } from '../../domain/member-username';
 
 class MemberUsernameMapper implements IToDomainMapper<
-  MemberUsername,
-  string
+  string,
+  MemberUsername
 > {
   toDomain(username: string): MemberUsername {
-    const memberOrError = MemberUsername.create(username);
-    return memberOrError.getValue();
+    return MemberUsername.reconstitute(username);
   }
 }
 
