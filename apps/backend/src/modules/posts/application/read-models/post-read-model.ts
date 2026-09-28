@@ -6,15 +6,15 @@ import { MemberReadModel } from '../../../members/application/read-models/member
 interface PostReadModelProps {
   id: string;
   title: string;
+  postType: PostType;
   content: string | undefined;
   link: string | undefined;
+  slug: string;
   member: MemberReadModel;
   numComments: number;
   voteScore: number;
-  postType: PostType;
-  createdAt: string;
-  updatedAt: string;
-  slug: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class PostReadModel {
@@ -41,14 +41,14 @@ export class PostReadModel {
       slug: prismaPost.slug,
       postType: prismaPost.postType as PostType,
       title: prismaPost.title,
-      content: prismaPost.content ? prismaPost.content : undefined,
-      link: prismaPost.link ? prismaPost.link : undefined,
+      content: prismaPost.content ?? undefined,
+      link: prismaPost.link ?? undefined,
       voteScore: prismaPost.voteScore,
 
       member: member,
       numComments: prismaPost._count?.comments ?? 0,
-      createdAt: prismaPost.createdAt.toISOString(),
-      updatedAt: prismaPost.updatedAt.toISOString(),
+      createdAt: prismaPost.createdAt,
+      updatedAt: prismaPost.updatedAt,
     });
   }
 
@@ -64,8 +64,8 @@ export class PostReadModel {
 
       member: this.props.member.toDTO(),
       numComments: this.props.numComments,
-      createdAt: this.props.createdAt,
-      updatedAt: this.props.updatedAt,
+      createdAt: this.props.createdAt.toISOString(),
+      updatedAt: this.props.updatedAt.toISOString(),
     };
   }
 }
