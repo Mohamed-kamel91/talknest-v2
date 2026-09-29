@@ -120,7 +120,7 @@ export class Post extends AggregateRoot {
     let props: PostProps;
 
     if (postType.value === 'text') {
-      if (input.link !== undefined) {
+      if ('link' in input) {
         return fail(
           new InvalidTextPostError(
             'A text post cannot contain a link',
@@ -134,7 +134,7 @@ export class Post extends AggregateRoot {
         content: input.content,
       };
     } else {
-      if (input.content !== undefined) {
+      if ('content' in input) {
         return fail(
           new InvalidLinkPostError(
             'A link post cannot contain text content',
