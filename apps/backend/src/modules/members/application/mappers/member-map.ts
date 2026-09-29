@@ -1,7 +1,4 @@
-import {
-  type MemberDTO,
-  type ReputationLevel,
-} from '@talknest/api/members';
+import { type MemberDTO } from '@talknest/api/members';
 import {
   type IToDomainMapper,
   type IToDtoMapper,
@@ -11,6 +8,7 @@ import { Member as MemberModel } from '@talknest/database';
 
 import { Member } from '../../domain/member';
 import { MemberUsernameMap } from './member-username-map';
+import { MemberReputationLevelMap } from './member-reputation-level-map';
 
 type MemberPersistence = Omit<MemberModel, 'createdAt' | 'updatedAt'>;
 
@@ -20,33 +18,35 @@ class MemberMapper
     IToDtoMapper<Member, MemberDTO>,
     IToPersistenceMapper<Member, MemberPersistence>
 {
-  toDomain(persistence: MemberModel): Member {
+  public toDomain(persistence: MemberModel): Member {
     return Member.reconstitute({
       id: persistence.id,
       reputationScore: persistence.reputationScore,
       userId: persistence.userId,
       username: MemberUsernameMap.toDomain(persistence.username),
-      reputationLevel: persistence.reputationLevel as ReputationLevel,
+      reputationLevel: MemberReputationLevelMap.toDomain(
+        persistence.reputationLevel,
+      ),
     });
   }
 
-  toDTO(domain: Member): MemberDTO {
+  public toDTO(member: Member): MemberDTO {
     return {
-      userId: domain.userId,
-      memberId: domain.id,
-      username: domain.username.value,
-      reputationLevel: domain.reputationLevel,
-      reputationScore: domain.reputationScore,
+      userId: member.userId,
+      memberId: member.id,
+      reputationScore: member.reputationScore,
+      username: member.username.value,
+      reputationLevel: member.reputationLevel.value,
     };
   }
 
-  toPersistence(domain: Member): MemberPersistence {
+  public toPersistence(member: Member): MemberPersistence {
     return {
-      id: domain.id,
-      userId: domain.userId,
-      username: domain.username.value,
-      reputationScore: domain.reputationScore,
-      reputationLevel: domain.reputationLevel,
+      id: member.id,
+      userId: member.userId,
+      reputationScore: member.reputationScore,
+      username: member.username.value,
+      reputationLevel: member.reputationLevel.value,
     };
   }
 }
