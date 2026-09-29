@@ -8,13 +8,14 @@ import {
 
 import { MemberReputationLevelUpgraded } from './events/member-reputation-level-upgraded';
 import { MemberUsername } from './member-username';
+import { MemberReputationLevel } from './member-reputation-level';
 
 interface MemberProps {
   id: string;
   userId: string;
-  username: MemberUsername;
   reputationScore: number;
-  reputationLevel: ReputationLevel;
+  username: MemberUsername;
+  reputationLevel: MemberReputationLevel;
 }
 
 type CreateMemberProps = Omit<
@@ -61,7 +62,7 @@ export class Member extends AggregateRoot {
         ...props,
         id: props.id ?? uuidv4(),
         reputationScore: 0,
-        reputationLevel: reputationLevel.Level1,
+        reputationLevel: MemberReputationLevel.create(),
       }),
     );
   }
@@ -70,6 +71,10 @@ export class Member extends AggregateRoot {
     return new Member({
       ...props,
     });
+  }
+
+  public isReputationLevelAtLeast(level: ReputationLevel): boolean {
+    return this.reputationLevel.isAtLeast(level);
   }
 
   public updateReputationScore(newScore: number) {
@@ -81,12 +86,13 @@ export class Member extends AggregateRoot {
       oldScore < Member.REPUTATION_SCORE_THRESH.Level1 &&
       newScore >= Member.REPUTATION_SCORE_THRESH.Level1
     ) {
-      this.props.reputationLevel = reputationLevel.Level2;
+      this.props.reputationLevel =
+        MemberReputationLevel.createAtLevel(reputationLevel.Level2);
 
       this.domainEvents.push(
         new MemberReputationLevelUpgraded(
           this.id,
-          this.reputationLevel,
+          this.reputationLevel.value,
         ),
       );
       console.log('going to level 2!');
@@ -94,12 +100,13 @@ export class Member extends AggregateRoot {
       oldScore < Member.REPUTATION_SCORE_THRESH.Level2 &&
       newScore >= Member.REPUTATION_SCORE_THRESH.Level2
     ) {
-      this.props.reputationLevel = reputationLevel.Level3;
+      this.props.reputationLevel =
+        MemberReputationLevel.createAtLevel(reputationLevel.Level3);
       console.log('going to level 3!');
       this.domainEvents.push(
         new MemberReputationLevelUpgraded(
           this.id,
-          this.reputationLevel,
+          this.reputationLevel.value,
         ),
       );
     }
