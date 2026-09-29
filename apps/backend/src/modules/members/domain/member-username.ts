@@ -15,9 +15,9 @@ const memberUsernameSchema = z
     'Username can only contain letters and numbers without spaces',
   );
 
-interface MemberUsernameProps {
+type MemberUsernameProps = {
   value: string;
-}
+};
 
 export class MemberUsername extends ValueObject<MemberUsernameProps> {
   private constructor(props: MemberUsernameProps) {
