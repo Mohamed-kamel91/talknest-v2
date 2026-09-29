@@ -78,6 +78,7 @@ export class CompositionRoot {
   }
 
   async stop() {
+    await this.database.disconnect();
     await this.webServer.stop();
     await this.eventBus.stop();
   }
