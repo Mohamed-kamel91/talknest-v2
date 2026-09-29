@@ -68,8 +68,8 @@ class PostMapper
         return {
           ...base,
           postType: post.postType,
-          content: null,
           link: post.link.value,
+          content: null,
         };
 
       default: {
