@@ -17,6 +17,6 @@ describe('member', () => {
 
     const member = result.getValue();
     expect(member.reputationScore).toBe(0);
-    expect(member.reputationLevel).toBe(reputationLevel.Level1);
+    expect(member.reputationLevel.value).toBe(reputationLevel.Level1);
   });
 });
