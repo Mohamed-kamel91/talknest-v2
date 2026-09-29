@@ -14,14 +14,14 @@ export class PostSlug extends ValueObject<PostSlugProps> {
     return this.props.value;
   }
 
-  public static create(title: string) {
+  public static create(title: string): PostSlug {
     const hash = NumberUtil.generateRandomInteger(10000, 999999);
     const kebabCase = TextUtil.kebabCase(title);
     const value = `${kebabCase}-${hash}`;
     return new PostSlug({ value });
   }
 
-  public static reconstitute(value: string) {
+  public static reconstitute(value: string): PostSlug {
     return new PostSlug({ value });
   }
 }
