@@ -42,14 +42,14 @@ export class MemberReadModel {
       username: member.username,
       userId: member.userId,
       reputationLevel: member.reputationLevel,
-      reputationScore: member.reputationScore, 
+      reputationScore: member.reputationScore,
     });
   }
 
   // Continue to add the remaining properties when necessary
   public toDTO(): MemberDTO {
     return {
-      memberId: this.props.id,
+      id: this.props.id,
       username: this.props.username,
       userId: this.props.userId,
       reputationLevel: this.props.reputationLevel,
