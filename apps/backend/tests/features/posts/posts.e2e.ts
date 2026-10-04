@@ -39,7 +39,7 @@ describe('posts', () => {
       const { member } = await setupLevel1Member(apiClient, token, userId);
 
       const createPostInput = new CreatePostInputBuilder()
-        .withMemberId(member.memberId)
+        .withMemberId(member.id)
         .build();
 
       const response = await apiClient.posts.create(createPostInput, token);
