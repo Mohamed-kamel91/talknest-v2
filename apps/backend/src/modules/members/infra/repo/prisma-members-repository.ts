@@ -50,11 +50,12 @@ export class PrismaMembersRepository implements IMembersRepository {
     const prismaInstance = transaction || this.database.getClient();
 
     const memberData = MemberMap.toPersistence(member);
+    const { id, ...updateData } = memberData;
 
     try {
       await prismaInstance.member.upsert({
-        where: { id: memberData.id },
-        update: memberData,
+        where: { id },
+        update: updateData,
         create: memberData,
       });
     } catch (err) {
