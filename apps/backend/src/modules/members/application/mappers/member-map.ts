@@ -32,8 +32,8 @@ class MemberMapper
 
   public toDTO(member: Member): MemberDTO {
     return {
+      id: member.id,
       userId: member.userId,
-      memberId: member.id,
       reputationScore: member.reputationScore,
       username: member.username.value,
       reputationLevel: member.reputationLevel.value,
