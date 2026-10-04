@@ -114,19 +114,11 @@ export class PrismaPostsRepository implements IPostsRepository {
       : this.database.getClient();
 
     const postData = PostMap.toPersistence(post);
-
+    const { id, ...updateData } = postData;
     try {
       await prismaInstance.post.upsert({
-        where: { id: postData.id },
-        update: {
-          memberId: postData.memberId,
-          postType: postData.postType,
-          title: postData.title,
-          content: postData.content,
-          link: postData.link,
-          voteScore: postData.voteScore,
-          slug: postData.slug,
-        },
+        where: { id },
+        update: updateData,
         create: postData,
       });
     } catch (error) {
