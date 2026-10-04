@@ -29,13 +29,11 @@ export interface BasePostProps {
 export interface TextPostProps extends BasePostProps {
   postType: 'text';
   content: PostContent;
-  link?: undefined;
 }
 
 export interface LinkPostProps extends BasePostProps {
   postType: 'link';
   link: PostLink;
-  content?: undefined;
 }
 
 export type PostProps = TextPostProps | LinkPostProps;
@@ -45,7 +43,6 @@ type CreateTextPostProps = {
   title: PostTitle;
   postType: PostType;
   content: PostContent;
-  link?: undefined;
 };
 
 type CreateLinkPostProps = {
@@ -53,7 +50,6 @@ type CreateLinkPostProps = {
   title: PostTitle;
   postType: PostType;
   link: PostLink;
-  content?: undefined;
 };
 
 export type CreatePostProps =
