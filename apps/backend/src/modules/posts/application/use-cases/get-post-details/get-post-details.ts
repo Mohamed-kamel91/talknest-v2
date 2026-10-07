@@ -16,7 +16,7 @@ export class GetPostDetailsUseCase implements IUseCase<
   constructor(private postsRepo: IPostsRepository) {}
 
   async execute(id: string): Promise<GetPostDetailsResponse> {
-    const post = await this.postsRepo.getPostDetailsById(id);
+    const post = await this.postsRepo.getDetailsById(id);
 
     if (post === null) {
       return fail(new PostNotFoundError());
