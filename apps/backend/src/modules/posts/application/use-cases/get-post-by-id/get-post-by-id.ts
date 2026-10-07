@@ -21,7 +21,7 @@ export class GetPostByIdUseCase implements IUseCase<
   async execute(
     query: GetPostByIdQuery,
   ): Promise<GetPostByIdResponse> {
-    const post = await this.postsRepo.getPostById(query.props.postId);
+    const post = await this.postsRepo.getById(query.props.postId);
 
     if (!post) {
       return fail(new PostNotFoundError());
