@@ -1,70 +1,74 @@
 import { faker } from '@faker-js/faker';
-import { CreatePostInput } from '@talknest/api/posts';
+import {
+  CreatePostInput,
+  type CreateLinkPostInput,
+  type CreateTextPostInput,
+} from '@talknest/api/posts';
+
+export abstract class BasePostInputBuilder<
+  TInput extends CreatePostInput,
+> {
+  protected title = faker.lorem.sentence({ min: 5, max: 10 });
+  protected memberId = faker.string.uuid();
+
+  public abstract build(): TInput;
+
+  public withTitle(title: string): this {
+    this.title = title;
+    return this;
+  }
+
+  public withMemberId(memberId: string): this {
+    this.memberId = memberId;
+    return this;
+  }
+}
+
+export class CreateTextPostInputBuilder extends BasePostInputBuilder<CreateTextPostInput> {
+  private content = faker.lorem.paragraph();
+
+  public withContent(content: string): this {
+    this.content = content;
+    return this;
+  }
+
+  public build(): CreateTextPostInput {
+    return {
+      postType: 'text',
+      title: this.title,
+      content: this.content,
+      memberId: this.memberId,
+    };
+  }
+}
+
+export class CreateLinkPostInputBuilder extends BasePostInputBuilder<CreateLinkPostInput> {
+  private link = faker.internet.url({
+    protocol: 'https',
+    appendSlash: false,
+  });
+
+  public withLink(link: string): this {
+    this.link = link;
+    return this;
+  }
+
+  public build(): CreateLinkPostInput {
+    return {
+      postType: 'link',
+      title: this.title,
+      link: this.link,
+      memberId: this.memberId,
+    };
+  }
+}
 
 export class CreatePostInputBuilder {
-  private props = {
-    title: faker.lorem.sentence({ min: 5, max: 10 }),
-    postType: 'text' as CreatePostInput['postType'],
-    content: faker.lorem.paragraph() as string | undefined,
-    link: undefined as string | undefined,
-    memberId: faker.string.uuid(),
-  };
-
-  public withPostType(type: CreatePostInput['postType']) {
-    this.props.postType = type;
-
-    if (type === 'text') {
-      this.props.content = faker.lorem.paragraph();
-      this.props.link = undefined;
-    }
-
-    if (type === 'link') {
-      this.props.link = faker.internet.url();
-      this.props.content = undefined;
-    }
-
-    return this;
+  static aTextPost(): CreateTextPostInputBuilder {
+    return new CreateTextPostInputBuilder();
   }
 
-  public withTitle(title: string) {
-    this.props.title = title;
-    return this;
-  }
-
-  public withContent(content: string) {
-    this.props.content = content;
-    this.props.link = undefined;
-    this.props.postType = 'text';
-    return this;
-  }
-
-  public withLink(link: string) {
-    this.props.link = link;
-    this.props.content = undefined;
-    this.props.postType = 'link';
-    return this;
-  }
-
-  public withMemberId(memberId: string) {
-    this.props.memberId = memberId;
-    return this;
-  }
-
-  public build(): CreatePostInput {
-    if (this.props.postType === 'text') {
-      return {
-        title: this.props.title,
-        postType: 'text',
-        content: this.props.content!,
-        memberId: this.props.memberId,
-      };
-    }
-
-    return {
-      title: this.props.title,
-      postType: 'link',
-      link: this.props.link!,
-      memberId: this.props.memberId,
-    };
+  static aLinkPost(): CreateLinkPostInputBuilder {
+    return new CreateLinkPostInputBuilder();
   }
 }
