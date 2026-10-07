@@ -19,14 +19,14 @@ export class GetPostByIdController extends BaseController {
       return this.fail(res, queryOrError.getError());
     }
 
-    const result = await this.postsService.getPostDetailsById(
+    const resultOrError = await this.postsService.getPostDetailsById(
       queryOrError.getValue().props.postId,
     );
 
-    if (result.isFailure) {
-      return this.fail(res, result.getError());
+    if (resultOrError.isFailure) {
+      return this.fail(res, resultOrError.getError());
     }
 
-    this.ok(res, result.getValue().toDTO());
+    this.ok(res, resultOrError.getValue().toDTO());
   }
 }
