@@ -6,7 +6,7 @@ import {
 } from '@talknest/api/posts';
 
 import { BaseController } from '../../../../../shared/infra/http';
-import { PostsService } from '../../../application/posts-service';
+import { type PostsService } from '../../../application/posts-service';
 
 export class CreatePostController extends BaseController {
   constructor(private postsService: PostsService) {
