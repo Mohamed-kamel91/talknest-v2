@@ -3,7 +3,7 @@ import express from 'express';
 import { GetPostByIdQuery } from '@talknest/api/posts';
 
 import { BaseController } from '../../../../../shared/infra/http';
-import { PostsService } from '../../../application/posts-service';
+import { type PostsService } from '../../../application/posts-service';
 
 export class GetPostByIdController extends BaseController {
   constructor(private postsService: PostsService) {
