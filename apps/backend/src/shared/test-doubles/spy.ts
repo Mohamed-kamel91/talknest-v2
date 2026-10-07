@@ -37,6 +37,12 @@ export abstract class Spy<T> {
     return calls.length;
   }
 
+  public wasMethodCalled<MethodName extends MethodNames<T>>(
+    methodName: MethodName,
+  ): boolean {
+    return this.calls.some((call) => call.methodName === methodName);
+  }
+
   public getCalls() {
     return this.calls;
   }

@@ -3,7 +3,9 @@ import { Config } from '../config';
 
 const config = new Config('start');
 
+let composition: CompositionRoot;
+
 export async function bootstrap() {
-  const composition = CompositionRoot.createCompositionRoot(config);
+  composition = CompositionRoot.create(config);
   return composition.start();
 }

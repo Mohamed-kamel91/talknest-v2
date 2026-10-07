@@ -13,11 +13,11 @@
     "migrate": "tsx prepareEnv.ts prisma migrate dev",
     "seed": "tsx prepareEnv.ts prisma db seed",
     "reset": "tsx prepareEnv.ts prisma migrate reset",
-    "db:migrate:seed": "pnpm run migrate && pnpm run seed",
-    "db:sync": "pnpm run migrate && pnpm run generate",
-    "db:setup": "pnpm run migrate && pnpm run generate && pnpm run seed",
-    "db:reset:seed": "tsx prepareEnv.ts prisma migrate reset && pnpm run seed",
-    "db:studio": "prisma studio"
+    "sync": "pnpm run migrate && pnpm run generate",
+    "setup": "pnpm run migrate && pnpm run generate && pnpm run seed",
+    "migrate:seed": "pnpm run migrate && pnpm run seed",
+    "reset:seed": "tsx prepareEnv.ts prisma migrate reset && pnpm run seed",
+    "studio": "prisma studio"
   },
   "exports": {
     ".": {

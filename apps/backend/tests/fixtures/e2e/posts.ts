@@ -1,22 +1,43 @@
-import { APIClient } from '@talknest/api';
-import { MemberDTO } from '@talknest/api/members';
-import { PostDTO, CreatePostInput } from '@talknest/api/posts';
+import { type APIClient } from '@talknest/api';
+import { CreatePostInput } from '@talknest/api/posts';
 
-export async function setupPost(
-  apiClient: APIClient,
-  member: MemberDTO,
-  authToken: string,
+import {
+  BasePostInputBuilder,
+  CreatePostInputBuilder,
+} from '../../builders/create-post-input-builder';
+
+type SetupPostProps = {
+  apiClient: APIClient;
+  memberId: string;
+  authToken: string;
+};
+
+async function setupPost<TInput extends CreatePostInput>(
+  { apiClient, memberId, authToken }: SetupPostProps,
+  createPostInputBuilder: () => BasePostInputBuilder<TInput>,
 ) {
-  const postData: CreatePostInput = {
-    memberId: member.memberId,
-    title: 'A new post',
-    postType: 'text',
-    content: 'This is a new text post that I am creating!',
-  };
+  const postInput = createPostInputBuilder()
+    .withMemberId(memberId)
+    .build();
 
-  const response = await apiClient.posts.create(postData, authToken);
+  const response = await apiClient.posts.create(postInput, authToken);
 
-  expect(response).toBeDefined();
-  expect(response.success).toBe(true);
-  return { post: response.data as PostDTO };
+  if (!response.success) {
+    throw new Error(
+      `Failed to create post: ${response.error.code} - ${response.error.message}`,
+    );
+  }
+
+  expect(response.data?.id).toBeDefined();
+  expect(response.data?.slug).toBeDefined();
+
+  return { post: response.data, postInput };
 }
+
+export const setupTextPost = (props: SetupPostProps) => {
+  return setupPost(props, () => CreatePostInputBuilder.aTextPost());
+};
+
+export const setupLinkPost = (props: SetupPostProps) => {
+  return setupPost(props, () => CreatePostInputBuilder.aLinkPost());
+};

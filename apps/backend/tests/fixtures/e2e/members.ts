@@ -1,20 +1,19 @@
-import { DatabaseFixture } from './database';
 import { NumberUtil } from '@talknest/core/utils';
 import { type APIClient } from '@talknest/api';
-import { MemberDTO } from '@talknest/api/members';
+
+import { DatabaseFixture } from './database';
+import { Member } from '../../../src/modules/members/domain/member';
 
 export async function setupLevel1Member(
   apiClient: APIClient,
   authToken: string,
   userId: string,
 ) {
-  const username = `khalilstemmler-${NumberUtil.generateRandomInteger(10000, 99999)}`;
-  const email = `${username}@test.com`;
+  const username = `moh${NumberUtil.generateRandomInteger(10000, 99999)}`;
 
   const response = await apiClient.members.register(
     {
       username,
-      email,
       userId,
     },
     authToken,
@@ -25,14 +24,13 @@ export async function setupLevel1Member(
   }
 
   expect(response.data).toBeDefined();
-  expect(response.data?.memberId).toBeDefined();
+  expect(response.data?.id).toBeDefined();
   expect(response.data?.userId).toBeDefined();
   expect(response.data?.username).toBeDefined();
 
   console.log(`Created a Level 1 member`);
-  console.log(response);
 
-  return { member: response.data as MemberDTO };
+  return { member: response.data };
 }
 
 export async function setupLevel2Member(
@@ -47,7 +45,18 @@ export async function setupLevel2Member(
     userId,
   );
 
-  // get all posts
+  // Seed lvl2 member for seeded post
+  const author = await databaseFixture.seedMember({
+    reputationLevel: 'Level2',
+    reputationScore: Member.REPUTATION_SCORE_THRESH.Level2,
+  });
+
+  // seed post
+  await databaseFixture.seedPost({
+    memberId: author.id,
+  });
+
+  // Get all posts
   const postsResponse = await apiClient.posts.getPosts({
     sort: 'recent',
   });
@@ -61,25 +70,25 @@ export async function setupLevel2Member(
     throw new Error('No posts found to comment on');
   }
 
-  // post a comment to the post x5 times
+  // Post a comment to the post x5 times
   for (let i = 0; i < 5; i++) {
     const commentResponse = await apiClient.comments.postComment(
       {
         postId: postToCommentOn.id,
-        memberId: member.memberId,
+        memberId: member.id,
         text: `Test comment ${i + 1}`,
       },
       authToken,
     );
-    console.log(commentResponse);
+
     if (!commentResponse.success) {
       throw new Error('Failed to post comment');
     }
   }
 
-  // verify that the member is now level 2 by checking the database via the fixture
+  // Verify that the member is now level 2 by checking the database via the fixture
   const updatedMember = await databaseFixture.getMemberById(
-    member.memberId,
+    member.id,
   );
   if (!updatedMember) {
     throw new Error('Failed to verify member level');

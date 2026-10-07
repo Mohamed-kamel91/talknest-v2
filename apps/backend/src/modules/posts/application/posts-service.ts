@@ -3,7 +3,7 @@ import {
   GetPostByIdQuery,
   GetPostsQuery,
 } from '@talknest/api/posts';
-import { EventBus } from '@talknest/bus';
+import { type IEventBus } from '@talknest/bus';
 
 import type { IMembersRepository } from '../../members/application/ports/members-repository';
 import type { IPostsRepository } from './ports/posts-repository';
@@ -19,24 +19,25 @@ import {
   GetPostByIdResponse,
   GetPostByIdUseCase,
 } from './use-cases/get-post-by-id/get-post-by-id';
+import { GetPostsUseCase } from './use-cases/get-posts/get-posts';
 
 export class PostsService {
   constructor(
-    private postsRepo: IPostsRepository,
-    private membersRepo: IMembersRepository,
-    private eventBus: EventBus,
+    private postsRepository: IPostsRepository,
+    private membersRepository: IMembersRepository,
+    private eventBus: IEventBus,
   ) {}
 
   async getPosts(query: GetPostsQuery) {
-    return this.postsRepo.findPosts(query);
+    return new GetPostsUseCase(this.postsRepository).execute(query);
   }
 
   async createPost(
     command: CreatePostCommand,
   ): Promise<CreatePostResponse> {
     return new CreatePostUseCase(
-      this.postsRepo,
-      this.membersRepo,
+      this.postsRepository,
+      this.membersRepository,
       this.eventBus,
     ).execute(command);
   }
@@ -44,12 +45,16 @@ export class PostsService {
   async getPostById(
     query: GetPostByIdQuery,
   ): Promise<GetPostByIdResponse> {
-    return new GetPostByIdUseCase(this.postsRepo).execute(query);
+    return new GetPostByIdUseCase(this.postsRepository).execute(
+      query,
+    );
   }
 
   async getPostDetailsById(
     id: string,
   ): Promise<GetPostDetailsResponse> {
-    return new GetPostDetailsUseCase(this.postsRepo).execute(id);
+    return new GetPostDetailsUseCase(this.postsRepository).execute(
+      id,
+    );
   }
 }

@@ -1,43 +1,79 @@
-import {} from '@talknest/api/members';
-import * as Users from '@talknest/api/users';
-import { DecodedIdToken } from '@talknest/api/users';
-import { PrismaDatabase } from '@talknest/database';
-import { InMemoryEventBus } from '@talknest/bus';
+import { InMemoryEventBus, type IEventBus } from '@talknest/bus';
+import { CreateMemberCommand } from '@talknest/api/members';
+import { memberErrorCodes } from '@talknest/errors';
 
-import { CreateMemberUseCase } from './create-member';
+import { setupLevel1Member } from '../../../../../../tests/fixtures/unit/members';
+import { CreateMemberInputBuilder } from '../../../../../../tests/builders/create-member-input-builder';
+
+import { InMemoryMembersRepository } from '../../../infra/repo/in-memory-members-repository';
 import { Member } from '../../../domain/member';
-import { PrismaMembersRepository } from '../../../infra/repo/prisma-members-repository';
-import { Config } from '../../../../../shared/config';
+import { CreateMemberUseCase } from './create-member';
+import {
+  MemberAlreadyExistsError,
+  MemberUsernameTakenError,
+} from '../../../domain/errors/member-errors';
 
 describe('createMember', () => {
-  let config = new Config('test:unit');
-  let database = new PrismaDatabase();
-  let membersRepo = new PrismaMembersRepository(database);
-  let eventBus = new InMemoryEventBus();
-
-  const useCase = new CreateMemberUseCase(membersRepo, eventBus);
-
-  const mockToken: DecodedIdToken = {
-    email: 'test@example.com',
-    uid: 'auth0|123',
-  };
+  let eventBus: IEventBus;
+  let membersRepositorySpy: InMemoryMembersRepository;
+  let createMemberUseCase: CreateMemberUseCase;
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    membersRepositorySpy = new InMemoryMembersRepository();
+    eventBus = new InMemoryEventBus();
+    createMemberUseCase = new CreateMemberUseCase(
+      membersRepositorySpy,
+      eventBus,
+    );
   });
 
-  test('should create a member when username is available and data is valid', async () => {
-    // Implement
-    throw new Error('Not yet implemented');
+  it('should create a member when username is available and data is valid', async () => {
+    const createMemberInput = new CreateMemberInputBuilder().build();
+    const commandOrError = CreateMemberCommand.create(createMemberInput);
+    expect(commandOrError.isSuccess).toBe(true);
+
+    const result = await createMemberUseCase.execute(commandOrError.getValue());
+    expect(result.isSuccess).toBe(true);
+    expect(result.getValue()).toBeInstanceOf(Member);
+    expect(membersRepositorySpy.getTimesMethodCalled('save')).toBe(1);
   });
 
-  test('should fail if username is already taken', async () => {
-    // Implement
-    throw new Error('Not yet implemented');
+  it('should fail if username is already taken', async () => {
+    const existingMember = setupLevel1Member(membersRepositorySpy);
+
+    const createMemberInput = new CreateMemberInputBuilder()
+      .withUsername(existingMember.username.value)
+      .build();
+    const commandOrError = CreateMemberCommand.create(createMemberInput);
+    expect(commandOrError.isSuccess).toBe(true);
+
+    const result = await createMemberUseCase.execute(commandOrError.getValue());
+    expect(result.isFailure).toBe(true);
+    expect(result.getError()).toBeDefined();
+    expect(result.getError()).toBeInstanceOf(MemberUsernameTakenError);
+    expect(result.getError().code).toBe(memberErrorCodes.MEMBER_USERNAME_TAKEN);
+
+    expect(membersRepositorySpy.getTimesMethodCalled('getByUsername')).toBe(1);
+    expect(membersRepositorySpy.getTimesMethodCalled('save')).toBe(0);
   });
 
-  test('should fail if validation fails', async () => {
-    // Implement
-    throw new Error('Not yet implemented');
+  test('should fail if member already exists', async () => {
+    const existingMember = setupLevel1Member(membersRepositorySpy);
+
+    const memberInput = new CreateMemberInputBuilder()
+      .withUserId(existingMember.userId)
+      .build();
+
+    const commandOrError = CreateMemberCommand.create(memberInput);
+    expect(commandOrError.isSuccess).toBe(true);
+
+    const result = await createMemberUseCase.execute(commandOrError.getValue());
+
+    expect(result.isFailure).toBe(true);
+    expect(result.getError()).toBeInstanceOf(MemberAlreadyExistsError);
+    expect(result.getError().code).toBe(memberErrorCodes.MEMBER_ALREADY_EXISTS);
+
+    expect(membersRepositorySpy.getTimesMethodCalled('getByUserId')).toBe(1);
+    expect(membersRepositorySpy.getTimesMethodCalled('save')).toBe(0);
   });
 });

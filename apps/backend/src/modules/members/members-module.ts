@@ -1,4 +1,4 @@
-import { EventBus } from '@talknest/bus';
+import { IEventBus } from '@talknest/bus';
 import { IDatabase } from '@talknest/database';
 
 import { ApplicationModule } from '../../shared/modules/application-module';
@@ -7,19 +7,20 @@ import { WebServer } from '../../shared/infra/http';
 
 import { PrismaMembersRepository } from './infra/repo/prisma-members-repository';
 import { IMembersRepository } from './application/ports/members-repository';
-import { MemberService } from './application/members-service';
+import { MembersService } from './application/members-service';
 import { MembersController } from './presentation/http/controllers';
 import { MembersRouter } from './presentation/http/routes/members-routers';
+import { InMemoryMembersRepository } from './infra/repo/in-memory-members-repository';
 
 export class MembersModule extends ApplicationModule {
   private membersRepository: IMembersRepository;
-  private membersService: MemberService;
+  private membersService: MembersService;
   private membersController: MembersController;
   private membersRouter: MembersRouter;
 
   private constructor(
     private db: IDatabase,
-    private eventBus: EventBus,
+    private eventBus: IEventBus,
     config: Config,
   ) {
     super(config);
@@ -34,7 +35,7 @@ export class MembersModule extends ApplicationModule {
 
   public static build(
     db: IDatabase,
-    eventBus: EventBus,
+    eventBus: IEventBus,
     config: Config,
   ) {
     return new MembersModule(db, eventBus, config);
@@ -59,7 +60,7 @@ export class MembersModule extends ApplicationModule {
   }
 
   private createMembersService() {
-    return new MemberService(this.membersRepository, this.eventBus);
+    return new MembersService(this.membersRepository, this.eventBus);
   }
 
   private createMembersController(config: Config) {
@@ -67,6 +68,10 @@ export class MembersModule extends ApplicationModule {
   }
 
   private createMembersRepository(db: IDatabase) {
+    if (this.shouldBuildFakeRepository) {
+      return new InMemoryMembersRepository();
+    }
+
     return new PrismaMembersRepository(db);
   }
 

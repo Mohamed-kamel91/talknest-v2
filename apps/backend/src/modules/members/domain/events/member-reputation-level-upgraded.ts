@@ -1,15 +1,18 @@
-import { randomUUID } from 'node:crypto';
-
 import { DomainEvent } from '@talknest/core';
-import { ReputationLevel } from '@talknest/api/members';
+import { type ReputationLevel } from '@talknest/api/members';
 
-export class MemberReputationLevelUpgraded extends DomainEvent {
-  constructor(
-    public readonly memberId: string,
-    public readonly newLevel: ReputationLevel,
-    public readonly id: string = randomUUID(),
-    public readonly date: Date = new Date(),
-  ) {
-    super(id, date, 'MemberReputationLevelUpgraded');
+type MemberReputationLevelUpgradedData = {
+  memberId: string;
+  newLevel: string;
+};
+
+export class MemberReputationLevelUpgraded extends DomainEvent<MemberReputationLevelUpgradedData> {
+  static readonly eventName: string = 'MemberReputationLevelUpgraded';
+
+  constructor(memberId: string, newLevel: ReputationLevel) {
+    super(MemberReputationLevelUpgraded.eventName, memberId, {
+      memberId,
+      newLevel,
+    });
   }
 }

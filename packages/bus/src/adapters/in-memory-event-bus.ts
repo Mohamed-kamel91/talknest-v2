@@ -1,9 +1,9 @@
 import { DomainEvent } from '@talknest/core';
-import { EventBus } from '../ports/eventBus';
+import type { IEventBus } from '../ports/event-bus';
 
 type EventHandler<T extends DomainEvent> = (event: T) => void;
 
-export class InMemoryEventBus implements EventBus {
+export class InMemoryEventBus implements IEventBus {
   private subscriptions: Map<
     string,
     Array<EventHandler<DomainEvent>>
@@ -17,7 +17,7 @@ export class InMemoryEventBus implements EventBus {
     // No-op
   }
 
-  publishEvents(events: DomainEvent[]): void {
+  public publishEvents(events: DomainEvent[]): void {
     events.forEach((event) => {
       const eventType = event.constructor.name;
       const handlers = this.subscriptions.get(eventType);
@@ -29,7 +29,7 @@ export class InMemoryEventBus implements EventBus {
     });
   }
 
-  subscribe<T extends DomainEvent>(
+  public subscribe<T extends DomainEvent>(
     eventTypeName: string,
     handler: EventHandler<T>,
   ): void {
@@ -38,7 +38,7 @@ export class InMemoryEventBus implements EventBus {
     this.subscriptions.set(eventTypeName, handlers);
   }
 
-  unsubscribe(
+  public unsubscribe(
     eventTypeName: string,
     handler: EventHandler<DomainEvent>,
   ): void {

@@ -1,156 +1,168 @@
-import { randomUUID } from 'node:crypto';
-import { z } from 'zod';
+import { v4 as uuidv4 } from 'uuid';
 
+import {
+  success,
+  fail,
+  type Result,
+} from '@talknest/core/application';
 import { AggregateRoot } from '@talknest/core/domain';
-import { type CreatePostInput } from '@talknest/api/posts';
-import { Post as PostModel } from '@talknest/database';
 
 import { PostCreated } from './events/post-created';
 import { PostSlug } from './post-slug';
+import { PostTitle } from './post-title';
+import { PostContent } from './post-content';
+import { PostLink } from './post-link';
+import { PostType } from './post-type';
 import {
-  mapPostValidationError,
-  type PostCreationError,
+  InvalidLinkPostError,
+  InvalidTextPostError,
 } from './errors/posts-errors';
 
-interface BasePostProps {
+export interface BasePostProps {
   id: string;
   memberId: string;
-  title: string;
+  title: PostTitle;
   voteScore: number;
   slug: PostSlug;
 }
 
-interface TextPostProps extends BasePostProps {
+export interface TextPostProps extends BasePostProps {
   postType: 'text';
-  content: string;
-  link?: undefined;
+  content: PostContent;
 }
 
-interface LinkPostProps extends BasePostProps {
+export interface LinkPostProps extends BasePostProps {
   postType: 'link';
-  link: string;
-  content?: undefined;
+  link: PostLink;
 }
 
-type PostProps = TextPostProps | LinkPostProps;
+export type PostProps = TextPostProps | LinkPostProps;
 
-// These could be value objects too
-const createTextPostSchema = z.object({
-  postType: z.literal('text'),
+type CreateTextPostProps = {
+  memberId: string;
+  title: PostTitle;
+  postType: PostType;
+  content: PostContent;
+};
 
-  title: z
-    .string()
-    .min(5, 'Post title must be at least 5 characters')
-    .max(100, 'Post title must not exceed 100 characters'),
+type CreateLinkPostProps = {
+  memberId: string;
+  title: PostTitle;
+  postType: PostType;
+  link: PostLink;
+};
 
-  content: z
-    .string()
-    .min(5, 'Post content must be at least 5 characters')
-    .max(3000, 'Post content must not exceed 3000 characters'),
-
-  link: z.never().optional(),
-});
-
-const createLinkPostSchema = z.object({
-  postType: z.literal('link'),
-
-  title: z
-    .string()
-    .min(5, 'Post title must be at least 5 characters')
-    .max(100, 'Post title must not exceed 100 characters'),
-
-  link: z.url('Post link must be a valid URL'),
-
-  content: z.never().optional(),
-});
-
-const createPostSchema = z.discriminatedUnion('postType', [
-  createTextPostSchema,
-  createLinkPostSchema,
-]);
+export type CreatePostProps =
+  CreateTextPostProps | CreateLinkPostProps;
 
 export class Post extends AggregateRoot {
   constructor(private props: PostProps) {
     super();
   }
 
-  get id() {
+  get id(): string {
     return this.props.id;
   }
 
-  get title() {
-    return this.props.title;
-  }
-
-  get link() {
-    return this.props.link;
-  }
-
-  get memberId() {
+  get memberId(): string {
     return this.props.memberId;
   }
 
-  get content() {
-    return this.props.content;
+  get title(): PostTitle {
+    return this.props.title;
   }
 
-  get postType() {
+  get postType(): PostProps['postType'] {
     return this.props.postType;
   }
 
-  get voteScore() {
+  get link() {
+    if (this.props.postType !== 'link') {
+      throw new Error('Text posts do not have a link');
+    }
+
+    return this.props.link;
+  }
+
+  get content(): PostContent {
+    if (this.props.postType !== 'text') {
+      throw new Error('Link posts do not have content');
+    }
+
+    return this.props.content;
+  }
+
+  get voteScore(): number {
     return this.props.voteScore;
   }
 
-  get slug() {
-    return this.props.slug.value;
+  get slug(): PostSlug {
+    return this.props.slug;
   }
 
   public static create(
-    input: CreatePostInput,
-  ): Post | PostCreationError {
-    const { memberId, ...postInput } = input;
+    input: CreatePostProps,
+  ): Result<Post, InvalidTextPostError | InvalidLinkPostError> {
+    const { memberId, postType, title } = input;
 
-    const result = createPostSchema.safeParse(postInput);
+    const baseProps = {
+      id: uuidv4(),
+      memberId,
+      title,
+      voteScore: 0,
+      slug: PostSlug.create(title.value),
+    };
 
-    if (!result.success) {
-      return mapPostValidationError(result.error, input);
+    let props: PostProps;
+
+    if (postType.value === 'text') {
+      if ('link' in input) {
+        return fail(
+          new InvalidTextPostError(
+            'A text post cannot contain a link',
+          ),
+        );
+      }
+
+      props = {
+        ...baseProps,
+        postType: 'text',
+        content: input.content,
+      };
+    } else {
+      if ('content' in input) {
+        return fail(
+          new InvalidLinkPostError(
+            'A link post cannot contain text content',
+          ),
+        );
+      }
+
+      props = {
+        ...baseProps,
+        postType: 'link',
+        link: input.link,
+      };
     }
 
-    const postId = randomUUID();
+    const post = new Post(props);
 
-    const post = new Post({
-      ...result.data,
-      memberId,
-      id: postId,
-      voteScore: 0,
-      slug: PostSlug.create(result.data.title),
-    });
+    post.domainEvents.push(new PostCreated(post.id, memberId));
 
-    post.domainEvents.push(new PostCreated(postId, input.memberId));
-
-    return post;
+    return success(post);
   }
 
-  public static toDomain(prismaModel: PostModel): Post {
-    const postVariant =
-      prismaModel.postType === 'text'
-        ? {
-            postType: 'text' as const,
-            content: prismaModel.content!,
-          }
-        : {
-            postType: 'link' as const,
-            link: prismaModel.link!,
-          };
-
+  public static reconstitute(props: PostProps): Post {
     return new Post({
-      id: prismaModel.id,
-      memberId: prismaModel.memberId,
-      title: prismaModel.title,
-      voteScore: prismaModel.voteScore,
-      slug: PostSlug.toDomain(prismaModel.slug),
-      ...postVariant,
+      ...props,
     });
+  }
+
+  public isTextPost(): boolean {
+    return this.props.postType === 'text';
+  }
+
+  public isLinkPost(): boolean {
+    return this.props.postType === 'link';
   }
 }

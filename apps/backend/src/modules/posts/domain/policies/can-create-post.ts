@@ -1,8 +1,12 @@
+import { ReputationLevel } from '@talknest/api';
 import { Member } from '../../../members/domain/member';
 
 export class CanCreatePostPolicy {
+  private static readonly MIN_LEVEL: ReputationLevel = 'Level2';
+
   public static isAllowed(member: Member): boolean {
-    // Implement!
-    throw new Error('To be implemented');
+    return member.isReputationLevelAtLeast(
+      CanCreatePostPolicy.MIN_LEVEL,
+    );
   }
 }

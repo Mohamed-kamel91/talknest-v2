@@ -2,11 +2,12 @@ import { IDatabase, Prisma } from '@talknest/database';
 
 import { Member } from '../../domain/member';
 import { IMembersRepository } from '../../application/ports/members-repository';
+import { MemberMap } from '../../application/mappers/member-map';
 
 export class PrismaMembersRepository implements IMembersRepository {
   constructor(private database: IDatabase) {}
 
-  async getMemberByUserId(userId: string): Promise<Member | null> {
+  async getByUserId(userId: string): Promise<Member | null> {
     const connection = this.database.getClient();
     const memberData = await connection.member.findUnique({
       where: { userId: userId },
@@ -16,23 +17,23 @@ export class PrismaMembersRepository implements IMembersRepository {
       return null;
     }
 
-    return Member.toDomain(memberData);
+    return MemberMap.toDomain(memberData);
   }
 
-  async findUserByUsername(username: string): Promise<Member | null> {
+  async getByUsername(username: string): Promise<Member | null> {
     const connection = this.database.getClient();
     const memberData = await connection.member.findUnique({
-      where: { username: username },
+      where: { username },
     });
 
     if (!memberData) {
       return null;
     }
 
-    return Member.toDomain(memberData);
+    return MemberMap.toDomain(memberData);
   }
 
-  async getMemberById(memberId: string): Promise<Member | null> {
+  async getById(memberId: string): Promise<Member | null> {
     const connection = this.database.getClient();
     const memberData = await connection.member.findUnique({
       where: { id: memberId },
@@ -42,18 +43,19 @@ export class PrismaMembersRepository implements IMembersRepository {
       return null;
     }
 
-    return Member.toDomain(memberData);
+    return MemberMap.toDomain(memberData);
   }
 
   async save(member: Member, transaction?: Prisma.TransactionClient) {
     const prismaInstance = transaction || this.database.getClient();
 
-    const memberData = member.toPersistence();
+    const memberData = MemberMap.toPersistence(member);
+    const { id, ...updateData } = memberData;
 
     try {
       await prismaInstance.member.upsert({
-        where: { id: memberData.id },
-        update: memberData,
+        where: { id },
+        update: updateData,
         create: memberData,
       });
     } catch (err) {

@@ -4,39 +4,38 @@ import { EventModel } from './eventModel';
 export type DomainEventStatus =
   'INITIAL' | 'RETRYING' | 'PUBLISHED' | 'FAILED';
 
-// Define the expected structure instead of importing from Prisma
-
-export class DomainEvent {
+export class DomainEvent<T = unknown> {
   constructor(
-    public readonly aggregateId: string,
-    public readonly data: any,
     public readonly name: string,
+    public readonly aggregateId: string,
+    public readonly data: T,
     public readonly id: string = uuidv4(),
-    private retries: number = 0,
-    private status: DomainEventStatus = 'INITIAL',
+    private _retries: number = 0,
+    private _status: DomainEventStatus = 'INITIAL',
     public readonly createdAt: string = new Date().toISOString(),
   ) {}
 
-  getStatus() {
-    return this.status;
+  get retries() {
+    return this._retries;
   }
 
-  markPublished() {
-    return (this.status = 'PUBLISHED');
+  get status() {
+    return this._status;
   }
 
-  recordFailureToProcess() {
-    this.retries++;
-    if (this.retries === 3) {
-      this.status = 'FAILED';
+  public markPublished() {
+    return (this._status = 'PUBLISHED');
+  }
+
+  public recordFailureToProcess() {
+    this._retries++;
+
+    if (this._retries === 3) {
+      this._status = 'FAILED';
       return;
     }
 
-    this.status = 'RETRYING';
-  }
-
-  getRetries() {
-    return this.retries;
+    this._status = 'RETRYING';
   }
 
   public serializeData() {
@@ -47,15 +46,15 @@ export class DomainEvent {
     return JSON.stringify(this);
   }
 
-  public static toDomain(eventModel: EventModel): DomainEvent {
-    return new DomainEvent(
+  public static toDomain<T>(eventModel: EventModel): DomainEvent<T> {
+    return new DomainEvent<T>(
       eventModel.name,
-      JSON.parse(eventModel.data),
       eventModel.aggregateId,
+      JSON.parse(eventModel.data),
       eventModel.id,
       eventModel.retries,
       eventModel.status as DomainEventStatus,
-      eventModel.dateCreated.toISOString(),
+      eventModel.createdAt.toISOString(),
     );
   }
 }

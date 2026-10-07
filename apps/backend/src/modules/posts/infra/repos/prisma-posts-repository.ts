@@ -11,7 +11,8 @@ import { Post } from '../../domain/post';
 
 import { MemberReadModel } from '../../../members/application/read-models/member-read-model';
 import { PostReadModel } from '../../application/read-models/post-read-model';
-import { IPostsRepository } from '../../application/ports/posts-repository';
+import type { IPostsRepository } from '../../application/ports/posts-repository';
+import { PostMap } from '../../application/mappers/post-map';
 
 type PostModelWithMember = PostModel & {
   memberPostedBy: MemberModel;
@@ -20,7 +21,7 @@ type PostModelWithMember = PostModel & {
 export class PrismaPostsRepository implements IPostsRepository {
   constructor(private database: IDatabase) {}
 
-  async getPostById(id: string): Promise<Post | null> {
+  async getById(id: string): Promise<Post | null> {
     const connection = this.database.getClient();
     const post = await connection.post.findUnique({
       where: { id },
@@ -33,7 +34,7 @@ export class PrismaPostsRepository implements IPostsRepository {
       return null;
     }
 
-    return Post.toDomain(post);
+    return PostMap.toDomain(post);
   }
 
   async findPosts(query: GetPostsQuery): Promise<PostReadModel[]> {
@@ -60,17 +61,18 @@ export class PrismaPostsRepository implements IPostsRepository {
       sqlQuery.orderBy = { dateCreated: 'desc' };
     }
 
+    // This should be done using projection and denormalized table "postReadModel"
     const posts = await connection.post.findMany(sqlQuery);
 
     return posts.map((post: PostModelWithMember) =>
-      PostReadModel.fromPrismaToDomain(
+      PostReadModel.fromPersistence(
         post,
-        MemberReadModel.fromPrisma(post.memberPostedBy),
+        MemberReadModel.fromPersistence(post.memberPostedBy),
       ),
     );
   }
 
-  public async getPostDetailsById(
+  public async getDetailsById(
     id: string,
   ): Promise<PostReadModel | null> {
     const connection = this.database.getClient();
@@ -97,9 +99,9 @@ export class PrismaPostsRepository implements IPostsRepository {
       })
       .then((result) => result._sum.value || 0);
 
-    return PostReadModel.fromPrismaToDomain(
+    return PostReadModel.fromPersistence(
       { ...post, voteScore },
-      MemberReadModel.fromPrisma(post.memberPostedBy),
+      MemberReadModel.fromPersistence(post.memberPostedBy),
     );
   }
 
@@ -111,27 +113,13 @@ export class PrismaPostsRepository implements IPostsRepository {
       ? transaction
       : this.database.getClient();
 
+    const postData = PostMap.toPersistence(post);
+    const { id, ...updateData } = postData;
     try {
       await prismaInstance.post.upsert({
-        where: { id: post.id },
-        update: {
-          title: post.title,
-          content: post.content ?? null,
-          link: post.link ?? null,
-          voteScore: post.voteScore,
-          memberId: post.memberId,
-          slug: post.slug,
-        },
-        create: {
-          id: post.id,
-          title: post.title,
-          postType: post.postType,
-          content: post.content ?? null,
-          link: post.link ?? null,
-          voteScore: post.voteScore,
-          memberId: post.memberId,
-          slug: post.slug,
-        },
+        where: { id },
+        update: updateData,
+        create: postData,
       });
     } catch (error) {
       console.log(error);
@@ -139,7 +127,7 @@ export class PrismaPostsRepository implements IPostsRepository {
     }
   }
 
-  async getPostBySlug(slug: string): Promise<PostReadModel | null> {
+  async getBySlug(slug: string): Promise<PostReadModel | null> {
     const connection = this.database.getClient();
     const post = await connection.post.findFirst({
       where: { slug },
@@ -155,7 +143,10 @@ export class PrismaPostsRepository implements IPostsRepository {
 
     if (!post) return null;
 
-    const member = MemberReadModel.fromPrisma(post.memberPostedBy);
-    return PostReadModel.fromPrismaToDomain(post, member);
+    const member = MemberReadModel.fromPersistence(
+      post.memberPostedBy,
+    );
+
+    return PostReadModel.fromPersistence(post, member);
   }
 }

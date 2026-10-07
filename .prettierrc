@@ -16,7 +16,7 @@
         "**/*.e2e.{js,jsx,ts,tsx}"
       ],
       "options": {
-        "printWidth": 80
+        "printWidth": 100
       }
     }
   ]

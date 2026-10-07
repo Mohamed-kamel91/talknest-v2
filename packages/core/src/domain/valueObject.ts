@@ -6,11 +6,7 @@ export abstract class ValueObject<T> {
   }
 
   public equals(vo?: ValueObject<T>): boolean {
-    if (vo === null || vo === undefined) {
-      return false;
-    }
-
-    if (vo.props === undefined) {
+    if (vo?.props === undefined) {
       return false;
     }
 

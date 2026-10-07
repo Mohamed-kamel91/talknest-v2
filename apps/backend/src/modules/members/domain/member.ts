@@ -1,40 +1,28 @@
-import { randomUUID } from 'node:crypto';
+import { v4 as uuidv4 } from 'uuid';
 
+import { AggregateRoot, success, type Result } from '@talknest/core';
 import {
-  AggregateRoot,
-  success,
-  fail,
-  type Result,
-} from '@talknest/core';
-import { Member as MemberModel } from '@talknest/database';
-import {
-  MemberDTO,
   ReputationLevel,
   reputationLevel,
 } from '@talknest/api/members';
 
 import { MemberReputationLevelUpgraded } from './events/member-reputation-level-upgraded';
 import { MemberUsername } from './member-username';
-import { InvalidMemberUsernameError } from './errors/member-errors';
+import { MemberReputationLevel } from './member-reputation-level';
 
 interface MemberProps {
   id: string;
   userId: string;
-  username: MemberUsername;
   reputationScore: number;
-  reputationLevel: ReputationLevel;
+  username: MemberUsername;
+  reputationLevel: MemberReputationLevel;
 }
 
-export enum MemberReputationLevel {
-  Level1 = 'Level 1',
-  Level2 = 'Level 2',
-  Level3 = 'Level 3',
-}
-
-interface CreateMemberInput {
-  userId: string;
-  username: string;
-}
+type CreateMemberProps = Omit<
+  MemberProps,
+  'id' | 'reputationScore' | 'reputationLevel'
+> &
+  Partial<Pick<MemberProps, 'id'>>;
 
 export class Member extends AggregateRoot {
   public static REPUTATION_SCORE_THRESH = {
@@ -42,11 +30,8 @@ export class Member extends AggregateRoot {
     Level2: 10,
   };
 
-  private props: MemberProps;
-
-  private constructor(props: MemberProps) {
+  private constructor(private props: MemberProps) {
     super();
-    this.props = props;
   }
 
   get id() {
@@ -69,7 +54,30 @@ export class Member extends AggregateRoot {
     return this.props.reputationLevel;
   }
 
-  updateReputationScore(newScore: number) {
+  public static create(
+    props: CreateMemberProps,
+  ): Result<Member, never> {
+    return success(
+      new Member({
+        ...props,
+        id: props.id ?? uuidv4(),
+        reputationScore: 0,
+        reputationLevel: MemberReputationLevel.create(),
+      }),
+    );
+  }
+
+  public static reconstitute(props: MemberProps): Member {
+    return new Member({
+      ...props,
+    });
+  }
+
+  public isReputationLevelAtLeast(level: ReputationLevel): boolean {
+    return this.reputationLevel.isAtLeast(level);
+  }
+
+  public updateReputationScore(newScore: number) {
     const oldScore = this.props.reputationScore;
     this.props.reputationScore = newScore;
 
@@ -78,12 +86,13 @@ export class Member extends AggregateRoot {
       oldScore < Member.REPUTATION_SCORE_THRESH.Level1 &&
       newScore >= Member.REPUTATION_SCORE_THRESH.Level1
     ) {
-      this.props.reputationLevel = reputationLevel.Level2;
+      this.props.reputationLevel =
+        MemberReputationLevel.createAtLevel(reputationLevel.Level2);
 
       this.domainEvents.push(
         new MemberReputationLevelUpgraded(
           this.id,
-          this.reputationLevel,
+          this.reputationLevel.value,
         ),
       );
       console.log('going to level 2!');
@@ -91,73 +100,15 @@ export class Member extends AggregateRoot {
       oldScore < Member.REPUTATION_SCORE_THRESH.Level2 &&
       newScore >= Member.REPUTATION_SCORE_THRESH.Level2
     ) {
-      this.props.reputationLevel = reputationLevel.Level3;
+      this.props.reputationLevel =
+        MemberReputationLevel.createAtLevel(reputationLevel.Level3);
       console.log('going to level 3!');
       this.domainEvents.push(
         new MemberReputationLevelUpgraded(
           this.id,
-          this.reputationLevel,
+          this.reputationLevel.value,
         ),
       );
     }
-  }
-
-  public static create(
-    inputProps: CreateMemberInput,
-  ): Result<Member, InvalidMemberUsernameError> {
-    const memberUsernameOrError = MemberUsername.create(
-      inputProps.username,
-    );
-
-    // Example of using value objects to validate input to create the aggregate
-    if (memberUsernameOrError instanceof InvalidMemberUsernameError) {
-      return fail(memberUsernameOrError);
-    }
-
-    return success(
-      new Member({
-        ...inputProps,
-        id: randomUUID(),
-        reputationScore: 0,
-        reputationLevel: reputationLevel.Level1,
-        username: memberUsernameOrError,
-      }),
-    );
-  }
-
-  public static toDomain(
-    recreationProps: MemberModel | MemberProps,
-  ): Member {
-    return new Member({
-      id: recreationProps.id,
-      reputationScore: recreationProps.reputationScore,
-      userId: recreationProps.userId,
-      username:
-        recreationProps.username instanceof MemberUsername
-          ? recreationProps.username
-          : MemberUsername.toDomain(recreationProps.username),
-      reputationLevel:
-        recreationProps.reputationLevel as ReputationLevel,
-    });
-  }
-
-  toDTO(): MemberDTO {
-    return {
-      userId: this.props.userId,
-      memberId: this.id,
-      username: this.props.username.value,
-      reputationLevel: this.props.reputationLevel,
-      reputationScore: this.props.reputationScore,
-    };
-  }
-
-  toPersistence() {
-    return {
-      id: this.id,
-      userId: this.props.userId,
-      username: this.props.username.value,
-      reputationScore: this.props.reputationScore,
-      reputationLevel: this.props.reputationLevel,
-    };
   }
 }

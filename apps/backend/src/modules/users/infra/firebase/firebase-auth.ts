@@ -1,27 +1,43 @@
-import path from 'path';
 import { type Auth, getAuth } from 'firebase-admin/auth';
-import { initializeApp, cert } from 'firebase-admin/app';
+import { initializeApp, cert, getApps } from 'firebase-admin/app';
 
 import { User } from '../../domain/user';
 import { IdentityServiceAPI } from '../../application/ports/identity-service-api';
 import { UserNotFoundError } from '../../domain/errors/users-errors';
 
 export class FirebaseAuth implements IdentityServiceAPI {
-  private firebaseAuth: Auth;
+  private firebaseAuth!: Auth;
 
   constructor() {
     this.initialize();
-    this.firebaseAuth = getAuth();
   }
 
   initialize() {
-    initializeApp({
-      credential: cert(
-        require(
-          path.join(__dirname, '../../../../../service-key.json'),
-        ),
-      ),
-    });
+    const projectId = process.env.FIREBASE_PROJECT_ID;
+    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+    if (!projectId || !clientEmail || !privateKey) {
+      console.warn(
+        'Firebase credentials are missing. Firebase auth will not be initialized.',
+      );
+      return;
+    }
+
+    const serviceAccount = {
+      projectId,
+      clientEmail,
+      privateKey: privateKey.replace(/\\n/g, '\n'),
+    };
+
+    const app =
+      getApps().length > 0
+        ? getApps()[0]
+        : initializeApp({
+            credential: cert(serviceAccount),
+          });
+
+    this.firebaseAuth = getAuth(app);
   }
 
   async getUserById(

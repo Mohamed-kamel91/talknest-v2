@@ -1,9 +1,12 @@
 import express from 'express';
 
-import { CreatePostCommand } from '@talknest/api/posts';
+import {
+  CreatePostCommand,
+  CreatePostDto,
+} from '@talknest/api/posts';
 
 import { BaseController } from '../../../../../shared/infra/http';
-import { PostsService } from '../../../application/posts-service';
+import { type PostsService } from '../../../application/posts-service';
 
 export class CreatePostController extends BaseController {
   constructor(private postsService: PostsService) {
@@ -17,23 +20,21 @@ export class CreatePostController extends BaseController {
       return this.fail(res, commandOrError.getError());
     }
 
-    const createPostresult = await this.postsService.createPost(
+    const resultOrError = await this.postsService.createPost(
       commandOrError.getValue(),
     );
 
-    if (createPostresult.isFailure) {
-      return this.fail(res, createPostresult.getError());
+    if (resultOrError.isFailure) {
+      return this.fail(res, resultOrError.getError());
     }
 
-    const newPost = createPostresult.getValue();
+    const post = resultOrError.getValue();
 
-    const postDetailsResult =
-      await this.postsService.getPostDetailsById(newPost.id);
+    const createPostDTO: CreatePostDto = {
+      id: post.id,
+      slug: post.slug.value,
+    };
 
-    if (postDetailsResult.isFailure) {
-      return this.fail(res, postDetailsResult.getError());
-    }
-
-    this.ok(res, postDetailsResult.getValue().toDTO());
+    this.created(res, createPostDTO);
   }
 }

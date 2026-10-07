@@ -12,5 +12,4 @@ export default async (): Promise<JestConfigWithTsJest> => ({
   maxWorkers: 1,
   verbose: true,
   globalSetup: './tests/support/globalDevEnvTestSetup.ts',
-  setupFilesAfterEnv: ['<rootDir>/tests/support/setup.ts'],
 });

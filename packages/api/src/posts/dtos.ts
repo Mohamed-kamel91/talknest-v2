@@ -11,6 +11,8 @@ export type PostDTO = {
   numComments: number;
   voteScore: number;
   member: MemberDTO;
-  dateCreated: string;
-  lastUpdated: string;
+  createdAt: string;
+  updatedAt: string;
 };
+
+export type CreatePostDto = { id: string; slug: string };

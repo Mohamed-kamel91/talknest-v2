@@ -1,6 +1,6 @@
 import { DomainEvent } from '@talknest/core';
 
-export interface EventBus {
+export interface IEventBus {
   initialize(): Promise<any>;
   stop(): Promise<any>;
   publishEvents(events: DomainEvent[]): void;
