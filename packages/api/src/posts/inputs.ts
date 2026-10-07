@@ -1,23 +1,21 @@
 import { z } from 'zod';
 
 // Create Post
-const basePostFields = {
+const BasePostSchema = z.object({
   title: z
     .string({
       error: 'Title is required',
     })
     .min(1, 'Title cannot be empty'),
-    
+
   memberId: z
     .string({
       error: 'Member ID is required',
     })
     .min(1, 'Member ID cannot be empty'),
-};
+});
 
-export const TextPostSchema = z.object({
-  ...basePostFields,
-
+export const CreateTextPostInputSchema = BasePostSchema.extend({
   content: z
     .string({
       error: 'Content is required',
@@ -29,9 +27,7 @@ export const TextPostSchema = z.object({
   }),
 });
 
-export const LinkPostSchema = z.object({
-  ...basePostFields,
-
+export const CreateLinkPostInputSchema = BasePostSchema.extend({
   link: z
     .string({
       error: 'Link is required',
@@ -45,12 +41,17 @@ export const LinkPostSchema = z.object({
 
 export const createPostInputSchema = z.discriminatedUnion(
   'postType',
-  [TextPostSchema, LinkPostSchema],
+  [CreateTextPostInputSchema, CreateLinkPostInputSchema],
   { error: 'Post type must be "text" or "link"' },
 );
 
+export type CreateTextPostInput = z.infer<
+  typeof CreateTextPostInputSchema
+>;
+export type CreateLinkPostInput = z.infer<
+  typeof CreateLinkPostInputSchema
+>;
 export type CreatePostInput = z.infer<typeof createPostInputSchema>;
-export type PostTypeInput = CreatePostInput['postType'];
 
 // Get Posts
 export const getPostsQueryInputSchema = z.object({
