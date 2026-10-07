@@ -1,6 +1,9 @@
 import { ErrorCategory } from '@talknest/errors';
+import { OK } from 'zod/v3';
 
 export const httpStatus = {
+  OK: 200,
+  CREATED: 201,
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   PAYMENT_REQUIRED: 402,
