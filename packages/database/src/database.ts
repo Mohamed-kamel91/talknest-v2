@@ -1,7 +1,5 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from './prisma/generated/client';
-import './loadEnv';
-
 
 export interface IDatabase {
   getClient(): PrismaClient;
