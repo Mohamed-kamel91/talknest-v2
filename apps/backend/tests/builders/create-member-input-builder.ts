@@ -4,7 +4,8 @@ import { CreateMemberInput } from '@talknest/api/members';
 export class CreateMemberInputBuilder {
   private props: CreateMemberInput = {
     username: faker.string.alphanumeric({
-      length: { min: 5, max: 10 },
+      length: { min: 5, max: 15 },
+      casing: 'lower',
     }),
 
     userId: faker.string.uuid(),
@@ -20,7 +21,7 @@ export class CreateMemberInputBuilder {
     return this;
   }
 
-  public build() {
+  public build(): CreateMemberInput {
     return this.props;
   }
 }
