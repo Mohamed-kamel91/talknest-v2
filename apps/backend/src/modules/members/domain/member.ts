@@ -89,7 +89,7 @@ export class Member extends AggregateRoot {
       this.props.reputationLevel =
         MemberReputationLevel.createAtLevel(reputationLevel.Level2);
 
-      this.domainEvents.push(
+      this.addDomainEvent(
         new MemberReputationLevelUpgraded(
           this.id,
           this.reputationLevel.value,
@@ -103,7 +103,7 @@ export class Member extends AggregateRoot {
       this.props.reputationLevel =
         MemberReputationLevel.createAtLevel(reputationLevel.Level3);
       console.log('going to level 3!');
-      this.domainEvents.push(
+      this.addDomainEvent(
         new MemberReputationLevelUpgraded(
           this.id,
           this.reputationLevel.value,
