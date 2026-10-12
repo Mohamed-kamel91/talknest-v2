@@ -107,5 +107,26 @@ describe('postComment', () => {
       expect(commentsRepositorySpy.wasMethodCalled('save')).toBe(false);
       expect(publishEventsSpy).not.toHaveBeenCalled();
     });
+
+    it('should not create comment, if the post does not exist', async () => {
+      const level1Member = setupLevel1Member(membersRepositorySpy);
+      const nonExistentPost = buildPost();
+
+      const input = new CreateCommentInputBuilder()
+        .withMemberId(level1Member.id)
+        .withPostId(nonExistentPost.id)
+        .build();
+
+      const command = PostCommentCommand.create(input);
+      expect(command.isSuccess).toBe(true);
+
+      const result = await postCommentUseCase.execute(command.getValue());
+      expect(result.isSuccess).toBe(false);
+      expect(result.getError()).toBeInstanceOf(PostNotFoundError);
+      expect(result.getError().code).toBe(postErrorCodes.POST_NOT_FOUND);
+
+      expect(commentsRepositorySpy.wasMethodCalled('save')).toBe(false);
+      expect(publishEventsSpy).not.toHaveBeenCalled();
+    });
   });
 });
