@@ -1,19 +1,27 @@
 import { Post } from '../../../src/modules/posts/domain/post';
-import { PostComment } from '../../../src/modules/comments/application/use-cases/post-comment/post-comment';
+import { PostContent } from '../../../src/modules/posts/domain/post-content';
+import { PostTitle } from '../../../src/modules/posts/domain/post-title';
+import { PostType } from '../../../src/modules/posts/domain/post-type';
+import { InMemoryPostsRepository } from '../../../src/modules/posts/infra/repos/in-memory-posts-repository';
+import { CreatePostInputBuilder } from '../../builders/create-post-input-builder';
 
-export function withExistingPostByRandomMember(useCase: PostComment) {
-  const existingPost = Post.create({
-    memberId: '8be25ac7-49ff-43be-9f22-3811e268e0bd',
-    title: 'Test Post',
-    postType: 'text',
-    content: 'This is a test post',
-  });
+export function buildPost() {
+  const postInput = CreatePostInputBuilder.aTextPost().build();
 
-  expect(existingPost instanceof Post).toBe(true);
+  return Post.create({
+    memberId: postInput.memberId,
+    title: PostTitle.create(postInput.title).getValue(),
+    postType: PostType.create(postInput.postType).getValue(),
+    content: PostContent.create(postInput.content).getValue(),
+  }).getValue();
+}
 
-  useCase['postRepository'].getPostById = jest
-    .fn()
-    .mockResolvedValue(existingPost as Post);
+export function setupPostByRandomMember(
+  postsRepositorySpy: InMemoryPostsRepository,
+) {
+  const existingPost = buildPost();
 
-  return existingPost as Post;
+  postsRepositorySpy.seedPosts([existingPost]);
+
+  return existingPost;
 }
