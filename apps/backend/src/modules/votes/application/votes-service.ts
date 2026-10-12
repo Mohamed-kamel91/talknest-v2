@@ -5,7 +5,7 @@ import {
 } from '@talknest/api/votes';
 import { EventBus } from '@talknest/bus';
 
-import type { ICommentRepository } from '../../comments/application/ports/comment-repository';
+import type { ICommentRepository } from '../../comments/application/ports/comments-repository';
 import type { IMembersRepository } from '../../members/application/ports/members-repository';
 import type { IPostsRepository } from '../../posts/application/ports/posts-repository';
 
