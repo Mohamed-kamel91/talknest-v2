@@ -4,6 +4,7 @@ import {
   type RequestErrorCode,
   type ServerErrorCode,
   type NetworkErrorCode,
+  MemberErrorCodes,
 } from '@talknest/errors';
 
 import { type APIResponse } from '../types';
@@ -23,8 +24,11 @@ export type GetCommentsByPostIdAPIResponse = APIResponse<
 
 // Post Comment Response
 export type PostCommentErrorCode =
-  | CommentErrorCodes['INVALID_COMMENT']
+  | CommentErrorCodes['COMMENT_BODY_EMPTY']
+  | CommentErrorCodes['COMMENT_BODY_TOO_LONG']
   | PostErrorCodes['POST_NOT_FOUND']
+  | MemberErrorCodes['MEMBER_NOT_FOUND']
+  | MemberErrorCodes['INSUFFICIENT_MEMBER_LEVEL']
   | RequestErrorCode
   | ServerErrorCode
   | NetworkErrorCode;
