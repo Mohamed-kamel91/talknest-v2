@@ -26,22 +26,15 @@ describe('createPost', () => {
 
     jest.spyOn(eventBus, 'publishEvents');
 
-    createPostUseCase = new CreatePostUseCase(
-      postsRepositorySpy,
-      membersRepositorySpy,
-      eventBus,
-    );
+    createPostUseCase = new CreatePostUseCase(postsRepositorySpy, membersRepositorySpy, eventBus);
   });
 
   describe('permissions & identity', () => {
     test('as a level 1 member, I should not be able to create a new post', async () => {
       const member = setupLevel1Member(membersRepositorySpy);
-
-      const createPostInput = new CreatePostInputBuilder()
-        .withMemberId(member.id)
-        .build();
-
+      const createPostInput = CreatePostInputBuilder.aTextPost().withMemberId(member.id).build();
       const commandOrError = CreatePostCommand.create(createPostInput);
+
       expect(commandOrError.isSuccess).toBe(true);
 
       const result = await createPostUseCase.execute(commandOrError.getValue());
@@ -49,9 +42,7 @@ describe('createPost', () => {
       expect(result.isSuccess).toBe(false);
       expect(result.getError()).toBeDefined();
       expect(result.getError()).toBeInstanceOf(InsufficientMemberLevelError);
-      expect(result.getError().code).toBe(
-        memberErrorCodes.INSUFFICIENT_MEMBER_LEVEL,
-      );
+      expect(result.getError().code).toBe(memberErrorCodes.INSUFFICIENT_MEMBER_LEVEL);
 
       expect(membersRepositorySpy.getTimesMethodCalled('getById')).toBe(1);
       expect(postsRepositorySpy.wasMethodCalled('save')).toBe(false);
@@ -59,9 +50,9 @@ describe('createPost', () => {
     });
 
     test('if the member was not found, they should not be able to create the post', async () => {
-      const createPostInput = new CreatePostInputBuilder().build();
-
+      const createPostInput = CreatePostInputBuilder.aTextPost().build();
       const commandOrError = CreatePostCommand.create(createPostInput);
+
       expect(commandOrError.isSuccess).toBe(true);
 
       const result = await createPostUseCase.execute(commandOrError.getValue());
