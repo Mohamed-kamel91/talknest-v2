@@ -85,4 +85,27 @@ describe('postComment', () => {
       expect(event.memberId).toBe(level1Member.id);
     });
   });
+
+  describe('posting comments', () => {
+    it('should not create comment, if the member does not exist', async () => {
+      const nonExistentMember = buildLevel1Member();
+      const existingPost = setupPostByRandomMember(postsRepositorySpy);
+
+      const input = new CreateCommentInputBuilder()
+        .withMemberId(nonExistentMember.id)
+        .withPostId(existingPost.id)
+        .build();
+
+      const command = PostCommentCommand.create(input);
+      expect(command.isSuccess).toBe(true);
+
+      const result = await postCommentUseCase.execute(command.getValue());
+      expect(result.isSuccess).toBe(false);
+      expect(result.getError()).toBeInstanceOf(MemberNotFoundError);
+      expect(result.getError().code).toBe(memberErrorCodes.MEMBER_NOT_FOUND);
+
+      expect(commentsRepositorySpy.wasMethodCalled('save')).toBe(false);
+      expect(publishEventsSpy).not.toHaveBeenCalled();
+    });
+  });
 });
