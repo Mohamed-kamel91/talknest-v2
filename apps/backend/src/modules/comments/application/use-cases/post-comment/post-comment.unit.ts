@@ -150,5 +150,27 @@ describe('postComment', () => {
       expect(commentsRepositorySpy.wasMethodCalled('save')).toBe(false);
       expect(publishEventsSpy).not.toHaveBeenCalled();
     });
+
+    it('should not create comment if body is exceeding 1000 characters', async () => {
+      const level1Member = setupLevel1Member(membersRepositorySpy);
+      const existingPost = setupPostByRandomMember(postsRepositorySpy);
+
+      const input = new CreateCommentInputBuilder()
+        .withMemberId(level1Member.id)
+        .withPostId(existingPost.id)
+        .withBody('a'.repeat(CommentBody.MAX_LENGTH + 1))
+        .build();
+
+      const command = PostCommentCommand.create(input);
+      expect(command.isSuccess).toBe(true);
+
+      const result = await postCommentUseCase.execute(command.getValue());
+      expect(result.isSuccess).toBe(false);
+      expect(command.getError()).toBeInstanceOf(CommentBodyTooLongError);
+      expect(result.getError().code).toBe(commentErrorCodes.COMMENT_BODY_TOO_LONG);
+
+      expect(commentsRepositorySpy.wasMethodCalled('save')).toBe(false);
+      expect(publishEventsSpy).not.toHaveBeenCalled();
+    });
   });
 });
