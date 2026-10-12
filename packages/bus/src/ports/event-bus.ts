@@ -3,7 +3,7 @@ import { DomainEvent } from '@talknest/core';
 export interface IEventBus {
   initialize(): Promise<any>;
   stop(): Promise<any>;
-  publishEvents(events: DomainEvent[]): void;
+  publishEvents(events: readonly DomainEvent[]): void;
   subscribe<T extends DomainEvent>(
     eventTypeName: string,
     handler: (event: T) => void,
