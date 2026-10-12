@@ -1,5 +1,5 @@
-import { EventBus } from '@talknest/bus';
-import { IDatabase } from '@talknest/database';
+import { type IEventBus } from '@talknest/bus';
+import { type IDatabase } from '@talknest/database';
 
 import { ApplicationModule } from '../../shared/modules/application-module';
 import { Config } from '../../shared/config';
@@ -8,14 +8,14 @@ import { WebServer } from '../../shared/infra/http';
 import type { IPostsRepository } from '../posts/application/ports/posts-repository';
 import type { IMembersRepository } from '../members/application/ports/members-repository';
 
-import type { ICommentRepository } from './application/ports/comment-repository';
-import { PrismaCommentsRepository } from './infra/repos/prisma-comment-repository';
+import type { ICommentsRepository } from './application/ports/comments-repository';
+import { PrismaCommentsRepository } from './infra/repos/prisma-comments-repository';
 import { CommentsService } from './application/comments-service';
 import { CommentsController } from './presentation/http/controllers';
 import { CommentsRouter } from './presentation/http/routes/comments-router';
 
 export class CommentsModule extends ApplicationModule {
-  private commentsRepository: ICommentRepository;
+  private commentsRepository: ICommentsRepository;
   private commentsService: CommentsService;
   private commentsController: CommentsController;
   private commentsRouter: CommentsRouter;
@@ -24,7 +24,7 @@ export class CommentsModule extends ApplicationModule {
     private db: IDatabase,
     private membersRepository: IMembersRepository,
     private postsRepository: IPostsRepository,
-    private eventBus: EventBus,
+    private eventBus: IEventBus,
     config: Config,
   ) {
     super(config);
@@ -39,7 +39,7 @@ export class CommentsModule extends ApplicationModule {
 
   public static build(
     db: IDatabase,
-    eventBus: EventBus,
+    eventBus: IEventBus,
     membersRepo: IMembersRepository,
     postsRepository: IPostsRepository,
     config: Config,
@@ -81,10 +81,10 @@ export class CommentsModule extends ApplicationModule {
 
   private createCommentsService() {
     return new CommentsService(
-      this.eventBus,
       this.commentsRepository,
       this.postsRepository,
       this.membersRepository,
+      this.eventBus,
     );
   }
 

@@ -5,7 +5,7 @@ import {
 } from '@talknest/core/application';
 import { NotFoundError } from '@talknest/errors/application';
 
-import type { ICommentRepository } from '../../ports/comment-repository';
+import type { ICommentsRepository } from '../../ports/comments-repository';
 import { Comment } from '../../../domain/comment';
 
 export type PostCommentError = NotFoundError;
@@ -18,13 +18,13 @@ export class getCommentsByPostIdUseCase implements IUseCase<
   string,
   GetCommentsByPostIdResponse
 > {
-  constructor(private commentRepo: ICommentRepository) {}
+  constructor(private commentsRepository: ICommentsRepository) {}
 
   async execute(
     postId: string,
   ): Promise<GetCommentsByPostIdResponse> {
     const comments =
-      await this.commentRepo.getCommentsByPostId(postId);
+      await this.commentsRepository.findByPostId(postId);
 
     return success(comments);
   }
