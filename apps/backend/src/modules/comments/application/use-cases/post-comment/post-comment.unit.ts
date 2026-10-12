@@ -129,4 +129,26 @@ describe('postComment', () => {
       expect(publishEventsSpy).not.toHaveBeenCalled();
     });
   });
+
+  describe('comment validation', () => {
+    it('should not create a comment if the body is empty', async () => {
+      const level1Member = setupLevel1Member(membersRepositorySpy);
+      const existingPost = setupPostByRandomMember(postsRepositorySpy);
+
+      const input = new CreateCommentInputBuilder()
+        .withMemberId(level1Member.id)
+        .withPostId(existingPost.id)
+        .withBody('')
+        .build();
+
+      const command = PostCommentCommand.create(input);
+
+      expect(command.isSuccess).toBe(false);
+      expect(command.getError()).toBeInstanceOf(InvalidRequestInputError);
+      expect(command.getError().code).toBe(requestErrorCodes.INVALID_REQUEST_INPUT);
+
+      expect(commentsRepositorySpy.wasMethodCalled('save')).toBe(false);
+      expect(publishEventsSpy).not.toHaveBeenCalled();
+    });
+  });
 });
