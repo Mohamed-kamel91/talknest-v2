@@ -58,12 +58,12 @@ model Post {
 }
 
 model Comment {
-  id String @id @default(uuid())
+  id   String @id @default(uuid())
+  body String
 
   // Foreign key relation to the Post table
   postId String // Foreign key to the Post table
   post   Post   @relation(fields: [postId], references: [id])
-  text   String
 
   memberId       String // Foreign key to the Member table
   memberPostedBy Member @relation(fields: [memberId], references: [id])
@@ -72,10 +72,11 @@ model Comment {
   parentComment   Comment?  @relation("Replies", fields: [parentCommentId], references: [id])
   replyComments   Comment[] @relation("Replies")
 
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  commentVotes CommentVote[]
   voteScore    Int           @default(0)
+  commentVotes CommentVote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PostVote {
