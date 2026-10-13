@@ -147,7 +147,9 @@ export class Post extends AggregateRoot {
 
     const post = new Post(props);
 
-    post.addDomainEvent(new PostCreated(post.id, memberId));
+    post.addDomainEvent(
+      new PostCreated({ postId: post.id, memberId: memberId }),
+    );
 
     return success(post);
   }
