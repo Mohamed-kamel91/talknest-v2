@@ -90,10 +90,10 @@ export class Member extends AggregateRoot {
         MemberReputationLevel.createAtLevel(reputationLevel.Level2);
 
       this.addDomainEvent(
-        new MemberReputationLevelUpgraded(
-          this.id,
-          this.reputationLevel.value,
-        ),
+        new MemberReputationLevelUpgraded({
+          memberId: this.id,
+          newLevel: this.reputationLevel.value,
+        }),
       );
       console.log('going to level 2!');
     } else if (
@@ -104,10 +104,10 @@ export class Member extends AggregateRoot {
         MemberReputationLevel.createAtLevel(reputationLevel.Level3);
       console.log('going to level 3!');
       this.addDomainEvent(
-        new MemberReputationLevelUpgraded(
-          this.id,
-          this.reputationLevel.value,
-        ),
+        new MemberReputationLevelUpgraded({
+          memberId: this.id,
+          newLevel: this.reputationLevel.value,
+        }),
       );
     }
   }
