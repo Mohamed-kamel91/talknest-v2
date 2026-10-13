@@ -1,4 +1,9 @@
-import { success, type Result, type IUseCase } from '@talknest/core';
+import {
+  success,
+  fail,
+  type Result,
+  type IUseCase,
+} from '@talknest/core/application';
 import { PostCommentCommand } from '@talknest/api/comments';
 import { type IEventBus } from '@talknest/bus';
 
@@ -44,7 +49,7 @@ export class PostCommentUseCase implements IUseCase<
       return fail(new MemberNotFoundError());
     }
 
-    if (CanPostCommentPolicy.isAllowed(member)) {
+    if (!CanPostCommentPolicy.isAllowed(member)) {
       return fail(
         new InsufficientMemberLevelError(
           'You must be at least member level 1 to post a comment',
@@ -70,8 +75,7 @@ export class PostCommentUseCase implements IUseCase<
     });
 
     await this.commentsRepository.save(comment);
-
-    this.eventBus.publishEvents(comment.getDomainEvents());
+    await this.eventBus.publishEvents(comment.getDomainEvents());
 
     return success(comment);
   }
