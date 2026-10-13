@@ -1,18 +1,20 @@
 import { DomainEvent } from '@talknest/core';
+
 import { type ReputationLevel } from '@talknest/api/members';
 
 type MemberReputationLevelUpgradedData = {
   memberId: string;
-  newLevel: string;
+  newLevel: ReputationLevel;
 };
 
 export class MemberReputationLevelUpgraded extends DomainEvent<MemberReputationLevelUpgradedData> {
-  static readonly eventName: string = 'MemberReputationLevelUpgraded';
+  static readonly eventName = 'MemberReputationLevelUpgraded';
 
-  constructor(memberId: string, newLevel: ReputationLevel) {
-    super(MemberReputationLevelUpgraded.eventName, memberId, {
-      memberId,
-      newLevel,
-    });
+  constructor(data: MemberReputationLevelUpgradedData) {
+    super(
+      MemberReputationLevelUpgraded.eventName,
+      data.memberId,
+      data,
+    );
   }
 }
