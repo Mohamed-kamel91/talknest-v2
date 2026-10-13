@@ -1,6 +1,6 @@
 import {
-  commentErrorCodes,
   InvalidRequestInputError,
+  commentErrorCodes,
   memberErrorCodes,
   postErrorCodes,
   requestErrorCodes,
@@ -166,7 +166,7 @@ describe('postComment', () => {
 
       const result = await postCommentUseCase.execute(command.getValue());
       expect(result.isSuccess).toBe(false);
-      expect(command.getError()).toBeInstanceOf(CommentBodyTooLongError);
+      expect(result.getError()).toBeInstanceOf(CommentBodyTooLongError);
       expect(result.getError().code).toBe(commentErrorCodes.COMMENT_BODY_TOO_LONG);
 
       expect(commentsRepositorySpy.wasMethodCalled('save')).toBe(false);
