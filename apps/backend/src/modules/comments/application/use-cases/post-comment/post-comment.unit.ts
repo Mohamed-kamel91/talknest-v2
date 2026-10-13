@@ -80,9 +80,9 @@ describe('postComment', () => {
 
       const event = publishedEvents[0] as CommentPosted;
       expect(event).toBeInstanceOf(CommentPosted);
-      expect(event.commentId).toBe(comment.id);
-      expect(event.postId).toBe(existingPost.id);
-      expect(event.memberId).toBe(level1Member.id);
+      expect(event.data.commentId).toBe(comment.id);
+      expect(event.data.postId).toBe(existingPost.id);
+      expect(event.data.memberId).toBe(level1Member.id);
     });
   });
 
