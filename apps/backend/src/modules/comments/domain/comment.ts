@@ -67,7 +67,11 @@ export class Comment extends AggregateRoot {
     });
 
     comment.addDomainEvent(
-      new CommentPosted(comment.id, comment.memberId, comment.postId),
+      new CommentPosted({
+        commentId: comment.id,
+        memberId: comment.memberId,
+        postId: comment.postId,
+      }),
     );
 
     return comment;
