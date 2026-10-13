@@ -1,9 +1,14 @@
 import { DomainEvent } from '@talknest/core/domain';
 
-export class PostCreated extends DomainEvent {
-  static readonly eventName: string = 'PostCreated';
+type PostCreatedData = {
+  postId: string;
+  memberId: string;
+};
 
-  constructor(postId: string, memberId: string) {
-    super(PostCreated.eventName, postId, { postId, memberId });
+export class PostCreated extends DomainEvent<PostCreatedData> {
+  static readonly eventName = 'PostCreated';
+
+  constructor(data: PostCreatedData) {
+    super(PostCreated.eventName, data.postId, data);
   }
 }
