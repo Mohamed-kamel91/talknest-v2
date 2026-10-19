@@ -2,16 +2,12 @@ import express from 'express';
 
 import { CreateMemberCommand } from '@talknest/api/members';
 
-import { Config } from '../../../../../shared/config';
 import { BaseController } from '../../../../../shared/infra/http';
 import { MembersService } from '../../../application/members-service';
 import { MemberMap } from '../../../application/mappers/member-map';
 
 export class CreateMemberController extends BaseController {
-  constructor(
-    private membersService: MembersService,
-    private config: Config,
-  ) {
+  constructor(private membersService: MembersService) {
     super();
   }
 
