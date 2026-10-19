@@ -11,9 +11,7 @@ export class GetPostByIdController extends BaseController {
   }
 
   async executeImpl(req: express.Request, res: express.Response) {
-    const params = req.query || req.params;
-
-    const queryOrError = GetPostByIdQuery.create(params);
+    const queryOrError = GetPostByIdQuery.create(req.params);
 
     if (queryOrError.isFailure) {
       return this.fail(res, queryOrError.getError());
