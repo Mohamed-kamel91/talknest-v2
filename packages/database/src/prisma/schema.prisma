@@ -40,19 +40,19 @@ model Member {
 }
 
 model Post {
-  id             String     @id @default(uuid())
-  memberPostedBy Member     @relation(fields: [memberId], references: [id])
-  memberId       String
-  postType       PostType
-  title          String
-  content        String?
-  link           String?
-  comments       Comment[]
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  postVotes      PostVote[]
-  voteScore      Int        @default(0)
-  slug           String
+  id        String     @id @default(uuid())
+  memberId  String
+  member    Member     @relation(fields: [memberId], references: [id])
+  postType  PostType
+  title     String
+  content   String?
+  link      String?
+  comments  Comment[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  postVotes PostVote[]
+  voteScore Int        @default(0)
+  slug      String
 }
 
 model Comment {
@@ -61,7 +61,7 @@ model Comment {
   postId          String
   post            Post          @relation(fields: [postId], references: [id])
   memberId        String
-  memberPostedBy  Member        @relation(fields: [memberId], references: [id])
+  member          Member        @relation(fields: [memberId], references: [id])
   parentCommentId String?
   parentComment   Comment?      @relation("Replies", fields: [parentCommentId], references: [id])
   replyComments   Comment[]     @relation("Replies")
@@ -72,27 +72,27 @@ model Comment {
 }
 
 model PostVote {
-  id             String   @id @default(uuid())
-  postId         String
-  postBelongsTo  Post     @relation(fields: [postId], references: [id])
-  memberId       String
-  memberPostedBy Member   @relation(fields: [memberId], references: [id])
-  value          Int      @default(0)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id])
+  value     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([memberId, postId])
 }
 
 model CommentVote {
-  id               String   @id @default(uuid())
-  commentId        String
-  commentBelongsTo Comment  @relation(fields: [commentId], references: [id])
-  memberId         String
-  memberPostedBy   Member   @relation(fields: [memberId], references: [id])
-  value            Int      @default(0)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id        String   @id @default(uuid())
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id])
+  value     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([memberId, commentId])
 }
