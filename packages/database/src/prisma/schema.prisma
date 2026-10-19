@@ -26,9 +26,8 @@ enum PostType {
 }
 
 model Member {
-  id String @id @default(uuid())
-
-  userId          String                @unique // relation scalar field (used in the `@relation` attribute above)
+  id              String                @id @default(uuid())
+  userId          String                @unique
   posts           Post[]
   postVotes       PostVote[]
   commentVotes    CommentVote[]
@@ -36,15 +35,14 @@ model Member {
   username        String                @unique
   reputationScore Int                   @default(0)
   reputationLevel MemberReputationLevel @default(Level1)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
 }
 
 model Post {
   id             String     @id @default(uuid())
   memberPostedBy Member     @relation(fields: [memberId], references: [id])
-  memberId       String // Foreign key to the Member table
+  memberId       String
   postType       PostType
   title          String
   content        String?
@@ -58,57 +56,43 @@ model Post {
 }
 
 model Comment {
-  id   String @id @default(uuid())
-  body String
-
-  // Foreign key relation to the Post table
-  postId String // Foreign key to the Post table
-  post   Post   @relation(fields: [postId], references: [id])
-
-  memberId       String // Foreign key to the Member table
-  memberPostedBy Member @relation(fields: [memberId], references: [id])
-
+  id              String        @id @default(uuid())
+  body            String
+  postId          String
+  post            Post          @relation(fields: [postId], references: [id])
+  memberId        String
+  memberPostedBy  Member        @relation(fields: [memberId], references: [id])
   parentCommentId String?
-  parentComment   Comment?  @relation("Replies", fields: [parentCommentId], references: [id])
-  replyComments   Comment[] @relation("Replies")
-
-  voteScore    Int           @default(0)
-  commentVotes CommentVote[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  parentComment   Comment?      @relation("Replies", fields: [parentCommentId], references: [id])
+  replyComments   Comment[]     @relation("Replies")
+  voteScore       Int           @default(0)
+  commentVotes    CommentVote[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model PostVote {
-  id String @id @default(uuid())
-
-  postId        String // Foreign key to the Post table
-  postBelongsTo Post   @relation(fields: [postId], references: [id])
-
-  memberId       String // Foreign key to the Member table
-  memberPostedBy Member @relation(fields: [memberId], references: [id])
-
-  value Int @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(uuid())
+  postId         String
+  postBelongsTo  Post     @relation(fields: [postId], references: [id])
+  memberId       String
+  memberPostedBy Member   @relation(fields: [memberId], references: [id])
+  value          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@unique([memberId, postId])
 }
 
 model CommentVote {
-  id String @id @default(uuid())
-
-  commentId        String // Foreign key to the Comment table
-  commentBelongsTo Comment @relation(fields: [commentId], references: [id])
-
-  memberId       String // Foreign key to the Member table
-  memberPostedBy Member @relation(fields: [memberId], references: [id])
-
-  value Int @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(uuid())
+  commentId        String
+  commentBelongsTo Comment  @relation(fields: [commentId], references: [id])
+  memberId         String
+  memberPostedBy   Member   @relation(fields: [memberId], references: [id])
+  value            Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   @@unique([memberId, commentId])
 }
@@ -122,4 +106,22 @@ model Event {
   data        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model CommentRead {
+  id                    String                @id
+  postId                String
+  parentCommentId       String?
+  body                  String
+  voteScore             Int                   @default(0)
+  replyCount            Int                   @default(0)
+  authorId              String
+  authorUsername        String
+  authorReputationLevel MemberReputationLevel
+  postedAt              DateTime
+  projectedAt           DateTime              @updatedAt
+
+  @@index([postId, postedAt])
+  @@index([parentCommentId])
+  @@index([authorId])
 }
