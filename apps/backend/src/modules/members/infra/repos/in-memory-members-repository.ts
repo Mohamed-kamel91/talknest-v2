@@ -1,5 +1,6 @@
 import { Spy } from '../../../../shared/test-doubles/spy';
-import { IMembersRepository } from '../../application/ports/members-repository';
+
+import type { IMembersRepository } from '../../application/ports';
 import { Member } from '../../domain/member';
 
 export class InMemoryMembersRepository

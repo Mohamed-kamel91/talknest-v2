@@ -7,16 +7,16 @@ import {
 } from '@talknest/core/application';
 import { AggregateRoot } from '@talknest/core/domain';
 
+import {
+  InvalidLinkPostError,
+  InvalidTextPostError,
+} from './errors/posts-errors';
 import { PostCreated } from './events/post-created';
 import { PostSlug } from './post-slug';
 import { PostTitle } from './post-title';
 import { PostContent } from './post-content';
 import { PostLink } from './post-link';
 import { PostType } from './post-type';
-import {
-  InvalidLinkPostError,
-  InvalidTextPostError,
-} from './errors/posts-errors';
 
 export interface BasePostProps {
   id: string;

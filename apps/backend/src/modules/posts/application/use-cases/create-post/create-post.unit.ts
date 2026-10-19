@@ -4,12 +4,12 @@ import { CreatePostCommand } from '@talknest/api/posts';
 
 import { setupLevel1Member } from '../../../../../../tests/fixtures/unit/members';
 
-import { InMemoryMembersRepository } from '../../../../members/infra/repo/in-memory-members-repository';
+import { InMemoryMembersRepository } from '../../../../members/infra/repos';
 import {
   InsufficientMemberLevelError,
   MemberNotFoundError,
 } from '../../../../members/domain/errors/member-errors';
-import { InMemoryPostsRepository } from '../../../infra/repos/in-memory-posts-repository';
+import { InMemoryPostsRepository } from '../../../infra/repos';
 import { CreatePostUseCase } from './create-post';
 import { CreatePostInputBuilder } from '../../../../../../tests/builders/create-post-input-builder';
 

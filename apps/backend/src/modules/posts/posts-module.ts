@@ -5,11 +5,13 @@ import { type Config } from '../../shared/config';
 import { ApplicationModule } from '../../shared/modules/application-module';
 import { WebServer } from '../../shared/infra/http';
 
-import type { IMembersRepository } from '../members/application/ports/members-repository';
+import type { IMembersRepository } from '../members/application/ports';
 
-import type { IPostsRepository } from './application/ports/posts-repository';
-import { PrismaPostsRepository } from './infra/repos/prisma-posts-repository';
-import { InMemoryPostsRepository } from './infra/repos/in-memory-posts-repository';
+import type { IPostsRepository } from './application/ports';
+import {
+  PrismaPostsRepository,
+  InMemoryPostsRepository,
+} from './infra/repos';
 import { PostsService } from './application/posts-service';
 import { PostsController } from './presentation/http/controllers';
 import { PostsRouter } from './presentation/http/routes/posts-router';
@@ -63,7 +65,7 @@ export class PostsModule extends ApplicationModule {
   }
 
   private createPostsRepository() {
-    if (this.config.getScript() === 'test:unit') {
+    if (this.shouldBuildFakeRepository) {
       return new InMemoryPostsRepository();
     }
 

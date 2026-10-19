@@ -1,4 +1,5 @@
 import { ReputationLevel } from '@talknest/api';
+
 import { Member } from '../../../members/domain/member';
 
 export class CanCreatePostPolicy {

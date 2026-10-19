@@ -1,8 +1,8 @@
 import { IDatabase, Prisma } from '@talknest/database';
 
+import type { IMembersRepository } from '../../application/ports';
+import { MemberMap } from '../../application/mappers';
 import { Member } from '../../domain/member';
-import { IMembersRepository } from '../../application/ports/members-repository';
-import { MemberMap } from '../../application/mappers/member-map';
 
 export class PrismaMembersRepository implements IMembersRepository {
   constructor(private database: IDatabase) {}

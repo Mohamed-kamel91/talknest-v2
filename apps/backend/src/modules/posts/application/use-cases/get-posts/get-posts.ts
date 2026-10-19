@@ -1,9 +1,9 @@
 import { GetPostsQuery } from '@talknest/api';
 import { success, type Result, type IUseCase } from '@talknest/core';
 
-import { PostNotFoundError } from '../../../domain/errors/posts-errors';
+import type { IPostsRepository } from '../../ports';
 import { PostReadModel } from '../../read-models/post-read-model';
-import { IPostsRepository } from '../../ports/posts-repository';
+import { PostNotFoundError } from '../../../domain/errors/posts-errors';
 
 export type GetPostsResponse = Result<
   PostReadModel[],

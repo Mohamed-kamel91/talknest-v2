@@ -15,7 +15,7 @@ import {
 } from '../../../../members/domain/errors/member-errors';
 import { PostNotFoundError } from '../../../../posts/domain/errors/posts-errors';
 
-import type { ICommentsRepository } from '../../ports/comments-repository';
+import type { ICommentsRepository } from '../../ports';
 import { CanPostCommentPolicy } from '../../../domain/policies/can-post-comment';
 import { CommentBodyValidationError } from '../../../domain/errors/comment-errors';
 import { CommentBody } from '../../../domain/comment-body';

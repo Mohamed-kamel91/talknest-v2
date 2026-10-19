@@ -5,7 +5,7 @@ import { memberErrorCodes } from '@talknest/errors';
 import { setupLevel1Member } from '../../../../../../tests/fixtures/unit/members';
 import { CreateMemberInputBuilder } from '../../../../../../tests/builders/create-member-input-builder';
 
-import { InMemoryMembersRepository } from '../../../infra/repo/in-memory-members-repository';
+import { InMemoryMembersRepository } from '../../../infra/repos';
 import { Member } from '../../../domain/member';
 import { CreateMemberUseCase } from './create-member';
 import {
@@ -21,10 +21,7 @@ describe('createMember', () => {
   beforeEach(() => {
     membersRepositorySpy = new InMemoryMembersRepository();
     eventBus = new InMemoryEventBus();
-    createMemberUseCase = new CreateMemberUseCase(
-      membersRepositorySpy,
-      eventBus,
-    );
+    createMemberUseCase = new CreateMemberUseCase(membersRepositorySpy, eventBus);
   });
 
   it('should create a member when username is available and data is valid', async () => {
@@ -60,9 +57,7 @@ describe('createMember', () => {
   test('should fail if member already exists', async () => {
     const existingMember = setupLevel1Member(membersRepositorySpy);
 
-    const memberInput = new CreateMemberInputBuilder()
-      .withUserId(existingMember.userId)
-      .build();
+    const memberInput = new CreateMemberInputBuilder().withUserId(existingMember.userId).build();
 
     const commandOrError = CreateMemberCommand.create(memberInput);
     expect(commandOrError.isSuccess).toBe(true);

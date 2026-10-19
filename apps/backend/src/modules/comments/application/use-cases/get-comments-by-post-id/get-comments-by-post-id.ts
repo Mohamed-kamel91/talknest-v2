@@ -5,7 +5,7 @@ import {
 } from '@talknest/core/application';
 import { NotFoundError } from '@talknest/errors/application';
 
-import type { ICommentsRepository } from '../../ports/comments-repository';
+import type { ICommentsRepository } from '../../ports/';
 import { Comment } from '../../../domain/comment';
 
 export type PostCommentError = NotFoundError;

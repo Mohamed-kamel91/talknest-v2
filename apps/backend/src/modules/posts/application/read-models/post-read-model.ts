@@ -44,7 +44,6 @@ export class PostReadModel {
       content: prismaPost.content ?? undefined,
       link: prismaPost.link ?? undefined,
       voteScore: prismaPost.voteScore,
-
       member: member,
       numComments: prismaPost._count?.comments ?? 0,
       createdAt: prismaPost.createdAt,
@@ -61,7 +60,6 @@ export class PostReadModel {
       content: this.props.content,
       link: this.props.link,
       voteScore: this.props.voteScore,
-
       member: this.props.member.toDTO(),
       numComments: this.props.numComments,
       createdAt: this.props.createdAt.toISOString(),

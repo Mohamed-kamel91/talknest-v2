@@ -3,7 +3,7 @@ import { type IEventBus } from '@talknest/bus';
 
 import type { IMembersRepository } from '../../members/application/ports/members-repository';
 import type { IPostsRepository } from '../../posts/application/ports/posts-repository';
-import type { ICommentsRepository } from './ports/comments-repository';
+import type { ICommentsRepository } from './ports';
 import {
   PostCommentUseCase,
   type PostCommentResponse,

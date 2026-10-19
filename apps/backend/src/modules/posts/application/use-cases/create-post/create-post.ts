@@ -7,20 +7,20 @@ import {
 import { CreatePostCommand } from '@talknest/api/posts';
 import { type IEventBus } from '@talknest/bus';
 
-import type { IMembersRepository } from '../../../../members/application/ports/members-repository';
+import type { IMembersRepository } from '../../../../members/application/ports';
 import {
   InsufficientMemberLevelError,
   MemberNotFoundError,
 } from '../../../../members/domain/errors/member-errors';
 
-import type { IPostsRepository } from '../../ports/posts-repository';
+import type { IPostsRepository } from '../../ports';
 import { CanCreatePostPolicy } from '../../../domain/policies/can-create-post';
-import { CreatePostProps, Post } from '../../../domain/post';
 import { PostCreationError } from '../../../domain/errors/posts-errors';
 import { PostType } from '../../../domain/post-type';
 import { PostTitle } from '../../../domain/post-title';
 import { PostContent } from '../../../domain/post-content';
 import { PostLink } from '../../../domain/post-link';
+import { CreatePostProps, Post } from '../../../domain/post';
 
 export type CreatePostError =
   | MemberNotFoundError

@@ -1,18 +1,10 @@
 import { MembersService } from '../../../application/members-service';
-import { Config } from '../../../../../shared/config';
-
 import { CreateMemberController } from './create-member';
 
 export class MembersController {
-  constructor(
-    private memberService: MembersService,
-    private config: Config,
-  ) {}
+  constructor(private memberService: MembersService) {}
 
   public createMember(): CreateMemberController {
-    return new CreateMemberController(
-      this.memberService,
-      this.config,
-    );
+    return new CreateMemberController(this.memberService);
   }
 }
