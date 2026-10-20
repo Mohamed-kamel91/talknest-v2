@@ -71,6 +71,7 @@ export class Comment extends AggregateRoot {
         commentId: comment.id,
         memberId: comment.memberId,
         postId: comment.postId,
+        parentCommentId: comment.parentCommentId ?? null,
       }),
     );
 
