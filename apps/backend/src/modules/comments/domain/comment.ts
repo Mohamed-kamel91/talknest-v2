@@ -1,36 +1,30 @@
-import { randomUUID } from 'node:crypto';
+import { v4 as uuidv4 } from 'uuid';
 
 import { AggregateRoot } from '@talknest/core/domain';
-import { Comment as CommentModel } from '@talknest/database';
 
 import { CommentPosted } from './events/comment-posted';
+import { CommentBody } from './comment-body';
 
 export interface CommentProps {
   id: string;
   postId: string;
-  text: string;
+  body: CommentBody;
   memberId: string;
   parentCommentId?: string | undefined;
   voteScore: number;
   createdAt: Date;
 }
 
-type InputProps = {
+type CreateCommentProps = {
   postId: string;
-  text: string;
+  body: CommentBody;
   memberId: string;
-  parentCommentId?: string;
+  parentCommentId?: string | undefined;
 };
 
 export class Comment extends AggregateRoot {
   private constructor(private props: CommentProps) {
     super();
-  }
-
-  public static create(props: InputProps): Comment {
-    // Note: You can improve the domain layer encapsulation by validating value objects
-    // at the command level.
-    throw new Error('Not yet implemented');
   }
 
   get id() {
@@ -41,8 +35,8 @@ export class Comment extends AggregateRoot {
     return this.props.postId;
   }
 
-  get text() {
-    return this.props.text;
+  get body() {
+    return this.props.body;
   }
 
   get parentCommentId() {
@@ -61,38 +55,30 @@ export class Comment extends AggregateRoot {
     return this.props.memberId;
   }
 
-  public static toDomain(commentModel: CommentModel): Comment {
-    return new Comment({
-      id: commentModel.id,
-      postId: commentModel.postId,
-      text: commentModel.text,
-      memberId: commentModel.memberId,
-      parentCommentId: commentModel.parentCommentId || '',
-      createdAt: commentModel.dateCreated,
-      voteScore: commentModel.voteScore,
+  public static create(props: CreateCommentProps): Comment {
+    const comment = new Comment({
+      id: uuidv4(),
+      body: props.body,
+      memberId: props.memberId,
+      postId: props.postId,
+      parentCommentId: props.parentCommentId,
+      voteScore: 0,
+      createdAt: new Date(),
     });
+
+    comment.addDomainEvent(
+      new CommentPosted({
+        commentId: comment.id,
+        memberId: comment.memberId,
+        postId: comment.postId,
+        parentCommentId: comment.parentCommentId ?? null,
+      }),
+    );
+
+    return comment;
   }
 
-  toPersistence() {
-    return {
-      id: this.props.id,
-      postId: this.props.postId,
-      text: this.props.text,
-      memberId: this.props.memberId,
-      parentCommentId: this.props.parentCommentId || null,
-      voteScore: this.props.voteScore,
-    };
-  }
-
-  toDTO(): CommentProps {
-    return {
-      id: this.props.id,
-      postId: this.props.postId,
-      text: this.props.text,
-      memberId: this.props.memberId,
-      parentCommentId: this.props.parentCommentId,
-      createdAt: this.props.createdAt,
-      voteScore: this.props.voteScore,
-    };
+  public static reconstitute(props: CommentProps): Comment {
+    return new Comment({ ...props });
   }
 }

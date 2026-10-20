@@ -6,21 +6,25 @@ import { MemberUsername } from '../../../src/modules/members/domain/member-usern
 import { CreatePostUseCase } from '../../../src/modules/posts/application/use-cases/create-post/create-post';
 import { PostCommentUseCase } from '../../../src/modules/comments/application/use-cases/post-comment/post-comment';
 import { CreateMemberInputBuilder } from '../../builders/create-member-input-builder';
-import { InMemoryMembersRepository } from '../../../src/modules/members/infra/repo/in-memory-members-repository';
+import { InMemoryMembersRepository } from '../../../src/modules/members/infra/repos/in-memory-members-repository';
 
-export function setupLevel1Member(
-  repositorySpy: InMemoryMembersRepository,
-) {
+export function buildLevel1Member() {
   const memberInput = new CreateMemberInputBuilder().build();
 
   const username = MemberUsername.create(
     memberInput.username,
   ).getValue();
 
-  const member = Member.create({
+  return Member.create({
     userId: memberInput.userId,
     username,
   }).getValue();
+}
+
+export function setupLevel1Member(
+  repositorySpy: InMemoryMembersRepository,
+) {
+  const member = buildLevel1Member();
 
   repositorySpy.seed([member]);
 

@@ -11,7 +11,12 @@ export class PostCommentController extends BaseController {
   }
 
   async executeImpl(req: express.Request, res: express.Response) {
-    const commandOrError = PostCommentCommand.create(req.body);
+    const postId = req.params.postId as string;
+
+    const commandOrError = PostCommentCommand.create({
+      ...req.body,
+      postId,
+    });
 
     if (commandOrError.isFailure) {
       return this.fail(res, commandOrError.getError());

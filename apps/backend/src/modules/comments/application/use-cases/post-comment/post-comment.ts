@@ -1,16 +1,31 @@
-import { Result, type IUseCase } from '@talknest/core';
-import { NotFoundError } from '@talknest/errors/application';
+import {
+  success,
+  fail,
+  type Result,
+  type IUseCase,
+} from '@talknest/core/application';
 import { PostCommentCommand } from '@talknest/api/comments';
-import { EventBus } from '@talknest/bus';
+import { type IEventBus } from '@talknest/bus';
 
 import type { IMembersRepository } from '../../../../members/application/ports/members-repository';
 import type { IPostsRepository } from '../../../../posts/application/ports/posts-repository';
+import {
+  InsufficientMemberLevelError,
+  MemberNotFoundError,
+} from '../../../../members/domain/errors/member-errors';
+import { PostNotFoundError } from '../../../../posts/domain/errors/posts-errors';
 
-import type { ICommentRepository } from '../../ports/comment-repository';
+import type { ICommentsRepository } from '../../ports';
 import { CanPostCommentPolicy } from '../../../domain/policies/can-post-comment';
+import { CommentBodyValidationError } from '../../../domain/errors/comment-errors';
+import { CommentBody } from '../../../domain/comment-body';
 import { Comment } from '../../../domain/comment';
 
-export type PostCommentError = NotFoundError;
+export type PostCommentError =
+  | PostNotFoundError
+  | MemberNotFoundError
+  | CommentBodyValidationError
+  | InsufficientMemberLevelError;
 export type PostCommentResponse = Result<Comment, PostCommentError>;
 
 export class PostCommentUseCase implements IUseCase<
@@ -18,16 +33,50 @@ export class PostCommentUseCase implements IUseCase<
   PostCommentResponse
 > {
   constructor(
-    private commentRepo: ICommentRepository,
-    private postRepository: IPostsRepository,
-    private memberRepository: IMembersRepository,
-    private eventBus: EventBus,
+    private commentsRepository: ICommentsRepository,
+    private postsRepository: IPostsRepository,
+    private membersRepository: IMembersRepository,
+    private eventBus: IEventBus,
   ) {}
 
   async execute(
     command: PostCommentCommand,
   ): Promise<PostCommentResponse> {
-    // Implement
-    throw new Error('Not yet implemented');
+    const { memberId, postId, body, parentCommentId } = command.props;
+
+    const member = await this.membersRepository.getById(memberId);
+    if (!member) {
+      return fail(new MemberNotFoundError());
+    }
+
+    if (!CanPostCommentPolicy.isAllowed(member)) {
+      return fail(
+        new InsufficientMemberLevelError(
+          'You must be at least member level 1 to post a comment',
+        ),
+      );
+    }
+
+    const post = await this.postsRepository.getById(postId);
+    if (!post) {
+      return fail(new PostNotFoundError());
+    }
+
+    const commentBodyorError = CommentBody.create(body);
+    if (commentBodyorError.isFailure) {
+      return fail(commentBodyorError.getError());
+    }
+
+    const comment = Comment.create({
+      memberId,
+      postId,
+      parentCommentId,
+      body: commentBodyorError.getValue(),
+    });
+
+    await this.commentsRepository.save(comment);
+    await this.eventBus.publishEvents(comment.getDomainEvents());
+
+    return success(comment);
   }
 }

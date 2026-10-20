@@ -7,7 +7,7 @@ import { reputationLevel, ReputationLevel } from '@talknest/api/members';
 
 import { Config } from '../../../../../shared/config';
 
-import { PrismaMembersRepository } from '../../../../members/infra/repo/prisma-members-repository';
+import { PrismaMembersRepository } from '../../../../members/infra/repos/prisma-members-repository';
 import { MemberUsername } from '../../../../members/domain/member-username';
 import { Member } from '../../../../members/domain/member';
 

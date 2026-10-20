@@ -15,7 +15,7 @@ import type { IPostsRepository } from '../../application/ports/posts-repository'
 import { PostMap } from '../../application/mappers/post-map';
 
 type PostModelWithMember = PostModel & {
-  memberPostedBy: MemberModel;
+  member: MemberModel;
 };
 
 export class PrismaPostsRepository implements IPostsRepository {
@@ -25,9 +25,7 @@ export class PrismaPostsRepository implements IPostsRepository {
     const connection = this.database.getClient();
     const post = await connection.post.findUnique({
       where: { id },
-      include: {
-        memberPostedBy: true,
-      },
+      include: { member: true },
     });
 
     if (!post) {
@@ -42,7 +40,7 @@ export class PrismaPostsRepository implements IPostsRepository {
     const sqlQuery = {
       orderBy: {},
       include: {
-        memberPostedBy: true,
+        member: true,
         _count: {
           select: {
             comments: true,
@@ -67,7 +65,7 @@ export class PrismaPostsRepository implements IPostsRepository {
     return posts.map((post: PostModelWithMember) =>
       PostReadModel.fromPersistence(
         post,
-        MemberReadModel.fromPersistence(post.memberPostedBy),
+        MemberReadModel.fromPersistence(post.member),
       ),
     );
   }
@@ -79,7 +77,7 @@ export class PrismaPostsRepository implements IPostsRepository {
     const post = await connection.post.findUnique({
       where: { id },
       include: {
-        memberPostedBy: true,
+        member: true,
         _count: {
           select: {
             comments: true,
@@ -101,7 +99,7 @@ export class PrismaPostsRepository implements IPostsRepository {
 
     return PostReadModel.fromPersistence(
       { ...post, voteScore },
-      MemberReadModel.fromPersistence(post.memberPostedBy),
+      MemberReadModel.fromPersistence(post.member),
     );
   }
 

@@ -8,7 +8,7 @@ import { CreateMemberCommand } from '@talknest/api/members';
 import { type IEventBus } from '@talknest/bus';
 
 import { Member } from '../../../domain/member';
-import type { IMembersRepository } from '../../ports/members-repository';
+import type { IMembersRepository } from '../../ports';
 import { MemberUsername } from '../../../domain/member-username';
 import {
   InvalidMemberUsernameError,

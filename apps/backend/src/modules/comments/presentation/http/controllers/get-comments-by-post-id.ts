@@ -9,12 +9,10 @@ export class GetCommentsByPostIdController extends BaseController {
   }
 
   async executeImpl(req: express.Request, res: express.Response) {
-    const postId = req.params.postId;
+    const postId = req.params.postId as string;
 
     const resultOrError =
-      await this.commentsService.getCommentsByPostId(
-        postId as string,
-      );
+      await this.commentsService.getCommentsByPostId(postId);
 
     if (resultOrError.isFailure) {
       return this.fail(res, resultOrError.getError());

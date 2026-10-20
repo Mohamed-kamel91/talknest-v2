@@ -1,64 +1,176 @@
-import { PrismaDatabase } from '@talknest/database';
+import {
+  InvalidRequestInputError,
+  commentErrorCodes,
+  memberErrorCodes,
+  postErrorCodes,
+  requestErrorCodes,
+} from '@talknest/errors';
 import { InMemoryEventBus } from '@talknest/bus';
 import { PostCommentCommand } from '@talknest/api/comments';
 
-import { PostCommentUseCase } from './post-comment';
-import { CommentPosted } from '../../../domain/events/comment-posted';
-import { Comment } from '../../../domain/comment';
-import { PrismaPostsRepository } from '../../../../posts/infra/repos/prisma-posts-repository';
-import { PrismaMembersRepository } from '../../../../members/infra/repo/prisma-members-repository';
-import { PrismaCommentsRepository } from '../../../infra/repos/prisma-comment-repository';
-import { Config } from '../../../../../shared/config';
+import {
+  buildLevel1Member,
+  setupLevel1Member,
+} from '../../../../../../tests/fixtures/unit/members';
+import { buildPost, setupPostByRandomMember } from '../../../../../../tests/fixtures/unit/posts';
+import { CreateCommentInputBuilder } from '../../../../../../tests/builders/create-comment-input-builder';
 
-// import { setupTestWithLevel1Member } from '../../../../../../tests/fixtures/unit/members';
-// import { withExistingPostByRandomMember } from '../../../../../../tests/fixtures/unit/posts';
+import { InMemoryMembersRepository } from '../../../../members/infra/repos/in-memory-members-repository';
+import { InMemoryPostsRepository } from '../../../../posts/infra/repos/in-memory-posts-repository';
+import { InMemoryCommentsRepository } from '../../../infra/repos';
+
+import { PostNotFoundError } from '../../../../posts/domain/errors/posts-errors';
+import { MemberNotFoundError } from '../../../../members/domain/errors/member-errors';
+
+import { PostCommentUseCase } from './post-comment';
+import { CommentBodyTooLongError } from '../../../domain/errors/comment-errors';
+import { CommentPosted } from '../../../domain/events/comment-posted';
+import { CommentBody } from '../../../domain/comment-body';
+import { Comment } from '../../../domain/comment';
 
 describe('postComment', () => {
-  const config = new Config('test:unit');
-  const database = new PrismaDatabase();
-  const commentsRepo = new PrismaCommentsRepository(database);
-  const postsRepo = new PrismaPostsRepository(database);
-  const membersRepo = new PrismaMembersRepository(database);
-  const eventBus = new InMemoryEventBus();
-  const useCase = new PostCommentUseCase(
-    commentsRepo,
-    postsRepo,
-    membersRepo,
-    eventBus,
-  );
+  let eventBus: InMemoryEventBus;
+  let membersRepositorySpy: InMemoryMembersRepository;
+  let postsRepositorySpy: InMemoryPostsRepository;
+  let commentsRepositorySpy: InMemoryCommentsRepository;
+  let postCommentUseCase: PostCommentUseCase;
+  let publishEventsSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    membersRepositorySpy = new InMemoryMembersRepository();
+    postsRepositorySpy = new InMemoryPostsRepository();
+    commentsRepositorySpy = new InMemoryCommentsRepository();
+    eventBus = new InMemoryEventBus();
+
+    publishEventsSpy = jest.spyOn(eventBus, 'publishEvents');
+
+    postCommentUseCase = new PostCommentUseCase(
+      commentsRepositorySpy,
+      postsRepositorySpy,
+      membersRepositorySpy,
+      eventBus,
+    );
   });
 
   describe('permissions & identity', () => {
-    test('as a level 1 member, I should be able to post a comment', async () => {
-      // Implement
-      throw new Error('Not yet implemented');
+    it('should create comment as a level 1 member', async () => {
+      const level1Member = setupLevel1Member(membersRepositorySpy);
+      const existingPost = setupPostByRandomMember(postsRepositorySpy);
+
+      const input = new CreateCommentInputBuilder()
+        .withMemberId(level1Member.id)
+        .withPostId(existingPost.id)
+        .build();
+
+      const command = PostCommentCommand.create(input);
+      expect(command.isSuccess).toBe(true);
+
+      const result = await postCommentUseCase.execute(command.getValue());
+
+      expect(result.isSuccess).toBe(true);
+      const comment = result.getValue();
+      expect(comment).toBeInstanceOf(Comment);
+
+      expect(commentsRepositorySpy.getTimesMethodCalled('save')).toBe(1);
+      expect(commentsRepositorySpy.getCalls()[0]?.args[0]).toBe(comment);
+
+      expect(publishEventsSpy).toHaveBeenCalledTimes(1);
+      const [publishedEvents] = publishEventsSpy.mock.calls[0];
+      expect(publishedEvents).toHaveLength(1);
+
+      const event = publishedEvents[0] as CommentPosted;
+      expect(event).toBeInstanceOf(CommentPosted);
+      expect(event.data.commentId).toBe(comment.id);
+      expect(event.data.postId).toBe(existingPost.id);
+      expect(event.data.memberId).toBe(level1Member.id);
     });
   });
 
   describe('posting comments', () => {
-    test('if the member does not exist, the comment should not be created', async () => {
-      // Implement
-      throw new Error('Not yet implemented');
+    it('should not create comment, if the member does not exist', async () => {
+      const nonExistentMember = buildLevel1Member();
+      const existingPost = setupPostByRandomMember(postsRepositorySpy);
+
+      const input = new CreateCommentInputBuilder()
+        .withMemberId(nonExistentMember.id)
+        .withPostId(existingPost.id)
+        .build();
+
+      const command = PostCommentCommand.create(input);
+      expect(command.isSuccess).toBe(true);
+
+      const result = await postCommentUseCase.execute(command.getValue());
+      expect(result.isSuccess).toBe(false);
+      expect(result.getError()).toBeInstanceOf(MemberNotFoundError);
+      expect(result.getError().code).toBe(memberErrorCodes.MEMBER_NOT_FOUND);
+
+      expect(commentsRepositorySpy.wasMethodCalled('save')).toBe(false);
+      expect(publishEventsSpy).not.toHaveBeenCalled();
     });
 
-    test('if the post was not found, the comment should not be created', async () => {
-      // Implement
-      throw new Error('Not yet implemented');
+    it('should not create comment, if the post does not exist', async () => {
+      const level1Member = setupLevel1Member(membersRepositorySpy);
+      const nonExistentPost = buildPost();
+
+      const input = new CreateCommentInputBuilder()
+        .withMemberId(level1Member.id)
+        .withPostId(nonExistentPost.id)
+        .build();
+
+      const command = PostCommentCommand.create(input);
+      expect(command.isSuccess).toBe(true);
+
+      const result = await postCommentUseCase.execute(command.getValue());
+      expect(result.isSuccess).toBe(false);
+      expect(result.getError()).toBeInstanceOf(PostNotFoundError);
+      expect(result.getError().code).toBe(postErrorCodes.POST_NOT_FOUND);
+
+      expect(commentsRepositorySpy.wasMethodCalled('save')).toBe(false);
+      expect(publishEventsSpy).not.toHaveBeenCalled();
     });
   });
 
   describe('comment validation', () => {
-    test('should not allow empty comments', async () => {
-      // Implement
-      throw new Error('Not yet implemented');
+    it('should not create a comment if the body is empty', async () => {
+      const level1Member = setupLevel1Member(membersRepositorySpy);
+      const existingPost = setupPostByRandomMember(postsRepositorySpy);
+
+      const input = new CreateCommentInputBuilder()
+        .withMemberId(level1Member.id)
+        .withPostId(existingPost.id)
+        .withBody('')
+        .build();
+
+      const command = PostCommentCommand.create(input);
+
+      expect(command.isSuccess).toBe(false);
+      expect(command.getError()).toBeInstanceOf(InvalidRequestInputError);
+      expect(command.getError().code).toBe(requestErrorCodes.INVALID_REQUEST_INPUT);
+
+      expect(commentsRepositorySpy.wasMethodCalled('save')).toBe(false);
+      expect(publishEventsSpy).not.toHaveBeenCalled();
     });
 
-    test('should not allow comments exceeding 1000 characters', async () => {
-      // Implement
-      throw new Error('Not yet implemented');
+    it('should not create comment if body is exceeding 1000 characters', async () => {
+      const level1Member = setupLevel1Member(membersRepositorySpy);
+      const existingPost = setupPostByRandomMember(postsRepositorySpy);
+
+      const input = new CreateCommentInputBuilder()
+        .withMemberId(level1Member.id)
+        .withPostId(existingPost.id)
+        .withBody('a'.repeat(CommentBody.MAX_LENGTH + 1))
+        .build();
+
+      const command = PostCommentCommand.create(input);
+      expect(command.isSuccess).toBe(true);
+
+      const result = await postCommentUseCase.execute(command.getValue());
+      expect(result.isSuccess).toBe(false);
+      expect(result.getError()).toBeInstanceOf(CommentBodyTooLongError);
+      expect(result.getError().code).toBe(commentErrorCodes.COMMENT_BODY_TOO_LONG);
+
+      expect(commentsRepositorySpy.wasMethodCalled('save')).toBe(false);
+      expect(publishEventsSpy).not.toHaveBeenCalled();
     });
   });
 });

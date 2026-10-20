@@ -4,7 +4,7 @@ import {
 } from '@talknest/core/application';
 import { NotFoundError } from '@talknest/errors/application';
 
-import type { IMembersRepository } from '../../ports/members-repository';
+import type { IMembersRepository } from '../../ports';
 import { Member } from '../../../domain/member';
 
 export type GetMemberDetailsError = NotFoundError;

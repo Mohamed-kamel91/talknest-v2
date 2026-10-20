@@ -6,7 +6,7 @@ import { Config } from '../../shared/config';
 import { ApplicationModule } from '../../shared/modules/application-module';
 
 import type { IMembersRepository } from '../members/application/ports/members-repository';
-import type { ICommentRepository } from '../comments/application/ports/comment-repository';
+import type { ICommentRepository } from '../comments/application/ports/comments-repository';
 import type { IPostsRepository } from '../posts/application/ports/posts-repository';
 
 import { VotesSubscriptions } from './application/subscriptions/votes-subscriptions';

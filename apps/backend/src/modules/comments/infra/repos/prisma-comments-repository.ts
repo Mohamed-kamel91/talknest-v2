@@ -1,9 +1,10 @@
 import { IDatabase, Prisma } from '@talknest/database';
 
-import type { ICommentRepository } from '../../application/ports/comment-repository';
+import type { ICommentsRepository } from '../../application/ports/comments-repository';
 import { Comment } from '../../domain/comment';
+import { commentMap } from '../../application/mappers/comment-map';
 
-export class PrismaCommentsRepository implements ICommentRepository {
+export class PrismaCommentsRepository implements ICommentsRepository {
   constructor(private database: IDatabase) {}
 
   async save(
@@ -12,7 +13,7 @@ export class PrismaCommentsRepository implements ICommentRepository {
   ) {
     const prismaInstance = transaction || this.database.getClient();
 
-    const commentData = comment.toPersistence();
+    const commentData = commentMap.toPersistence(comment);
 
     try {
       await prismaInstance.comment.upsert({
@@ -26,7 +27,7 @@ export class PrismaCommentsRepository implements ICommentRepository {
     }
   }
 
-  async getCommentById(id: string): Promise<Comment | null> {
+  async getById(id: string): Promise<Comment | null> {
     const connection = this.database.getClient();
 
     const comment = await connection.comment.findUnique({
@@ -35,10 +36,10 @@ export class PrismaCommentsRepository implements ICommentRepository {
 
     if (!comment) return null;
 
-    return Comment.toDomain(comment);
+    return commentMap.toDomain(comment);
   }
 
-  async getCommentsByPostId(postId: string): Promise<Comment[]> {
+  async findByPostId(postId: string): Promise<Comment[]> {
     return [];
   }
 }

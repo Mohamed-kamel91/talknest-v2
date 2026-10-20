@@ -5,12 +5,14 @@ import { ApplicationModule } from '../../shared/modules/application-module';
 import { Config } from '../../shared/config';
 import { WebServer } from '../../shared/infra/http';
 
-import { PrismaMembersRepository } from './infra/repo/prisma-members-repository';
-import { IMembersRepository } from './application/ports/members-repository';
+import type { IMembersRepository } from './application/ports';
+import {
+  PrismaMembersRepository,
+  InMemoryMembersRepository,
+} from './infra/repos';
 import { MembersService } from './application/members-service';
 import { MembersController } from './presentation/http/controllers';
 import { MembersRouter } from './presentation/http/routes/members-routers';
-import { InMemoryMembersRepository } from './infra/repo/in-memory-members-repository';
 
 export class MembersModule extends ApplicationModule {
   private membersRepository: IMembersRepository;
@@ -59,20 +61,20 @@ export class MembersModule extends ApplicationModule {
     webServer.mountRouter(path, router);
   }
 
-  private createMembersService() {
-    return new MembersService(this.membersRepository, this.eventBus);
-  }
-
-  private createMembersController(config: Config) {
-    return new MembersController(this.membersService, config);
-  }
-
   private createMembersRepository(db: IDatabase) {
     if (this.shouldBuildFakeRepository) {
       return new InMemoryMembersRepository();
     }
 
     return new PrismaMembersRepository(db);
+  }
+
+  private createMembersService() {
+    return new MembersService(this.membersRepository, this.eventBus);
+  }
+
+  private createMembersController(config: Config) {
+    return new MembersController(this.membersService, config);
   }
 
   private createMembersRouter() {

@@ -6,9 +6,9 @@ import {
 } from '@talknest/core/application';
 import { GetPostByIdQuery } from '@talknest/api/posts';
 
-import { Post } from '../../../domain/post';
+import type { IPostsRepository } from '../../ports';
 import { PostNotFoundError } from '../../../domain/errors/posts-errors';
-import type { IPostsRepository } from '../../ports/posts-repository';
+import { Post } from '../../../domain/post';
 
 export type GetPostByIdResponse = Result<Post, PostNotFoundError>;
 
