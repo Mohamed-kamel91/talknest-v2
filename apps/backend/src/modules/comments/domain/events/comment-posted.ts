@@ -2,6 +2,7 @@ import { DomainEvent } from '@talknest/core/domain';
 
 type CommentPostedData = {
   commentId: string;
+  parentCommentId: string | null;
   memberId: string;
   postId: string;
 };
