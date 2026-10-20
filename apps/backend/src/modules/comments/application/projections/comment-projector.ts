@@ -46,4 +46,14 @@ export class CommentProjector {
 
     await this.commentsReadRepository.save(readModel);
   }
+
+  public async refreshReplyCount(commentId: string): Promise<void> {
+    await this.database.getClient().$executeRaw`
+    UPDATE "CommentRead"
+    SET "replyCount" = (
+      SELECT COUNT(*) FROM "Comment" WHERE "parentCommentId" = ${commentId}
+    )
+    WHERE id = ${commentId}
+  `;
+  }
 }
