@@ -9,10 +9,7 @@ export class VotesRouter extends BaseRouter {
   }
 
   protected setupRoutes(): void {
-    this.router.post('/:postId/vote', this.controller.castVoteOnPost().execute);
-    this.router.post(
-      '/:postId/comments/:commentId/vote',
-      this.controller.castVoteOnComment().execute,
-    );
+    this.router.post('/:postId/vote', this.controller.voteOnPost().execute);
+    this.router.post('/:postId/comments/:commentId/vote', this.controller.voteOnComment().execute);
   }
 }
