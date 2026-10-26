@@ -81,4 +81,8 @@ export class Comment extends AggregateRoot {
   public static reconstitute(props: CommentProps): Comment {
     return new Comment({ ...props });
   }
+
+  public isAuthoredBy(memberId: string): boolean {
+    return this.id === memberId;
+  }
 }
