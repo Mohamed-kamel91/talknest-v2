@@ -1,13 +1,10 @@
-import { ReputationLevel } from '@talknest/api';
+import { type Result } from '@talknest/core/application';
 
+import { InsufficientMemberLevelError } from '../../../members/domain/errors/member-errors';
 import { Member } from '../../../members/domain/member';
 
 export class CanCreatePostPolicy {
-  private static readonly MIN_LEVEL: ReputationLevel = 'Level2';
-
-  public static isAllowed(member: Member): boolean {
-    return member.isReputationLevelAtLeast(
-      CanCreatePostPolicy.MIN_LEVEL,
-    );
+  public static check(member: Member): Result<void, InsufficientMemberLevelError> {
+    return member.reputationLevelAtLeast('Level2');
   }
 }
