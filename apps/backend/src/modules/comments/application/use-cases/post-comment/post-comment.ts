@@ -1,9 +1,4 @@
-import {
-  success,
-  fail,
-  type Result,
-  type IUseCase,
-} from '@talknest/core/application';
+import { success, fail, type Result, type IUseCase } from '@talknest/core/application';
 import { PostCommentCommand } from '@talknest/api/comments';
 import { type IEventBus } from '@talknest/bus';
 
@@ -26,12 +21,10 @@ export type PostCommentError =
   | MemberNotFoundError
   | CommentBodyValidationError
   | InsufficientMemberLevelError;
+
 export type PostCommentResponse = Result<Comment, PostCommentError>;
 
-export class PostCommentUseCase implements IUseCase<
-  PostCommentCommand,
-  PostCommentResponse
-> {
+export class PostCommentUseCase implements IUseCase<PostCommentCommand, PostCommentResponse> {
   constructor(
     private commentsRepository: ICommentsRepository,
     private postsRepository: IPostsRepository,
@@ -39,9 +32,7 @@ export class PostCommentUseCase implements IUseCase<
     private eventBus: IEventBus,
   ) {}
 
-  async execute(
-    command: PostCommentCommand,
-  ): Promise<PostCommentResponse> {
+  async execute(command: PostCommentCommand): Promise<PostCommentResponse> {
     const { memberId, postId, body, parentCommentId } = command.props;
 
     const member = await this.membersRepository.getById(memberId);
@@ -49,12 +40,9 @@ export class PostCommentUseCase implements IUseCase<
       return fail(new MemberNotFoundError());
     }
 
-    if (!CanPostCommentPolicy.isAllowed(member)) {
-      return fail(
-        new InsufficientMemberLevelError(
-          'You must be at least member level 1 to post a comment',
-        ),
-      );
+    const policyResult = CanPostCommentPolicy.check(member);
+    if (policyResult.isFailure) {
+      return fail(policyResult.getError());
     }
 
     const post = await this.postsRepository.getById(postId);
