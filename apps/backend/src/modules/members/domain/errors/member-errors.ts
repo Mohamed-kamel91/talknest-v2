@@ -1,3 +1,4 @@
+import { ReputationLevel } from '@talknest/api/members';
 import {
   ValidationError,
   NotFoundError,
@@ -41,7 +42,7 @@ export class MemberNotFoundError extends NotFoundError {
 export class InsufficientMemberLevelError extends ForbiddenError {
   readonly code = memberErrorCodes.INSUFFICIENT_MEMBER_LEVEL;
 
-  constructor(message: string) {
-    super(message);
+  constructor(readonly requiredLevel: ReputationLevel) {
+    super(`You must be reputation level ${requiredLevel} or higher`);
   }
 }
