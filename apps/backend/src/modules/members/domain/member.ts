@@ -1,14 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { AggregateRoot, success, type Result } from '@talknest/core';
-import {
-  ReputationLevel,
-  reputationLevel,
-} from '@talknest/api/members';
+import { ReputationLevel, reputationLevel } from '@talknest/api/members';
 
 import { MemberReputationLevelUpgraded } from './events/member-reputation-level-upgraded';
 import { MemberUsername } from './member-username';
 import { MemberReputationLevel } from './member-reputation-level';
+import { InsufficientMemberLevelError } from './errors/member-errors';
 
 interface MemberProps {
   id: string;
@@ -18,10 +16,7 @@ interface MemberProps {
   reputationLevel: MemberReputationLevel;
 }
 
-type CreateMemberProps = Omit<
-  MemberProps,
-  'id' | 'reputationScore' | 'reputationLevel'
-> &
+type CreateMemberProps = Omit<MemberProps, 'id' | 'reputationScore' | 'reputationLevel'> &
   Partial<Pick<MemberProps, 'id'>>;
 
 export class Member extends AggregateRoot {
@@ -54,9 +49,7 @@ export class Member extends AggregateRoot {
     return this.props.reputationLevel;
   }
 
-  public static create(
-    props: CreateMemberProps,
-  ): Result<Member, never> {
+  public static create(props: CreateMemberProps): Result<Member, never> {
     return success(
       new Member({
         ...props,
@@ -68,13 +61,17 @@ export class Member extends AggregateRoot {
   }
 
   public static reconstitute(props: MemberProps): Member {
-    return new Member({
-      ...props,
-    });
+    return new Member({ ...props });
   }
 
-  public isReputationLevelAtLeast(level: ReputationLevel): boolean {
-    return this.reputationLevel.isAtLeast(level);
+  public reputationLevelAtLeast(
+    required: ReputationLevel,
+  ): Result<void, InsufficientMemberLevelError> {
+    if (!this.reputationLevel.isAtLeast(required)) {
+      return fail(new InsufficientMemberLevelError(required));
+    }
+
+    return success(undefined);
   }
 
   public updateReputationScore(newScore: number) {
@@ -86,8 +83,7 @@ export class Member extends AggregateRoot {
       oldScore < Member.REPUTATION_SCORE_THRESH.Level1 &&
       newScore >= Member.REPUTATION_SCORE_THRESH.Level1
     ) {
-      this.props.reputationLevel =
-        MemberReputationLevel.createAtLevel(reputationLevel.Level2);
+      this.props.reputationLevel = MemberReputationLevel.createAtLevel(reputationLevel.Level2);
 
       this.addDomainEvent(
         new MemberReputationLevelUpgraded({
@@ -100,8 +96,7 @@ export class Member extends AggregateRoot {
       oldScore < Member.REPUTATION_SCORE_THRESH.Level2 &&
       newScore >= Member.REPUTATION_SCORE_THRESH.Level2
     ) {
-      this.props.reputationLevel =
-        MemberReputationLevel.createAtLevel(reputationLevel.Level3);
+      this.props.reputationLevel = MemberReputationLevel.createAtLevel(reputationLevel.Level3);
       console.log('going to level 3!');
       this.addDomainEvent(
         new MemberReputationLevelUpgraded({
