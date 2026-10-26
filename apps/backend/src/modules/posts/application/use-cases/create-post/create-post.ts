@@ -1,9 +1,4 @@
-import {
-  success,
-  fail,
-  type Result,
-  type IUseCase,
-} from '@talknest/core/application';
+import { success, fail, type Result, type IUseCase } from '@talknest/core/application';
 import { CreatePostCommand } from '@talknest/api/posts';
 import { type IEventBus } from '@talknest/bus';
 
@@ -23,25 +18,18 @@ import { PostLink } from '../../../domain/post-link';
 import { CreatePostProps, Post } from '../../../domain/post';
 
 export type CreatePostError =
-  | MemberNotFoundError
-  | InsufficientMemberLevelError
-  | PostCreationError;
+  MemberNotFoundError | InsufficientMemberLevelError | PostCreationError;
 
 export type CreatePostResponse = Result<Post, CreatePostError>;
 
-export class CreatePostUseCase implements IUseCase<
-  CreatePostCommand,
-  CreatePostResponse
-> {
+export class CreatePostUseCase implements IUseCase<CreatePostCommand, CreatePostResponse> {
   constructor(
     private postsRepository: IPostsRepository,
     private membersRepository: IMembersRepository,
     private eventBus: IEventBus,
   ) {}
 
-  async execute(
-    command: CreatePostCommand,
-  ): Promise<CreatePostResponse> {
+  async execute(command: CreatePostCommand): Promise<CreatePostResponse> {
     const { memberId } = command.props;
 
     const member = await this.membersRepository.getById(memberId);
@@ -49,12 +37,9 @@ export class CreatePostUseCase implements IUseCase<
       return fail(new MemberNotFoundError());
     }
 
-    if (!CanCreatePostPolicy.isAllowed(member)) {
-      return fail(
-        new InsufficientMemberLevelError(
-          'You must be at least member level 2 to create a post.',
-        ),
-      );
+    const policyResult = CanCreatePostPolicy.check(member);
+    if (policyResult.isFailure) {
+      return fail(policyResult.getError());
     }
 
     const propsOrError = this.buildCreatePostProps(command);
@@ -94,9 +79,7 @@ export class CreatePostUseCase implements IUseCase<
     const postTitle = postTitleOrError.getValue();
 
     if (postType === 'text') {
-      const postContentOrError = PostContent.create(
-        command.props.content,
-      );
+      const postContentOrError = PostContent.create(command.props.content);
 
       if (postContentOrError.isFailure) {
         return fail(postContentOrError.getError());
