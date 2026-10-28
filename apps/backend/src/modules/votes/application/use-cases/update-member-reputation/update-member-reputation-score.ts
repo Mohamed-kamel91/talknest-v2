@@ -1,26 +1,17 @@
-import { EventBus } from '@talknest/bus';
-import {
-  success,
-  fail,
-  type Result,
-  type IUseCase,
-} from '@talknest/core/application';
-import { UpdateMemberReputationScoreCommand } from '@talknest/api/votes';
+import { IEventBus } from '@talknest/bus';
+import { success, fail, type Result, type IUseCase } from '@talknest/core/application';
 import { DatabaseError } from '@talknest/errors/server';
+import { UpdateMemberReputationScoreCommand } from '@talknest/api/votes';
 
-import { Member } from '../../../../members/domain/member';
 import type { IMembersRepository } from '../../../../members/application/ports/members-repository';
 import { MemberNotFoundError } from '../../../../members/domain/errors/member-errors';
+import { Member } from '../../../../members/domain/member';
 
-import type { IVoteRepository } from '../../ports/vote-repository';
+import type { IPostVotesReadRepository, ICommentVotesReadRepository } from '../../ports';
 
-export type UpdateMemberReputationError =
-  MemberNotFoundError | DatabaseError;
+export type UpdateMemberReputationError = MemberNotFoundError | DatabaseError;
 
-export type UpdateMemberReputationResponse = Result<
-  Member,
-  UpdateMemberReputationError
->;
+export type UpdateMemberReputationResponse = Result<Member, UpdateMemberReputationError>;
 
 // Note: This is also something which could be done on a cron job
 // We could have a cron job that runs every 24 hours and updates the reputation score of all members using
@@ -32,8 +23,9 @@ export class UpdateMemberReputationScore implements IUseCase<
 > {
   constructor(
     private memberRepository: IMembersRepository,
-    private votesRepository: IVoteRepository,
-    private eventBus: EventBus,
+    private postVotesReadRepository: IPostVotesReadRepository,
+    private commentVotesReadRepository: ICommentVotesReadRepository,
+    private eventBus: IEventBus,
   ) {}
 
   async execute(
@@ -41,12 +33,11 @@ export class UpdateMemberReputationScore implements IUseCase<
   ): Promise<UpdateMemberReputationResponse> {
     const { memberId } = request.props;
 
-    const [memberOrNull, commentVotesRoundup, postVotesRoundup] =
-      await Promise.all([
-        this.memberRepository.getMemberById(memberId),
-        this.votesRepository.getMemberCommentVotesRoundup(memberId),
-        this.votesRepository.getMemberPostVotesRoundup(memberId),
-      ]);
+    const [memberOrNull, commentVotesRoundup, postVotesRoundup] = await Promise.all([
+      this.memberRepository.getById(memberId),
+      this.postVotesReadRepository.getMemberPostVotesRoundup(memberId),
+      this.commentVotesReadRepository.getMemberCommentVotesRoundup(memberId),
+    ]);
 
     if (memberOrNull === null) {
       return fail(new MemberNotFoundError());
@@ -56,8 +47,7 @@ export class UpdateMemberReputationScore implements IUseCase<
     // We calculate the score by:
     // - all comment upvotes not owned by this member (score)
     // - all post upvotes not owned by this member (score)
-    const newScore =
-      commentVotesRoundup.getScore() + postVotesRoundup.getScore();
+    const newScore = commentVotesRoundup.getScore() + postVotesRoundup.getScore();
 
     // This is another great example and reason for why we need read models.
     // More optimized queries.
@@ -66,9 +56,7 @@ export class UpdateMemberReputationScore implements IUseCase<
 
     try {
       await this.memberRepository.save(memberOrNull);
-      await this.eventBus.publishEvents(
-        memberOrNull.getDomainEvents(),
-      );
+      await this.eventBus.publishEvents(memberOrNull.getDomainEvents());
       return success(memberOrNull);
     } catch (err) {
       return fail(new DatabaseError());
