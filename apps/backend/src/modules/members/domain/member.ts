@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { AggregateRoot, success, type Result } from '@talknest/core';
+import { success, fail, type Result } from '@talknest/core/application';
+import { AggregateRoot } from '@talknest/core/domain';
 import { ReputationLevel, reputationLevel } from '@talknest/api/members';
 
 import { MemberReputationLevelUpgraded } from './events/member-reputation-level-upgraded';
