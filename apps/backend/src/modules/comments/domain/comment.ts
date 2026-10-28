@@ -15,7 +15,7 @@ export interface CommentProps {
   createdAt: Date;
 }
 
-type CreateCommentProps = {
+export type CreateCommentProps = {
   postId: string;
   body: CommentBody;
   memberId: string;
@@ -83,6 +83,6 @@ export class Comment extends AggregateRoot {
   }
 
   public isAuthoredBy(memberId: string): boolean {
-    return this.id === memberId;
+    return this.memberId === memberId;
   }
 }
