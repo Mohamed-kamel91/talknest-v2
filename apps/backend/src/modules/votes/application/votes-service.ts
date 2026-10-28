@@ -1,65 +1,57 @@
+import { type IEventBus } from '@talknest/bus';
 import {
-  UpdateMemberReputationScoreCommand,
   VoteOnCommentCommand,
   VoteOnPostCommand,
+  UpdateMemberReputationScoreCommand,
 } from '@talknest/api/votes';
-import { EventBus } from '@talknest/bus';
 
-import type { ICommentRepository } from '../../comments/application/ports/comments-repository';
-import type { IMembersRepository } from '../../members/application/ports/members-repository';
-import type { IPostsRepository } from '../../posts/application/ports/posts-repository';
+import type { ICommentsRepository } from '../../comments/application/ports';
+import type { IMembersRepository } from '../../members/application/ports';
+import type { IPostsRepository } from '../../posts/application/ports';
 
 import {
-  UpdateMemberReputationResponse,
-  UpdateMemberReputationScore,
-} from './use-cases/update-member-reputation/update-member-reputation-score';
-import {
-  VoteOnPost,
-  VoteOnPostResponse,
-} from './use-cases/vote-on-post/vote-on-post';
-import {
-  VoteOnComment,
-  VoteOnCommentResponse,
-} from './use-cases/vote-on-comment/vote-on-comment';
-import type { IVoteRepository } from './ports/vote-repository';
+  ICommentVotesReadRepository,
+  ICommentVotesRepository,
+  IPostVotesReadRepository,
+  IPostVotesRepository,
+} from './ports';
+import { VoteOnCommentUseCase, VoteOnPostUseCase, UpdateMemberReputationScore } from './use-cases/';
 
 export class VotesService {
   constructor(
-    private memberRepository: IMembersRepository,
-    private commentRepository: ICommentRepository,
-    private postRepository: IPostsRepository,
-    private voteRepository: IVoteRepository,
-    private eventBus: EventBus,
+    private membersRepository: IMembersRepository,
+    private commentsRepository: ICommentsRepository,
+    private postsRepository: IPostsRepository,
+    private postVotesRepository: IPostVotesRepository,
+    private commentVotesRepository: ICommentVotesRepository,
+    private postVotesReadRepository: IPostVotesReadRepository,
+    private commentVotesReadRepository: ICommentVotesReadRepository,
+    private eventBus: IEventBus,
   ) {}
 
-  castVoteOnPost(
-    command: VoteOnPostCommand,
-  ): Promise<VoteOnPostResponse> {
-    return new VoteOnPost(
-      this.memberRepository,
-      this.postRepository,
-      this.voteRepository,
+  public voteOnPost(command: VoteOnPostCommand) {
+    return new VoteOnPostUseCase(
+      this.membersRepository,
+      this.postsRepository,
+      this.postVotesRepository,
       this.eventBus,
     ).execute(command);
   }
 
-  castVoteOnComment(
-    command: VoteOnCommentCommand,
-  ): Promise<VoteOnCommentResponse> {
-    return new VoteOnComment(
-      this.memberRepository,
-      this.commentRepository,
-      this.voteRepository,
+  public voteOnComment(command: VoteOnCommentCommand) {
+    return new VoteOnCommentUseCase(
+      this.membersRepository,
+      this.commentsRepository,
+      this.commentVotesRepository,
       this.eventBus,
     ).execute(command);
   }
 
-  updateMemberReputationScore(
-    command: UpdateMemberReputationScoreCommand,
-  ): Promise<UpdateMemberReputationResponse> {
+  public updateMemberReputationScore(command: UpdateMemberReputationScoreCommand) {
     return new UpdateMemberReputationScore(
-      this.memberRepository,
-      this.voteRepository,
+      this.membersRepository,
+      this.postVotesReadRepository,
+      this.commentVotesReadRepository,
       this.eventBus,
     ).execute(command);
   }
