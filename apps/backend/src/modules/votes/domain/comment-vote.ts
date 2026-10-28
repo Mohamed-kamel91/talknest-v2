@@ -1,120 +1,62 @@
-import { randomUUID } from 'node:crypto';
+import { v4 as uuidv4 } from 'uuid';
 
-import { AggregateRoot } from '@talknest/core/domain';
-import { VoteType } from '@talknest/api/votes';
+import { DomainEvent } from '@talknest/core/domain';
 
+import type { CommentVoteEventData } from './events/types';
 import { CommentUpvoted } from './events/comment-upvoted';
 import { CommentDownvoted } from './events/comment-downvoted';
+import { CommentUnvoted } from './events/comment-unvoted';
+import { VoteStatus } from './vote-status';
+import { Vote, type VoteProps } from './vote';
 
-type VoteState = 'Upvoted' | 'Downvoted' | 'Default';
-
-interface CommentVoteProps {
-  id: string;
+export type CreateCommentVoteProps = {
   memberId: string;
   commentId: string;
-  voteState: VoteState;
+};
+
+export interface CommentVoteProps extends VoteProps {
+  commentId: string;
 }
 
-export class CommentVote extends AggregateRoot {
-  private props: CommentVoteProps;
-
+export class CommentVote extends Vote<CommentVoteProps> {
   private constructor(props: CommentVoteProps) {
-    super();
-    this.props = props;
-  }
-
-  get id(): string {
-    return this.props.id;
-  }
-
-  get memberId(): string {
-    return this.props.memberId;
+    super(props);
   }
 
   get commentId(): string {
     return this.props.commentId;
   }
 
-  get voteState(): VoteState {
-    return this.props.voteState;
+  public static create(props: CreateCommentVoteProps): CommentVote {
+    return new CommentVote({
+      id: uuidv4(),
+      memberId: props.memberId,
+      commentId: props.commentId,
+      voteStatus: VoteStatus.unvoted(),
+    });
   }
 
-  getValue(): number {
-    switch (this.props.voteState) {
-      case 'Upvoted':
-        return 1;
-      case 'Downvoted':
-        return -1;
-      default:
-        return 0;
-    }
+  public static reconstitute(props: CommentVoteProps): CommentVote {
+    return new CommentVote({ ...props });
   }
 
-  castVote(voteType: VoteType) {
-    if (voteType === 'upvote') {
-      this.upvote();
+  protected createVoteChangeEvent(
+    voteStatus: VoteStatus,
+    scoreChange: number,
+  ): DomainEvent<CommentVoteEventData> {
+    const eventData: CommentVoteEventData = {
+      voteId: this.id,
+      memberId: this.memberId,
+      commentId: this.commentId,
+      scoreChange,
+    };
+
+    if (voteStatus.isUpvoted()) {
+      return new CommentUpvoted(eventData);
+    } else if (voteStatus.isDownvoted()) {
+      return new CommentDownvoted(eventData);
     } else {
-      this.downvote();
+      return new CommentUnvoted(eventData);
     }
-  }
-
-  private upvote() {
-    if (this.props.voteState === 'Upvoted') {
-      return;
-    }
-    this.props.voteState = 'Upvoted';
-    this.domainEvents.push(
-      new CommentUpvoted(this.id, this.props.memberId),
-    );
-  }
-
-  private downvote() {
-    if (this.props.voteState === 'Downvoted') {
-      return;
-    }
-    this.props.voteState = 'Downvoted';
-    this.domainEvents.push(
-      new CommentDownvoted(this.id, this.props.memberId),
-    );
-  }
-
-  public static toDomain(props: CommentVoteProps): CommentVote {
-    return new CommentVote(props);
-  }
-
-  public static create(
-    memberId: string,
-    commentId: string,
-  ): CommentVote {
-    return new CommentVote({
-      id: randomUUID(),
-      memberId: memberId,
-      commentId: commentId,
-      voteState: 'Default',
-    });
-  }
-
-  public static createUpvote(
-    memberId: string,
-    commentId: string,
-  ): CommentVote {
-    return new CommentVote({
-      id: randomUUID(),
-      memberId: memberId,
-      commentId: commentId,
-      voteState: 'Upvoted',
-    });
-  }
-
-  public static createDownvote(
-    memberId: string,
-    commentId: string,
-  ): CommentVote {
-    return new CommentVote({
-      id: randomUUID(),
-      memberId: memberId,
-      commentId: commentId,
-      voteState: 'Downvoted',
-    });
   }
 }
