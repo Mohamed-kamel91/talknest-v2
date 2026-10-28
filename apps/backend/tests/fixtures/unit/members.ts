@@ -10,10 +10,7 @@ import { InMemoryMembersRepository } from '../../../src/modules/members/infra/re
 
 export function buildLevel1Member() {
   const memberInput = new CreateMemberInputBuilder().build();
-
-  const username = MemberUsername.create(
-    memberInput.username,
-  ).getValue();
+  const username = MemberUsername.create(memberInput.username).getValue();
 
   return Member.create({
     userId: memberInput.userId,
@@ -21,9 +18,7 @@ export function buildLevel1Member() {
   }).getValue();
 }
 
-export function setupLevel1Member(
-  repositorySpy: InMemoryMembersRepository,
-) {
+export function setupLevel1Member(repositorySpy: InMemoryMembersRepository) {
   const member = buildLevel1Member();
 
   repositorySpy.seed([member]);
@@ -31,9 +26,7 @@ export function setupLevel1Member(
   return member;
 }
 
-export function setupTestWithLevel2Member(
-  useCase: CreatePostUseCase | PostCommentUseCase,
-) {
+export function setupTestWithLevel2Member(useCase: CreatePostUseCase | PostCommentUseCase) {
   jest.resetAllMocks();
 
   const level2Member = Member.toDomain({
@@ -44,9 +37,7 @@ export function setupTestWithLevel2Member(
     id: 'bf6b4773-feea-44cd-a951-f0ffd68625ea',
   });
 
-  useCase['membersRepository'].getMemberById = jest
-    .fn()
-    .mockResolvedValue(level2Member);
+  useCase['membersRepository'].getMemberById = jest.fn().mockResolvedValue(level2Member);
 
   return level2Member;
 }
