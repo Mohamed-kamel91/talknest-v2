@@ -7,10 +7,7 @@ import { commentMap } from '../../application/mappers/comment-map';
 export class PrismaCommentsRepository implements ICommentsRepository {
   constructor(private database: IDatabase) {}
 
-  async save(
-    comment: Comment,
-    transaction?: Prisma.TransactionClient,
-  ) {
+  public async save(comment: Comment, transaction?: Prisma.TransactionClient) {
     const prismaInstance = transaction || this.database.getClient();
 
     const commentData = commentMap.toPersistence(comment);
@@ -27,7 +24,7 @@ export class PrismaCommentsRepository implements ICommentsRepository {
     }
   }
 
-  async getById(id: string): Promise<Comment | null> {
+  public async findById(id: string): Promise<Comment | null> {
     const connection = this.database.getClient();
 
     const comment = await connection.comment.findUnique({
@@ -39,7 +36,16 @@ export class PrismaCommentsRepository implements ICommentsRepository {
     return commentMap.toDomain(comment);
   }
 
-  async findByPostId(postId: string): Promise<Comment[]> {
+  public async findByPostId(postId: string): Promise<Comment[]> {
     return [];
+  }
+
+  public async updateVoteScore(commentId: string, scoreChange: number): Promise<void> {
+    const client = this.database.getClient();
+
+    await client.comment.update({
+      where: { id: commentId },
+      data: { voteScore: { increment: scoreChange } },
+    });
   }
 }
