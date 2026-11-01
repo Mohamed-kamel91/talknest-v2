@@ -35,7 +35,7 @@ export class PostCommentUseCase implements IUseCase<PostCommentCommand, PostComm
   async execute(command: PostCommentCommand): Promise<PostCommentResponse> {
     const { memberId, postId, body, parentCommentId } = command.props;
 
-    const member = await this.membersRepository.getById(memberId);
+    const member = await this.membersRepository.findById(memberId);
     if (!member) {
       return fail(new MemberNotFoundError());
     }
@@ -45,7 +45,7 @@ export class PostCommentUseCase implements IUseCase<PostCommentCommand, PostComm
       return fail(policyResult.getError());
     }
 
-    const post = await this.postsRepository.getById(postId);
+    const post = await this.postsRepository.findById(postId);
     if (!post) {
       return fail(new PostNotFoundError());
     }
