@@ -9,6 +9,11 @@ import { PostUnvoted } from './events/post-unvoted';
 import { VoteStatus } from './vote-status';
 import { type VoteProps, Vote } from './vote';
 
+export type CreatePostVoteProps = {
+  memberId: string;
+  postId: string;
+};
+
 interface PostVoteProps extends VoteProps {
   postId: string;
 }
@@ -22,11 +27,11 @@ export class PostVote extends Vote<PostVoteProps> {
     return this.props.postId;
   }
 
-  public static create(memberId: string, postId: string): PostVote {
+  public static create(props: CreatePostVoteProps): PostVote {
     return new PostVote({
       id: uuidv4(),
-      memberId: memberId,
-      postId: postId,
+      memberId: props.memberId,
+      postId: props.postId,
       voteStatus: VoteStatus.unvoted(),
     });
   }
