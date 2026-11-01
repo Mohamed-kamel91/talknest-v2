@@ -1,8 +1,8 @@
 import { Prisma, type IDatabase } from '@talknest/database';
 
-import type { IPostVotesRepository } from '../../application/ports';
-import { PostVoteMap } from '../../application/mappers/post-vote-map';
-import { PostVote } from '../../domain/post-vote';
+import type { IPostVotesRepository } from '../../../application/ports';
+import { PostVote } from '../../../domain/post-vote';
+import { PostVoteMap } from '../../mappers/post-vote-map';
 
 export class PrismaPostVotesRepository implements IPostVotesRepository {
   constructor(private database: IDatabase) {}

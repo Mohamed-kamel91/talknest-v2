@@ -1,8 +1,8 @@
-import { Spy } from '../../../../shared/test-doubles/spy';
+import { Spy } from '../../../../../shared/test-doubles/spy';
 
-import type { IPostVotesReadRepository } from '../../application/ports';
-import { MemberPostVotesRoundup } from '../../application/read-models';
-import { PostVote } from '../../domain/post-vote';
+import type { IPostVotesReadRepository } from '../../../application/ports';
+import { MemberPostVotesRoundup } from '../../../application/read-models';
+import { PostVote } from '../../../domain/post-vote';
 
 export class InMemoryPostVotesReadRepository
   extends Spy<IPostVotesReadRepository>

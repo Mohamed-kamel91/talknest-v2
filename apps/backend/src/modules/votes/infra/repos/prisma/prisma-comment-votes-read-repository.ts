@@ -1,7 +1,7 @@
 import { type IDatabase } from '@talknest/database';
 
-import type { ICommentVotesReadRepository } from '../../application/ports';
-import { MemberCommentVotesRoundup } from '../../application/read-models';
+import type { ICommentVotesReadRepository } from '../../../application/ports';
+import { MemberCommentVotesRoundup } from '../../../application/read-models';
 
 export class PrismaCommentVotesReadRepository implements ICommentVotesReadRepository {
   constructor(private database: IDatabase) {}

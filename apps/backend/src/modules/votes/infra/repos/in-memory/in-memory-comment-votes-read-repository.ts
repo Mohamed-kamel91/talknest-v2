@@ -1,8 +1,8 @@
-import { Spy } from '../../../../shared/test-doubles/spy';
+import { Spy } from '../../../../../shared/test-doubles/spy';
 
-import type { ICommentVotesReadRepository } from '../../application/ports';
-import { MemberCommentVotesRoundup } from '../../application/read-models';
-import { CommentVote } from '../../domain/comment-vote';
+import type { ICommentVotesReadRepository } from '../../../application/ports';
+import { MemberCommentVotesRoundup } from '../../../application/read-models';
+import { CommentVote } from '../../../domain/comment-vote';
 
 export class InMemoryCommentVotesReadRepository
   extends Spy<ICommentVotesReadRepository>
