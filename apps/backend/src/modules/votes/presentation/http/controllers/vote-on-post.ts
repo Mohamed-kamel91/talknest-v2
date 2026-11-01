@@ -11,11 +11,10 @@ export class voteOnPostController extends BaseController {
   }
 
   async executeImpl(req: express.Request, res: express.Response) {
-    const commandOrError = VoteOnPostCommand.create({
-      postId: req.params.postId as string,
-      voteType: req.body.voteType,
-      memberId: req.body.memberId,
-    });
+    const postId = req.params.postId;
+    const payload = req.body;
+
+    const commandOrError = VoteOnPostCommand.create({ postId, ...payload });
 
     if (commandOrError.isFailure) {
       return this.fail(res, commandOrError.getError());
