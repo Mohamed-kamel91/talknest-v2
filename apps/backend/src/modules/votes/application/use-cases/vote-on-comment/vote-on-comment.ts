@@ -21,19 +21,18 @@ export type VoteOnCommentResponse = Result<CommentVote, VoteOnCommentError>;
 
 export class VoteOnCommentUseCase implements IUseCase<VoteOnCommentCommand, VoteOnCommentResponse> {
   constructor(
-    private membersRepository: IMembersRepository,
-    private commentsRepository: ICommentsRepository,
-    private commentVotesRepository: ICommentVotesRepository,
-    private eventBus: IEventBus,
+    private readonly membersRepository: IMembersRepository,
+    private readonly commentsRepository: ICommentsRepository,
+    private readonly commentVotesRepository: ICommentVotesRepository,
+    private readonly eventBus: IEventBus,
   ) {}
 
   async execute(command: VoteOnCommentCommand): Promise<VoteOnCommentResponse> {
     const { commentId, memberId, voteType } = command.props;
 
-    const [member, comment, existingVote] = await Promise.all([
-      this.membersRepository.getById(memberId),
-      this.commentsRepository.getById(commentId),
-      this.commentVotesRepository.findByMemberAndCommentId(memberId, commentId),
+    const [member, comment] = await Promise.all([
+      this.membersRepository.findById(memberId),
+      this.commentsRepository.findById(commentId),
     ]);
 
     if (!member) return fail(new MemberNotFoundError());
@@ -44,12 +43,18 @@ export class VoteOnCommentUseCase implements IUseCase<VoteOnCommentCommand, Vote
       return fail(policyResult.getError());
     }
 
+    // From here it should be wrapped in a unit of work (transaction)
+    const existingVote = await this.commentVotesRepository.findByMemberAndCommentId(
+      memberId,
+      commentId,
+    );
+
     const commentVote = existingVote ?? CommentVote.create({ memberId, commentId });
 
-    commentVote.castVote(voteType);
+    const { scoreChange } = commentVote.castVote(voteType);
 
     await this.commentVotesRepository.save(commentVote);
-    // await this.commentsRepository.updateVoteScore(commentId, scoreChange);
+    await this.commentsRepository.updateVoteScore(commentId, scoreChange);
     await this.eventBus.publishEvents(commentVote.getDomainEvents());
 
     return success(commentVote);
