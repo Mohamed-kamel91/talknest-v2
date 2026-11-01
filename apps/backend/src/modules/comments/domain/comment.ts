@@ -12,7 +12,6 @@ export interface CommentProps {
   memberId: string;
   parentCommentId?: string | undefined;
   voteScore: number;
-  createdAt: Date;
 }
 
 export type CreateCommentProps = {
@@ -43,10 +42,6 @@ export class Comment extends AggregateRoot {
     return this.props.parentCommentId;
   }
 
-  get createdAt() {
-    return this.props.createdAt;
-  }
-
   get voteScore() {
     return this.props.voteScore;
   }
@@ -63,7 +58,6 @@ export class Comment extends AggregateRoot {
       postId: props.postId,
       parentCommentId: props.parentCommentId,
       voteScore: 0,
-      createdAt: new Date(),
     });
 
     comment.addDomainEvent(
