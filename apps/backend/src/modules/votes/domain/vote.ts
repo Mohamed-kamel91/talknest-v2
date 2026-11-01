@@ -10,6 +10,12 @@ export interface VoteProps {
   voteStatus: VoteStatus;
 }
 
+export type CastVoteResult = {
+  oldStatus: VoteStatus;
+  newStatus: VoteStatus;
+  scoreChange: number;
+};
+
 export abstract class Vote<TProps extends VoteProps> extends AggregateRoot {
   protected constructor(protected props: TProps) {
     super();
@@ -36,7 +42,7 @@ export abstract class Vote<TProps extends VoteProps> extends AggregateRoot {
     scoreChange: number,
   ): DomainEvent<unknown>;
 
-  public castVote(voteAction: VoteAction): void {
+  public castVote(voteAction: VoteAction): CastVoteResult {
     const oldStatus = this.props.voteStatus;
     const newStatus = this.nextStatus(oldStatus, voteAction);
     const scoreChange = this.calculateScoreChange(oldStatus, newStatus);
@@ -44,6 +50,8 @@ export abstract class Vote<TProps extends VoteProps> extends AggregateRoot {
     this.props.voteStatus = newStatus;
 
     this.addDomainEvent(this.createVoteChangeEvent(newStatus, scoreChange));
+
+    return { oldStatus, newStatus, scoreChange };
   }
 
   private nextStatus(current: VoteStatus, action: VoteAction): VoteStatus {
