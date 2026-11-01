@@ -6,17 +6,14 @@ import { type PostReadModel } from '../../application/read-models/post-read-mode
 import { Post } from '../../domain/post';
 import { IPostsRepository } from '../../application/ports/posts-repository';
 
-export class InMemoryPostsRepository
-  extends Spy<IPostsRepository>
-  implements IPostsRepository
-{
+export class InMemoryPostsRepository extends Spy<IPostsRepository> implements IPostsRepository {
   private posts: Post[] = [];
   private readModels: PostReadModel[] = [];
 
   // ---- Write side ----
 
-  public async getById(id: string): Promise<Post | null> {
-    this.addCall('getById', [id]);
+  public async findById(id: string): Promise<Post | null> {
+    this.addCall('findById', [id]);
 
     return this.posts.find((post) => post.id === id) ?? null;
   }
@@ -24,9 +21,7 @@ export class InMemoryPostsRepository
   public async save(post: Post): Promise<void> {
     this.addCall('save', [post]);
 
-    const existingIndex = this.posts.findIndex(
-      (p) => p.id === post.id,
-    );
+    const existingIndex = this.posts.findIndex((p) => p.id === post.id);
 
     if (existingIndex >= 0) {
       this.posts[existingIndex] = post;
@@ -37,28 +32,43 @@ export class InMemoryPostsRepository
 
   // ---- Read side ----
 
-  public async findPosts(
-    query: GetPostsQuery,
-  ): Promise<PostReadModel[]> {
+  public async findPosts(query: GetPostsQuery): Promise<PostReadModel[]> {
     this.addCall('findPosts', [query]);
 
     return this.readModels;
   }
 
-  public async getDetailsById(
-    id: string,
-  ): Promise<PostReadModel | null> {
+  public async getDetailsById(id: string): Promise<PostReadModel | null> {
     this.addCall('getDetailsById', [id]);
 
     return this.readModels.find((post) => post.id === id) ?? null;
   }
 
-  public async getBySlug(
-    slug: string,
-  ): Promise<PostReadModel | null> {
+  public async getBySlug(slug: string): Promise<PostReadModel | null> {
     this.addCall('getBySlug', [slug]);
 
     return this.readModels.find((post) => post.slug === slug) ?? null;
+  }
+
+  async updateVoteScore(postId: string, scoreChange: number): Promise<void> {
+    const index = this.posts.findIndex((post) => post.id === postId);
+    if (index === -1) throw new Error(`Comment ${postId} not found`);
+
+    const post = this.posts[index]!;
+    const voteScore = post.voteScore + scoreChange;
+
+    const base = {
+      id: post.id,
+      memberId: post.memberId,
+      slug: post.slug,
+      title: post.title,
+      voteScore,
+    };
+
+    this.posts[index] =
+      post.postType === 'link'
+        ? Post.reconstitute({ ...base, postType: 'link', link: post.link })
+        : Post.reconstitute({ ...base, postType: 'text', content: post.content });
   }
 
   // ---- Test setup helpers (no call tracking) ----
