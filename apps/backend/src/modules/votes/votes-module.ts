@@ -20,11 +20,13 @@ import {
   PrismaCommentVotesRepository,
   PrismaPostVotesReadRepository,
   PrismaPostVotesRepository,
+} from './infra/repos/prisma';
+import {
   InMemoryCommentVotesReadRepository,
   InMemoryCommentVotesRepository,
   InMemoryPostVotesReadRepository,
   InMemoryPostVotesRepository,
-} from './infra/repos';
+} from './infra/repos/in-memory';
 import { VotesService } from './application/votes-service';
 import { VotesController } from './presentation/http/controllers';
 import { VotesRouter } from './presentation/http/routes/votes-router';
