@@ -3,6 +3,8 @@ import {
   VoteOnCommentCommand,
   VoteOnPostCommand,
   UpdateMemberReputationScoreCommand,
+  CastInitialUpvoteOnCommentCommand,
+  CastInitialUpvoteOnPostCommand,
 } from '@talknest/api/votes';
 
 import type { ICommentsRepository } from '../../comments/application/ports';
@@ -15,7 +17,13 @@ import {
   IPostVotesReadRepository,
   IPostVotesRepository,
 } from './ports';
-import { VoteOnCommentUseCase, VoteOnPostUseCase, UpdateMemberReputationScore } from './use-cases/';
+import {
+  VoteOnCommentUseCase,
+  VoteOnPostUseCase,
+  UpdateMemberReputationScore,
+  CastInitialUpvoteOnCommentUseCase,
+  CastInitialUpvoteOnPostUseCase,
+} from './use-cases/';
 
 export class VotesService {
   constructor(
@@ -52,6 +60,22 @@ export class VotesService {
       this.membersRepository,
       this.postVotesReadRepository,
       this.commentVotesReadRepository,
+      this.eventBus,
+    ).execute(command);
+  }
+
+  public CastInitialUpvoteOnComment(command: CastInitialUpvoteOnCommentCommand) {
+    return new CastInitialUpvoteOnCommentUseCase(
+      this.commentsRepository,
+      this.commentVotesRepository,
+      this.eventBus,
+    ).execute(command);
+  }
+
+  public CastInitialUpvoteOnPost(command: CastInitialUpvoteOnPostCommand) {
+    return new CastInitialUpvoteOnPostUseCase(
+      this.postsRepository,
+      this.postVotesRepository,
       this.eventBus,
     ).execute(command);
   }
