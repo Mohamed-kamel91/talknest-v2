@@ -12,9 +12,7 @@ export class InMemoryMembersRepository
   async getByUsername(username: string): Promise<Member | null> {
     this.addCall('getByUsername', [username]);
 
-    const found = this.members.find(
-      (member) => member.username.value === username,
-    );
+    const found = this.members.find((member) => member.username.value === username);
 
     return found ?? null;
   }
@@ -22,19 +20,15 @@ export class InMemoryMembersRepository
   async getByUserId(userId: string): Promise<Member | null> {
     this.addCall('getByUserId', [userId]);
 
-    const found = this.members.find(
-      (member) => member.userId === userId,
-    );
+    const found = this.members.find((member) => member.userId === userId);
 
     return found ?? null;
   }
 
-  async getById(memberId: string): Promise<Member | null> {
-    this.addCall('getById', [memberId]);
+  async findById(memberId: string): Promise<Member | null> {
+    this.addCall('findById', [memberId]);
 
-    const found = this.members.find(
-      (member) => member.id === memberId,
-    );
+    const found = this.members.find((member) => member.id === memberId);
 
     return found ?? null;
   }
@@ -42,9 +36,7 @@ export class InMemoryMembersRepository
   async save(member: Member): Promise<void> {
     this.addCall('save', [member]);
 
-    const existingIndex = this.members.findIndex(
-      (existing) => existing.id === member.id,
-    );
+    const existingIndex = this.members.findIndex((existing) => existing.id === member.id);
 
     if (existingIndex !== -1) {
       this.members[existingIndex] = member; // upsert: update
