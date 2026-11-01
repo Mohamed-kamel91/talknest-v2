@@ -20,6 +20,8 @@ export function buildCommentVote(overrides: BuildCommentVoteOverrides = {}) {
   });
 
   vote.castVote(overrides.voteType ?? input.voteType);
+
+  // clear this initial upvote event so that it doesnt interfer with the test
   vote.clearDomainEvents();
 
   return vote;
