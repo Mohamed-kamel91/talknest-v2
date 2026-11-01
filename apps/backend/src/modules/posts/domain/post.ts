@@ -1,16 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import {
-  success,
-  fail,
-  type Result,
-} from '@talknest/core/application';
+import { success, fail, type Result } from '@talknest/core/application';
 import { AggregateRoot } from '@talknest/core/domain';
 
-import {
-  InvalidLinkPostError,
-  InvalidTextPostError,
-} from './errors/posts-errors';
+import { InvalidLinkPostError, InvalidTextPostError } from './errors/posts-errors';
 import { PostCreated } from './events/post-created';
 import { PostSlug } from './post-slug';
 import { PostTitle } from './post-title';
@@ -52,8 +45,7 @@ type CreateLinkPostProps = {
   link: PostLink;
 };
 
-export type CreatePostProps =
-  CreateTextPostProps | CreateLinkPostProps;
+export type CreatePostProps = CreateTextPostProps | CreateLinkPostProps;
 
 export class Post extends AggregateRoot {
   constructor(private props: PostProps) {
@@ -117,11 +109,7 @@ export class Post extends AggregateRoot {
 
     if (postType.value === 'text') {
       if ('link' in input) {
-        return fail(
-          new InvalidTextPostError(
-            'A text post cannot contain a link',
-          ),
-        );
+        return fail(new InvalidTextPostError('A text post cannot contain a link'));
       }
 
       props = {
@@ -131,11 +119,7 @@ export class Post extends AggregateRoot {
       };
     } else {
       if ('content' in input) {
-        return fail(
-          new InvalidLinkPostError(
-            'A link post cannot contain text content',
-          ),
-        );
+        return fail(new InvalidLinkPostError('A link post cannot contain text content'));
       }
 
       props = {
@@ -147,9 +131,7 @@ export class Post extends AggregateRoot {
 
     const post = new Post(props);
 
-    post.addDomainEvent(
-      new PostCreated({ postId: post.id, memberId: memberId }),
-    );
+    post.addDomainEvent(new PostCreated({ postId: post.id, memberId: memberId }));
 
     return success(post);
   }
@@ -166,5 +148,9 @@ export class Post extends AggregateRoot {
 
   public isLinkPost(): boolean {
     return this.props.postType === 'link';
+  }
+
+  public isAuthoredBy(memberId: string) {
+    return this.memberId === memberId;
   }
 }
