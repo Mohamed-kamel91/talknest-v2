@@ -21,7 +21,7 @@ type PostModelWithMember = PostModel & {
 export class PrismaPostsRepository implements IPostsRepository {
   constructor(private database: IDatabase) {}
 
-  async getById(id: string): Promise<Post | null> {
+  async findById(id: string): Promise<Post | null> {
     const connection = this.database.getClient();
     const post = await connection.post.findUnique({
       where: { id },
@@ -63,16 +63,11 @@ export class PrismaPostsRepository implements IPostsRepository {
     const posts = await connection.post.findMany(sqlQuery);
 
     return posts.map((post: PostModelWithMember) =>
-      PostReadModel.fromPersistence(
-        post,
-        MemberReadModel.fromPersistence(post.member),
-      ),
+      PostReadModel.fromPersistence(post, MemberReadModel.fromPersistence(post.member)),
     );
   }
 
-  public async getDetailsById(
-    id: string,
-  ): Promise<PostReadModel | null> {
+  public async getDetailsById(id: string): Promise<PostReadModel | null> {
     const connection = this.database.getClient();
     const post = await connection.post.findUnique({
       where: { id },
@@ -103,13 +98,8 @@ export class PrismaPostsRepository implements IPostsRepository {
     );
   }
 
-  async save(
-    post: Post,
-    transaction?: Prisma.TransactionClient,
-  ): Promise<void | DatabaseError> {
-    const prismaInstance = transaction
-      ? transaction
-      : this.database.getClient();
+  async save(post: Post, transaction?: Prisma.TransactionClient): Promise<void | DatabaseError> {
+    const prismaInstance = transaction ? transaction : this.database.getClient();
 
     const postData = PostMap.toPersistence(post);
     const { id, ...updateData } = postData;
@@ -141,10 +131,17 @@ export class PrismaPostsRepository implements IPostsRepository {
 
     if (!post) return null;
 
-    const member = MemberReadModel.fromPersistence(
-      post.memberPostedBy,
-    );
+    const member = MemberReadModel.fromPersistence(post.memberPostedBy);
 
     return PostReadModel.fromPersistence(post, member);
+  }
+
+  public async updateVoteScore(postId: string, scoreChange: number): Promise<void> {
+    const client = this.database.getClient();
+
+    await client.post.update({
+      where: { id: postId },
+      data: { voteScore: { increment: scoreChange } },
+    });
   }
 }
