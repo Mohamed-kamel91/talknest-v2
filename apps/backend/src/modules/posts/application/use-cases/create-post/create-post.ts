@@ -32,7 +32,7 @@ export class CreatePostUseCase implements IUseCase<CreatePostCommand, CreatePost
   async execute(command: CreatePostCommand): Promise<CreatePostResponse> {
     const { memberId } = command.props;
 
-    const member = await this.membersRepository.getById(memberId);
+    const member = await this.membersRepository.findById(memberId);
     if (!member) {
       return fail(new MemberNotFoundError());
     }
