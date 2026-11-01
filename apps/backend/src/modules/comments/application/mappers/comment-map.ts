@@ -1,13 +1,10 @@
-import {
-  type IToDomainMapper,
-  type IToPersistenceMapper,
-} from '@talknest/core/application';
+import { type IToDomainMapper, type IToPersistenceMapper } from '@talknest/core/application';
 import { Comment as CommentModel } from '@talknest/database';
 
 import { Comment } from '../../domain/comment';
 import { CommentBodyMap } from './comment-body-map';
 
-type CommentPersistence = Omit<CommentModel, 'updatedAt'>;
+type CommentPersistence = Omit<CommentModel, 'createdAt' | 'updatedAt'>;
 
 class CommentMapper
   implements
@@ -22,7 +19,6 @@ class CommentMapper
       postId: persistence.postId,
       memberId: persistence.memberId,
       parentCommentId: persistence.parentCommentId || undefined,
-      createdAt: persistence.createdAt,
     });
   }
 
@@ -34,7 +30,6 @@ class CommentMapper
       postId: comment.postId,
       memberId: comment.memberId,
       parentCommentId: comment.parentCommentId || null,
-      createdAt: comment.createdAt,
     };
   }
 }
