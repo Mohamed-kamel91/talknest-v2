@@ -3,7 +3,7 @@ import { VoteOnCommentCommand } from '@talknest/api/votes';
 
 import { InMemoryMembersRepository } from '../../../../members/infra/repos';
 import { InMemoryCommentsRepository } from '../../../../comments/infra/repos';
-import { InMemoryCommentVotesRepository } from '../../../infra/repos';
+import { InMemoryCommentVotesRepository } from '../../../infra/repos/in-memory';
 
 import { setupLevel1Member } from '../../../../../../tests/fixtures/unit/members';
 import {
