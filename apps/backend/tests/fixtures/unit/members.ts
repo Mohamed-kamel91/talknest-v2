@@ -4,9 +4,11 @@ import { reputationLevel } from '@talknest/api/members';
 import { Member } from '../../../src/modules/members/domain/member';
 import { MemberUsername } from '../../../src/modules/members/domain/member-username';
 import { CreatePostUseCase } from '../../../src/modules/posts/application/use-cases/create-post/create-post';
+
+import { InMemoryMembersRepository } from '../../../src/modules/members/infra/repos/in-memory';
 import { PostCommentUseCase } from '../../../src/modules/comments/application/use-cases/post-comment/post-comment';
+
 import { CreateMemberInputBuilder } from '../../builders/create-member-input-builder';
-import { InMemoryMembersRepository } from '../../../src/modules/members/infra/repos/in-memory-members-repository';
 
 export function buildLevel1Member() {
   const memberInput = new CreateMemberInputBuilder().build();

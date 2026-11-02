@@ -2,7 +2,7 @@ import { CreatePostProps, Post } from '../../../src/modules/posts/domain/post';
 import { PostContent } from '../../../src/modules/posts/domain/post-content';
 import { PostTitle } from '../../../src/modules/posts/domain/post-title';
 import { PostType } from '../../../src/modules/posts/domain/post-type';
-import { InMemoryPostsRepository } from '../../../src/modules/posts/infra/repos';
+import { InMemoryPostsRepository } from '../../../src/modules/posts/infra/repos/in-memory';
 
 import { CreatePostInputBuilder } from '../../builders/create-post-input-builder';
 
@@ -24,7 +24,7 @@ export function setupPostByRandomMember(
 ) {
   const existingPost = buildPost(overrides);
 
-  postsRepositorySpy.seedPosts([existingPost]);
+  postsRepositorySpy.seed([existingPost]);
 
   return existingPost;
 }

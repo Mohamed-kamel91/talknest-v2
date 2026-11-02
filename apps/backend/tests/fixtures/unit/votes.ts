@@ -4,7 +4,7 @@ import {
   CommentVote,
   CreateCommentVoteProps,
 } from '../../../src/modules/votes/domain/comment-vote';
-import { InMemoryCommentVotesRepository } from '../../../src/modules/votes/infra/repos';
+import { InMemoryCommentVotesRepository } from '../../../src/modules/votes/infra/repos/in-memory';
 import { aCommentVote } from '../../builders/vote-input-builder';
 
 type BuildCommentVoteOverrides = Partial<CreateCommentVoteProps> & {

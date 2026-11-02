@@ -1,8 +1,9 @@
+import { InMemoryCommentsRepository } from '../../../src/modules/comments/infra/repos/in-memory';
+import { InMemoryCommentVotesRepository } from '../../../src/modules/votes/infra/repos/in-memory';
 import { Comment, CreateCommentProps } from '../../../src/modules/comments/domain/comment';
-import { CreateCommentInputBuilder } from '../../builders/create-comment-input-builder';
-import { InMemoryCommentsRepository } from '../../../src/modules/comments/infra/repos';
 import { CommentBody } from '../../../src/modules/comments/domain/comment-body';
-import { InMemoryCommentVotesRepository } from '../../../src/modules/votes/infra/repos';
+
+import { CreateCommentInputBuilder } from '../../builders/create-comment-input-builder';
 import { setupCommentVote } from './votes';
 
 export function buildComment(overrides: Partial<CreateCommentProps> = {}) {
