@@ -9,16 +9,7 @@ export class InMemoryCommentVotesRepository
 {
   private votes: CommentVote[] = [];
 
-  public async findByMemberAndCommentId(
-    memberId: string,
-    commentId: string,
-  ): Promise<CommentVote | null> {
-    this.addCall('findByMemberAndCommentId', [memberId, commentId]);
-
-    return (
-      this.votes.find((vote) => vote.memberId === memberId && vote.commentId === commentId) ?? null
-    );
-  }
+  // ---- Write side ----
 
   public async save(vote: CommentVote): Promise<void> {
     this.addCall('save', [vote]);
@@ -32,6 +23,19 @@ export class InMemoryCommentVotesRepository
     } else {
       this.votes.push(vote);
     }
+  }
+
+  // ---- Read side ----
+
+  public async findByMemberAndCommentId(
+    memberId: string,
+    commentId: string,
+  ): Promise<CommentVote | null> {
+    this.addCall('findByMemberAndCommentId', [memberId, commentId]);
+
+    return (
+      this.votes.find((vote) => vote.memberId === memberId && vote.commentId === commentId) ?? null
+    );
   }
 
   // ---- Test setup helpers (no call tracking) ----

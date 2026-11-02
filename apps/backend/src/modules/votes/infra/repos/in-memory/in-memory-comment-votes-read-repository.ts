@@ -10,6 +10,8 @@ export class InMemoryCommentVotesReadRepository
 {
   private votes: CommentVote[] = [];
 
+  // ---- Read side -----
+
   public async getMemberCommentVotesRoundup(memberId: string): Promise<MemberCommentVotesRoundup> {
     this.addCall('getMemberCommentVotesRoundup', [memberId]);
 

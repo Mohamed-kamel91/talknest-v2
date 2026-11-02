@@ -173,8 +173,6 @@ export class VotesModule extends ApplicationModule {
       this.postsRepository,
       this.postVotesRepository,
       this.commentVotesRepository,
-      this.postVotesReadRepository,
-      this.commentVotesReadRepository,
       this.eventBus,
     );
   }
