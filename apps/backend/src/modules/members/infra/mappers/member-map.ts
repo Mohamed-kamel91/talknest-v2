@@ -24,9 +24,7 @@ class MemberMapper
       reputationScore: persistence.reputationScore,
       userId: persistence.userId,
       username: MemberUsernameMap.toDomain(persistence.username),
-      reputationLevel: MemberReputationLevelMap.toDomain(
-        persistence.reputationLevel,
-      ),
+      reputationLevel: MemberReputationLevelMap.toDomain(persistence.reputationLevel),
     });
   }
 

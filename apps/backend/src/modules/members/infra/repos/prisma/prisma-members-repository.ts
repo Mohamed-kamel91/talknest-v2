@@ -1,8 +1,8 @@
-import { IDatabase, Prisma } from '@talknest/database';
+import { type IDatabase, Prisma } from '@talknest/database';
 
-import type { IMembersRepository } from '../../application/ports';
-import { MemberMap } from '../../application/mappers';
-import { Member } from '../../domain/member';
+import type { IMembersRepository } from '../../../application/ports';
+import { MemberMap } from '../../mappers';
+import { Member } from '../../../domain/member';
 
 export class PrismaMembersRepository implements IMembersRepository {
   constructor(private database: IDatabase) {}
@@ -33,7 +33,7 @@ export class PrismaMembersRepository implements IMembersRepository {
     return MemberMap.toDomain(memberData);
   }
 
-  async getById(memberId: string): Promise<Member | null> {
+  async findById(memberId: string): Promise<Member | null> {
     const connection = this.database.getClient();
     const memberData = await connection.member.findUnique({
       where: { id: memberId },

@@ -10,10 +10,7 @@ const memberUsernameSchema = z
   .min(5, 'Username must be at least 5 characters')
   .max(15, 'Username must be at most 15 characters')
   .toLowerCase()
-  .regex(
-    /^[a-zA-Z0-9]+$/,
-    'Username can only contain letters and numbers without spaces',
-  );
+  .regex(/^[a-zA-Z0-9]+$/, 'Username can only contain letters and numbers without spaces');
 
 type MemberUsernameProps = {
   value: string;
@@ -28,14 +25,11 @@ export class MemberUsername extends ValueObject<MemberUsernameProps> {
     return this.props.value;
   }
 
-  public static create(
-    input: string,
-  ): Result<MemberUsername, InvalidMemberUsernameError> {
+  public static create(input: string): Result<MemberUsername, InvalidMemberUsernameError> {
     const result = memberUsernameSchema.safeParse(input);
 
     if (!result.success) {
-      const message =
-        result.error.issues[0]?.message ?? 'Invalid username';
+      const message = result.error.issues[0]?.message ?? 'Invalid username';
       return fail(new InvalidMemberUsernameError(message));
     }
 

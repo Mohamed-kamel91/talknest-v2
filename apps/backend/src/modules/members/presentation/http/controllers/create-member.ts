@@ -4,7 +4,7 @@ import { CreateMemberCommand } from '@talknest/api/members';
 
 import { BaseController } from '../../../../../shared/infra/http';
 import { MembersService } from '../../../application/members-service';
-import { MemberMap } from '../../../application/mappers/member-map';
+import { MemberMap } from '../../../infra/mappers';
 
 export class CreateMemberController extends BaseController {
   constructor(private membersService: MembersService) {
@@ -18,9 +18,7 @@ export class CreateMemberController extends BaseController {
       return this.fail(res, commandOrError.getError());
     }
 
-    const resultOrError = await this.membersService.createMember(
-      commandOrError.getValue(),
-    );
+    const resultOrError = await this.membersService.createMember(commandOrError.getValue());
 
     if (resultOrError.isFailure) {
       return this.fail(res, resultOrError.getError());

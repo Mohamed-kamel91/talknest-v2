@@ -75,7 +75,8 @@ export class Member extends AggregateRoot {
     return success(undefined);
   }
 
-  public updateReputationScore(newScore: number) {
+  // TODO
+  public updateReputationScore(scoreChange: number) {
     const oldScore = this.props.reputationScore;
     this.props.reputationScore = newScore;
 

@@ -3,16 +3,10 @@ import { MemberReputationLevel as ReputationLevelPersistence } from '@talknest/d
 
 import { MemberReputationLevel } from '../../domain/member-reputation-level';
 
-class MemberReputationLevelMapper implements IToDomainMapper<
-  string,
-  MemberReputationLevel
-> {
-  public toDomain(
-    reputationLevel: ReputationLevelPersistence,
-  ): MemberReputationLevel {
+class MemberReputationLevelMapper implements IToDomainMapper<string, MemberReputationLevel> {
+  public toDomain(reputationLevel: ReputationLevelPersistence): MemberReputationLevel {
     return MemberReputationLevel.reconstitute(reputationLevel);
   }
 }
 
-export const MemberReputationLevelMap =
-  new MemberReputationLevelMapper();
+export const MemberReputationLevelMap = new MemberReputationLevelMapper();

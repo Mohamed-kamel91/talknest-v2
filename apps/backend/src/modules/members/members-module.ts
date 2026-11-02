@@ -1,15 +1,13 @@
-import { IEventBus } from '@talknest/bus';
-import { IDatabase } from '@talknest/database';
+import { type IEventBus } from '@talknest/bus';
+import { type IDatabase } from '@talknest/database';
 
 import { ApplicationModule } from '../../shared/modules/application-module';
 import { Config } from '../../shared/config';
 import { WebServer } from '../../shared/infra/http';
 
 import type { IMembersRepository } from './application/ports';
-import {
-  PrismaMembersRepository,
-  InMemoryMembersRepository,
-} from './infra/repos';
+import { PrismaMembersRepository } from './infra/repos/prisma';
+import { InMemoryMembersRepository } from './infra/repos/in-memory';
 import { MembersService } from './application/members-service';
 import { MembersController } from './presentation/http/controllers';
 import { MembersRouter } from './presentation/http/routes/members-routers';
@@ -29,17 +27,13 @@ export class MembersModule extends ApplicationModule {
 
     this.membersRepository = this.createMembersRepository(db);
     this.membersService = this.createMembersService();
-    this.membersController = this.createMembersController(config);
+    this.membersController = this.createMembersController();
     this.membersRouter = this.createMembersRouter();
 
     this.membersRouter.register();
   }
 
-  public static build(
-    db: IDatabase,
-    eventBus: IEventBus,
-    config: Config,
-  ) {
+  public static build(db: IDatabase, eventBus: IEventBus, config: Config) {
     return new MembersModule(db, eventBus, config);
   }
 
@@ -73,8 +67,8 @@ export class MembersModule extends ApplicationModule {
     return new MembersService(this.membersRepository, this.eventBus);
   }
 
-  private createMembersController(config: Config) {
-    return new MembersController(this.membersService, config);
+  private createMembersController() {
+    return new MembersController(this.membersService);
   }
 
   private createMembersRouter() {
