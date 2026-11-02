@@ -6,8 +6,10 @@ import { Post } from '../../domain/post';
 
 export interface IPostsRepository {
   save(post: Post): Promise<void | DatabaseError>;
-  getById(id: string): Promise<Post | null>;
+  findById(id: string): Promise<Post | null>;
   getBySlug(slug: string): Promise<PostReadModel | null>;
   getDetailsById(id: string): Promise<PostReadModel | null>;
   findPosts(query: GetPostsQuery): Promise<PostReadModel[]>;
+  findAuthorId(postId: string): Promise<string | null>;
+  updateVoteScore(postId: string, scoreChange: number): Promise<void>;
 }

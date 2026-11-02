@@ -14,13 +14,7 @@ import { WebServer } from '../infra/http';
 import { IApplication } from '../application';
 import { errorHandler } from '../errors/error-handler';
 
-type ModuleName =
-  | 'members'
-  | 'users'
-  | 'votes'
-  | 'posts'
-  | 'notifications'
-  | 'marketing';
+type ModuleName = 'members' | 'users' | 'votes' | 'posts' | 'notifications' | 'marketing';
 
 export class CompositionRoot {
   private static instance: CompositionRoot | null = null;
@@ -143,11 +137,7 @@ export class CompositionRoot {
   }
 
   private createMembersModule() {
-    return MembersModule.build(
-      this.database,
-      this.eventBus,
-      this.config,
-    );
+    return MembersModule.build(this.database, this.eventBus, this.config);
   }
 
   private createVotesModule() {
@@ -189,8 +179,7 @@ export class CompositionRoot {
       members: this.membersModule.getMembersService(),
       posts: this.postsModule.getPostsService(),
       marketing: this.marketingModule.getMarketingService(),
-      notifications:
-        this.notificationsModule.getNotificationsService(),
+      notifications: this.notificationsModule.getNotificationsService(),
       votes: this.votesModule.getVotesService(),
     };
   }
@@ -219,7 +208,8 @@ export class CompositionRoot {
       posts: this.postsModule.getPostsRepository(),
       comments: this.commentsModule.getCommentsRepository(),
       members: this.membersModule.getMembersRepository(),
-      votes: this.votesModule.getVotesRepository(),
+      postvotes: this.votesModule.getPostVotesRepository(),
+      commentvotes: this.votesModule.getCommentVotesRepository(),
     };
   }
 }

@@ -4,7 +4,7 @@
   "singleQuote": true,
   "jsxSingleQuote": false,
   "trailingComma": "all",
-  "printWidth": 70,
+  "printWidth": 100,
   "endOfLine": "lf",
   "overrides": [
     {

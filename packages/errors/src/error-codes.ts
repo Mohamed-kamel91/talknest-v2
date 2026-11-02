@@ -6,6 +6,7 @@ import {
   memberErrorCodes,
   postErrorCodes,
   userErrorCodes,
+  voteErrorCodes,
 } from './domain';
 
 export const errorCodes = {
@@ -16,6 +17,7 @@ export const errorCodes = {
   ...memberErrorCodes,
   ...commentErrorCodes,
   ...postErrorCodes,
+  ...voteErrorCodes,
 } as const;
 
 export type ErrorCode = (typeof errorCodes)[keyof typeof errorCodes];

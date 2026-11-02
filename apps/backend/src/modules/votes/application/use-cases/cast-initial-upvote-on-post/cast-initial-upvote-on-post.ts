@@ -1,0 +1,37 @@
+import { type IUseCase } from '@talknest/core';
+import { type IEventBus } from '@talknest/bus';
+import { CastInitialUpvoteOnPostCommand } from '@talknest/api/votes';
+
+import type { IPostsRepository } from '../../../../posts/application/ports';
+
+import type { IPostVotesRepository } from '../../ports';
+import { PostVote } from '../../../domain/post-vote';
+
+export class CastInitialUpvoteOnPostUseCase implements IUseCase<
+  CastInitialUpvoteOnPostCommand,
+  void
+> {
+  constructor(
+    private readonly postsRepository: IPostsRepository,
+    private readonly postVotesRepository: IPostVotesRepository,
+    private readonly eventBus: IEventBus,
+  ) {}
+
+  async execute(command: CastInitialUpvoteOnPostCommand) {
+    // Usecase should be wrapped in a unit of work (transaction)
+    // Event should saved in db (outbox pattern)
+    const { postId, memberId } = command.props;
+
+    const existingVote = await this.postVotesRepository.findByMemberAndPostId(memberId, postId);
+
+    if (existingVote) return;
+
+    const postVote = PostVote.create({ memberId, postId });
+
+    const { scoreChange } = postVote.castVote('upvote');
+
+    await this.postVotesRepository.save(postVote);
+    await this.postsRepository.updateVoteScore(postId, scoreChange);
+    await this.eventBus.publishEvents(postVote.getDomainEvents());
+  }
+}

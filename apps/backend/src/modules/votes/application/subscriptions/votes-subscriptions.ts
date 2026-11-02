@@ -1,59 +1,38 @@
-import { EventBus } from '@talknest/bus';
-import { UpdateMemberReputationScoreCommand } from '@talknest/api/votes';
+import { type IEventSubscriptions } from '@talknest/core';
+import { type IEventBus } from '@talknest/bus';
+import {
+  CastInitialUpvoteOnCommentCommand,
+  CastInitialUpvoteOnPostCommand,
+} from '@talknest/api/votes';
 
-import { PostDownvoted } from '../../domain/events/post-downvoted';
-import { PostUpvoted } from '../../domain/events/post-upvoted';
-import { CommentUpvoted } from '../../domain/events/comment-upvoted';
-import { CommentDownvoted } from '../../domain/events/comment-downvoted';
+import { CommentPosted } from '../../../comments/domain/events/comment-posted';
+
 import { VotesService } from '../votes-service';
+import { PostCreated } from '../../../posts/domain/events/post-created';
 
-export class VotesSubscriptions {
+export class VotesSubscriptions implements IEventSubscriptions {
   constructor(
-    private eventBus: EventBus,
-    private voteService: VotesService,
-  ) {
-    this.setupSubscriptions();
+    private readonly eventBus: IEventBus,
+    private readonly votesService: VotesService,
+  ) {}
+
+  register() {
+    this.eventBus.subscribe<CommentPosted>(
+      CommentPosted.eventName,
+      this.onCommentPosted.bind(this),
+    );
+    this.eventBus.subscribe<PostCreated>(PostCreated.eventName, this.onPostCreated.bind(this));
   }
 
-  setupSubscriptions() {
-    this.eventBus.subscribe<PostUpvoted>(
-      PostUpvoted.name,
-      this.onPostOrCommentVoteChanged.bind(this),
-    );
-    this.eventBus.subscribe<PostDownvoted>(
-      PostDownvoted.name,
-      this.onPostOrCommentVoteChanged.bind(this),
-    );
-    this.eventBus.subscribe<CommentUpvoted>(
-      CommentUpvoted.name,
-      this.onPostOrCommentVoteChanged.bind(this),
-    );
-    this.eventBus.subscribe<CommentDownvoted>(
-      CommentDownvoted.name,
-      this.onPostOrCommentVoteChanged.bind(this),
-    );
+  private async onPostCreated(event: PostCreated) {
+    const { postId, memberId } = event.data;
+    const command = new CastInitialUpvoteOnPostCommand({ postId, memberId });
+    await this.votesService.CastInitialUpvoteOnPost(command);
   }
 
-  async onPostOrCommentVoteChanged(
-    event:
-      | CommentUpvoted
-      | PostUpvoted
-      | CommentDownvoted
-      | CommentUpvoted,
-  ) {
-    try {
-      console.log(
-        'updating member reputation score based on post vote',
-      );
-      const command = new UpdateMemberReputationScoreCommand({
-        memberId: event.memberId,
-      });
-      const response =
-        await this.voteService.updateMemberReputationScore(command);
-      // If not successful, handle.
-    } catch (error) {
-      console.log(error);
-      // Handle
-    }
+  private async onCommentPosted(event: CommentPosted) {
+    const { commentId, memberId } = event.data;
+    const command = new CastInitialUpvoteOnCommentCommand({ commentId, memberId });
+    await this.votesService.CastInitialUpvoteOnComment(command);
   }
 }

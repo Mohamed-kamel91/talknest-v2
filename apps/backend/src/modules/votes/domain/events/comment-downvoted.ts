@@ -1,14 +1,11 @@
-import { randomUUID } from 'node:crypto';
-
 import { DomainEvent } from '@talknest/core/domain';
 
-export class CommentDownvoted extends DomainEvent {
-  constructor(
-    public readonly commentId: string,
-    public readonly memberId: string,
-    public readonly id: string = randomUUID(),
-    public readonly date: Date = new Date(),
-  ) {
-    super(id, date, 'CommentDownvoted');
+import type { CommentVoteEventData } from './types';
+
+export class CommentDownvoted extends DomainEvent<CommentVoteEventData> {
+  static readonly eventName = 'CommentDownvoted';
+
+  constructor(data: CommentVoteEventData) {
+    super(CommentDownvoted.eventName, data.voteId, data);
   }
 }

@@ -1,4 +1,4 @@
-import { ValidationError } from '@talknest/errors';
+import { NotFoundError, ValidationError } from '@talknest/errors';
 import { commentErrorCodes } from '@talknest/errors/domain/comments';
 
 export type CommentBodyValidationError =
@@ -17,5 +17,13 @@ export class CommentBodyTooLongError extends ValidationError {
 
   constructor(maxLength: number) {
     super(`Comment body cannot exceed ${maxLength} characters`);
+  }
+}
+
+export class CommentNotFoundError extends NotFoundError {
+  readonly code = commentErrorCodes.COMMENT_NOT_FOUND;
+
+  constructor() {
+    super('Comment not found');
   }
 }

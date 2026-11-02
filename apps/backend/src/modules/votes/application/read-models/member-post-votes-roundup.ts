@@ -24,7 +24,7 @@ export class MemberPostVotesRoundup extends ReadModel<MemberPostVotesRoundupProp
     return this.props.memberId;
   }
 
-  getScore() {
+  get Score() {
     return this.props.score;
   }
 

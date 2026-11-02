@@ -1,4 +1,4 @@
-import { EventBus } from '@talknest/bus';
+import { type IEventBus } from '@talknest/bus';
 
 import { ApplicationModule } from '../../shared/modules/application-module';
 import { type Config } from '../../shared/config';
@@ -17,7 +17,7 @@ export class NotificationsModule extends ApplicationModule {
   private notificationsSubscriptions: NotificationsSubscription;
 
   private constructor(
-    private eventBus: EventBus,
+    private eventBus: IEventBus,
     config: Config,
   ) {
     super(config);
@@ -28,7 +28,7 @@ export class NotificationsModule extends ApplicationModule {
       this.createNotificationSubscriptions();
   }
 
-  static build(eventBus: EventBus, config: Config) {
+  static build(eventBus: IEventBus, config: Config) {
     return new NotificationsModule(eventBus, config);
   }
 

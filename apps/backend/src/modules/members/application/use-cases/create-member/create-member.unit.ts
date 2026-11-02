@@ -5,7 +5,7 @@ import { memberErrorCodes } from '@talknest/errors';
 import { setupLevel1Member } from '../../../../../../tests/fixtures/unit/members';
 import { CreateMemberInputBuilder } from '../../../../../../tests/builders/create-member-input-builder';
 
-import { InMemoryMembersRepository } from '../../../infra/repos';
+import { InMemoryMembersRepository } from '../../../infra/repos/in-memory';
 import { Member } from '../../../domain/member';
 import { CreateMemberUseCase } from './create-member';
 import {

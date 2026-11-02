@@ -1,5 +1,5 @@
-import { IDatabase } from '@talknest/database';
-import { IEventBus } from '@talknest/bus';
+import { type IDatabase } from '@talknest/database';
+import { type IEventBus } from '@talknest/bus';
 
 import { type Config } from '../../shared/config';
 import { ApplicationModule } from '../../shared/modules/application-module';
@@ -8,10 +8,8 @@ import { WebServer } from '../../shared/infra/http';
 import type { IMembersRepository } from '../members/application/ports';
 
 import type { IPostsRepository } from './application/ports';
-import {
-  PrismaPostsRepository,
-  InMemoryPostsRepository,
-} from './infra/repos';
+import { PrismaPostsRepository } from './infra/repos/prisma';
+import { InMemoryPostsRepository } from './infra/repos/in-memory';
 import { PostsService } from './application/posts-service';
 import { PostsController } from './presentation/http/controllers';
 import { PostsRouter } from './presentation/http/routes/posts-router';
@@ -73,11 +71,7 @@ export class PostsModule extends ApplicationModule {
   }
 
   private createPostsService(membersRepository: IMembersRepository) {
-    return new PostsService(
-      this.postsRepository,
-      membersRepository,
-      this.eventBus,
-    );
+    return new PostsService(this.postsRepository, membersRepository, this.eventBus);
   }
 
   private createPostsController() {

@@ -5,9 +5,7 @@ import {
   type CreateTextPostInput,
 } from '@talknest/api/posts';
 
-export abstract class BasePostInputBuilder<
-  TInput extends CreatePostInput,
-> {
+export abstract class BasePostInputBuilder<TInput extends CreatePostInput> {
   protected title = faker.lorem.sentence({ min: 5, max: 10 });
   protected memberId = faker.string.uuid();
 
@@ -25,7 +23,7 @@ export abstract class BasePostInputBuilder<
 }
 
 export class CreateTextPostInputBuilder extends BasePostInputBuilder<CreateTextPostInput> {
-  private content = faker.lorem.paragraph();
+  private content: string = faker.lorem.paragraph();
 
   public withContent(content: string): this {
     this.content = content;
@@ -43,7 +41,7 @@ export class CreateTextPostInputBuilder extends BasePostInputBuilder<CreateTextP
 }
 
 export class CreateLinkPostInputBuilder extends BasePostInputBuilder<CreateLinkPostInput> {
-  private link = faker.internet.url({
+  private link: string = faker.internet.url({
     protocol: 'https',
     appendSlash: false,
   });

@@ -1,5 +1,5 @@
-import { PostCommentCommand } from '@talknest/api/comments';
 import { type IEventBus } from '@talknest/bus';
+import { PostCommentCommand } from '@talknest/api/comments';
 
 import type { IMembersRepository } from '../../members/application/ports/members-repository';
 import type { IPostsRepository } from '../../posts/application/ports/posts-repository';
@@ -21,9 +21,7 @@ export class CommentsService {
     private eventBus: IEventBus,
   ) {}
 
-  public postComment(
-    command: PostCommentCommand,
-  ): Promise<PostCommentResponse> {
+  public postComment(command: PostCommentCommand): Promise<PostCommentResponse> {
     return new PostCommentUseCase(
       this.commentsRepository,
       this.postsRepository,
@@ -32,11 +30,7 @@ export class CommentsService {
     ).execute(command);
   }
 
-  public async getCommentsByPostId(
-    postId: string,
-  ): Promise<GetCommentsByPostIdResponse> {
-    return new getCommentsByPostIdUseCase(
-      this.commentsRepository,
-    ).execute(postId);
+  public async getCommentsByPostId(postId: string): Promise<GetCommentsByPostIdResponse> {
+    return new getCommentsByPostIdUseCase(this.commentsRepository).execute(postId);
   }
 }

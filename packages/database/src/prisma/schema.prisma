@@ -47,12 +47,12 @@ model Post {
   title     String
   content   String?
   link      String?
+  slug      String
+  voteScore Int        @default(0)
   comments  Comment[]
+  postVotes PostVote[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  postVotes PostVote[]
-  voteScore Int        @default(0)
-  slug      String
 }
 
 model Comment {
@@ -108,6 +108,17 @@ model Event {
   updatedAt   DateTime @updatedAt
 }
 
+model MemberRead {
+  id              String                @id
+  username        String                @unique
+  reputationScore Int                   @default(0)
+  reputationLevel MemberReputationLevel
+  joinedAt        DateTime
+  projectedAt     DateTime              @updatedAt
+
+  @@index([reputationScore])
+}
+
 model CommentRead {
   id                    String                @id
   postId                String
@@ -123,5 +134,25 @@ model CommentRead {
 
   @@index([postId, postedAt])
   @@index([parentCommentId])
+  @@index([authorId])
+}
+
+model PostRead {
+  id                    String                @id
+  slug                  String                @unique
+  postType              PostType
+  title                 String
+  content               String?
+  link                  String?
+  voteScore             Int                   @default(0)
+  commentCount          Int                   @default(0)
+  authorId              String
+  authorUsername        String
+  authorReputationLevel MemberReputationLevel
+  postedAt              DateTime
+  projectedAt           DateTime              @updatedAt
+
+  @@index([postedAt])
+  @@index([voteScore])
   @@index([authorId])
 }

@@ -12,10 +12,9 @@ export interface CommentProps {
   memberId: string;
   parentCommentId?: string | undefined;
   voteScore: number;
-  createdAt: Date;
 }
 
-type CreateCommentProps = {
+export type CreateCommentProps = {
   postId: string;
   body: CommentBody;
   memberId: string;
@@ -43,10 +42,6 @@ export class Comment extends AggregateRoot {
     return this.props.parentCommentId;
   }
 
-  get createdAt() {
-    return this.props.createdAt;
-  }
-
   get voteScore() {
     return this.props.voteScore;
   }
@@ -63,7 +58,6 @@ export class Comment extends AggregateRoot {
       postId: props.postId,
       parentCommentId: props.parentCommentId,
       voteScore: 0,
-      createdAt: new Date(),
     });
 
     comment.addDomainEvent(
@@ -80,5 +74,9 @@ export class Comment extends AggregateRoot {
 
   public static reconstitute(props: CommentProps): Comment {
     return new Comment({ ...props });
+  }
+
+  public isAuthoredBy(memberId: string): boolean {
+    return this.memberId === memberId;
   }
 }

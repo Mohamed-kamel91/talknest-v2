@@ -3,15 +3,16 @@ import { memberErrorCodes } from '@talknest/errors';
 import { CreatePostCommand } from '@talknest/api/posts';
 
 import { setupLevel1Member } from '../../../../../../tests/fixtures/unit/members';
+import { CreatePostInputBuilder } from '../../../../../../tests/builders/create-post-input-builder';
 
-import { InMemoryMembersRepository } from '../../../../members/infra/repos';
+import { InMemoryMembersRepository } from '../../../../members/infra/repos/in-memory';
 import {
   InsufficientMemberLevelError,
   MemberNotFoundError,
 } from '../../../../members/domain/errors/member-errors';
-import { InMemoryPostsRepository } from '../../../infra/repos';
+
+import { InMemoryPostsRepository } from '../../../infra/repos/in-memory';
 import { CreatePostUseCase } from './create-post';
-import { CreatePostInputBuilder } from '../../../../../../tests/builders/create-post-input-builder';
 
 describe('createPost', () => {
   let eventBus: IEventBus;
@@ -44,7 +45,7 @@ describe('createPost', () => {
       expect(result.getError()).toBeInstanceOf(InsufficientMemberLevelError);
       expect(result.getError().code).toBe(memberErrorCodes.INSUFFICIENT_MEMBER_LEVEL);
 
-      expect(membersRepositorySpy.getTimesMethodCalled('getById')).toBe(1);
+      expect(membersRepositorySpy.getTimesMethodCalled('findById')).toBe(1);
       expect(postsRepositorySpy.wasMethodCalled('save')).toBe(false);
       expect(eventBus.publishEvents).not.toHaveBeenCalled();
     });
@@ -62,7 +63,7 @@ describe('createPost', () => {
       expect(result.getError()).toBeInstanceOf(MemberNotFoundError);
       expect(result.getError().code).toBe(memberErrorCodes.MEMBER_NOT_FOUND);
 
-      expect(membersRepositorySpy.getTimesMethodCalled('getById')).toBe(1);
+      expect(membersRepositorySpy.getTimesMethodCalled('findById')).toBe(1);
       expect(postsRepositorySpy.wasMethodCalled('save')).toBe(false);
       expect(eventBus.publishEvents).not.toHaveBeenCalled();
     });

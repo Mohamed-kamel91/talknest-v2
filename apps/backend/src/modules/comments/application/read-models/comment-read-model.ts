@@ -50,9 +50,7 @@ export class CommentReadModel {
     return this.props.postedAt;
   }
 
-  public static create(
-    props: CommentReadModelProps,
-  ): CommentReadModel {
+  public static create(props: CommentReadModelProps): CommentReadModel {
     return new CommentReadModel(props);
   }
 }

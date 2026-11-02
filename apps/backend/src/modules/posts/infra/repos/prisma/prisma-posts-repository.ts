@@ -1,0 +1,154 @@
+import { type IDatabase, Prisma, PostModel, MemberModel } from '@talknest/database';
+import { DatabaseError } from '@talknest/errors/server';
+import { GetPostsQuery } from '@talknest/api/posts';
+
+import { Post } from '../../../domain/post';
+
+import { MemberReadModel } from '../../../../members/application/read-models/member-read-model';
+import { PostReadModel } from '../../../application/read-models/post-read-model';
+import type { IPostsRepository } from '../../../application/ports/posts-repository';
+import { PostMap } from '../../mappers/post-map';
+
+type PostModelWithMember = PostModel & {
+  member: MemberModel;
+};
+
+export class PrismaPostsRepository implements IPostsRepository {
+  constructor(private database: IDatabase) {}
+
+  public async findById(id: string): Promise<Post | null> {
+    const connection = this.database.getClient();
+    const post = await connection.post.findUnique({
+      where: { id },
+      include: { member: true },
+    });
+
+    if (!post) {
+      return null;
+    }
+
+    return PostMap.toDomain(post);
+  }
+
+  public async findPosts(query: GetPostsQuery): Promise<PostReadModel[]> {
+    const connection = this.database.getClient();
+    const sqlQuery = {
+      orderBy: {},
+      include: {
+        member: true,
+        _count: {
+          select: {
+            comments: true,
+          },
+        },
+      },
+    };
+
+    const { sort } = query.props;
+
+    if (sort === 'popular') {
+      sqlQuery.orderBy = { voteScore: 'desc' };
+    }
+
+    if (sort === 'recent') {
+      sqlQuery.orderBy = { dateCreated: 'desc' };
+    }
+
+    // This should be done using projection and denormalized table "postReadModel"
+    const posts = await connection.post.findMany(sqlQuery);
+
+    return posts.map((post: PostModelWithMember) =>
+      PostReadModel.fromPersistence(post, MemberReadModel.fromPersistence(post.member)),
+    );
+  }
+
+  public async getDetailsById(id: string): Promise<PostReadModel | null> {
+    const connection = this.database.getClient();
+    const post = await connection.post.findUnique({
+      where: { id },
+      include: {
+        member: true,
+        _count: {
+          select: {
+            comments: true,
+          },
+        },
+      },
+    });
+
+    if (!post) {
+      return null;
+    }
+
+    const voteScore = await connection.postVote
+      .aggregate({
+        _sum: { value: true },
+        where: { postId: id },
+      })
+      .then((result) => result._sum.value || 0);
+
+    return PostReadModel.fromPersistence(
+      { ...post, voteScore },
+      MemberReadModel.fromPersistence(post.member),
+    );
+  }
+
+  public async save(
+    post: Post,
+    transaction?: Prisma.TransactionClient,
+  ): Promise<void | DatabaseError> {
+    const prismaInstance = transaction ? transaction : this.database.getClient();
+
+    const postData = PostMap.toPersistence(post);
+    const { id, ...updateData } = postData;
+    try {
+      await prismaInstance.post.upsert({
+        where: { id },
+        update: updateData,
+        create: postData,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new DatabaseError();
+    }
+  }
+
+  public async getBySlug(slug: string): Promise<PostReadModel | null> {
+    const connection = this.database.getClient();
+    const post = await connection.post.findFirst({
+      where: { slug },
+      include: {
+        memberPostedBy: true,
+        _count: {
+          select: {
+            comments: true,
+          },
+        },
+      },
+    });
+
+    if (!post) return null;
+
+    const member = MemberReadModel.fromPersistence(post.memberPostedBy);
+
+    return PostReadModel.fromPersistence(post, member);
+  }
+
+  public async findAuthorId(postId: string) {
+    const row = await this.database.getClient().post.findUnique({
+      where: { id: postId },
+      select: { memberId: true },
+    });
+
+    return row?.memberId ?? null;
+  }
+
+  public async updateVoteScore(postId: string, scoreChange: number): Promise<void> {
+    const client = this.database.getClient();
+
+    await client.post.update({
+      where: { id: postId },
+      data: { voteScore: { increment: scoreChange } },
+    });
+  }
+}

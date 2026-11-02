@@ -11,10 +11,6 @@ export class MemberReputationLevelUpgraded extends DomainEvent<MemberReputationL
   static readonly eventName = 'MemberReputationLevelUpgraded';
 
   constructor(data: MemberReputationLevelUpgradedData) {
-    super(
-      MemberReputationLevelUpgraded.eventName,
-      data.memberId,
-      data,
-    );
+    super(MemberReputationLevelUpgraded.eventName, data.memberId, data);
   }
 }

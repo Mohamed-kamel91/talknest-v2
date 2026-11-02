@@ -8,16 +8,12 @@ import { WebServer } from '../../shared/infra/http';
 import type { IPostsRepository } from '../posts/application/ports';
 import type { IMembersRepository } from '../members/application/ports';
 
-import type {
-  ICommentsReadRepository,
-  ICommentsRepository,
-} from './application/ports';
+import type { ICommentsReadRepository, ICommentsRepository } from './application/ports';
+import { PrismaCommentsRepository, PrismaCommentsReadRepository } from './infra/repos/prisma';
 import {
-  PrismaCommentsRepository,
   InMemoryCommentsRepository,
   InMemoryCommentsReadRepository,
-  PrismaCommentsReadRepository,
-} from './infra/repos';
+} from './infra/repos/in-memory';
 import { CommentsService } from './application/comments-service';
 import { CommentsController } from './presentation/http/controllers';
 import { CommentsRouter } from './presentation/http/routes/comments-router';
@@ -63,13 +59,7 @@ export class CommentsModule extends ApplicationModule {
     postsRepository: IPostsRepository,
     config: Config,
   ) {
-    return new CommentsModule(
-      db,
-      membersRepo,
-      postsRepository,
-      eventBus,
-      config,
-    );
+    return new CommentsModule(db, membersRepo, postsRepository, eventBus, config);
   }
 
   public mountRouter(webServer: WebServer) {
@@ -132,10 +122,7 @@ export class CommentsModule extends ApplicationModule {
   }
 
   private createCommentSubscriptions() {
-    return new CommentSubscriptions(
-      this.eventBus,
-      this.commentProjector,
-    );
+    return new CommentSubscriptions(this.eventBus, this.commentProjector);
   }
 
   private setupSubscriptions() {

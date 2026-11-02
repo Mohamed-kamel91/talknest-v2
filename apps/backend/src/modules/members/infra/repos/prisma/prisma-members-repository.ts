@@ -1,0 +1,66 @@
+import { type IDatabase, Prisma } from '@talknest/database';
+
+import type { IMembersRepository } from '../../../application/ports';
+import { MemberMap } from '../../mappers';
+import { Member } from '../../../domain/member';
+
+export class PrismaMembersRepository implements IMembersRepository {
+  constructor(private database: IDatabase) {}
+
+  async getByUserId(userId: string): Promise<Member | null> {
+    const connection = this.database.getClient();
+    const memberData = await connection.member.findUnique({
+      where: { userId: userId },
+    });
+
+    if (!memberData) {
+      return null;
+    }
+
+    return MemberMap.toDomain(memberData);
+  }
+
+  async getByUsername(username: string): Promise<Member | null> {
+    const connection = this.database.getClient();
+    const memberData = await connection.member.findUnique({
+      where: { username },
+    });
+
+    if (!memberData) {
+      return null;
+    }
+
+    return MemberMap.toDomain(memberData);
+  }
+
+  async findById(memberId: string): Promise<Member | null> {
+    const connection = this.database.getClient();
+    const memberData = await connection.member.findUnique({
+      where: { id: memberId },
+    });
+
+    if (!memberData) {
+      return null;
+    }
+
+    return MemberMap.toDomain(memberData);
+  }
+
+  async save(member: Member, transaction?: Prisma.TransactionClient) {
+    const prismaInstance = transaction || this.database.getClient();
+
+    const memberData = MemberMap.toPersistence(member);
+    const { id, ...updateData } = memberData;
+
+    try {
+      await prismaInstance.member.upsert({
+        where: { id },
+        update: updateData,
+        create: memberData,
+      });
+    } catch (err) {
+      console.log(err);
+      throw new Error('Database exception', { cause: err });
+    }
+  }
+}
