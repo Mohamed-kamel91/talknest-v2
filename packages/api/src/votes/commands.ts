@@ -5,22 +5,9 @@ import { validateCommandInput } from '../validate-command-input';
 import {
   voteOnCommentInputSchema,
   voteOnPostInputSchema,
-  CastInitialUpvoteOnCommentSchema,
-  type CastInitialUpvoteOnCommentInput,
   type VoteOnCommentInput,
   type VoteOnPostInput,
-  CastInitialUpvoteOnPostInput,
-  CastInitialUpvoteOnPostSchema,
 } from './inputs';
-
-// Update Member Reputation
-export class UpdateMemberReputationScoreCommand {
-  constructor(
-    public readonly props: {
-      memberId: string;
-    },
-  ) {}
-}
 
 // Vote On Comment
 export class VoteOnCommentCommand {
@@ -34,23 +21,6 @@ export class VoteOnCommentCommand {
     }
 
     return success(new VoteOnCommentCommand(inputOrError.getValue()));
-  }
-}
-
-// Initial Upvote On Comment
-export class CastInitialUpvoteOnCommentCommand {
-  private constructor(public readonly props: CastInitialUpvoteOnCommentInput) {}
-
-  static create(
-    input: unknown,
-  ): Result<CastInitialUpvoteOnCommentCommand, InvalidRequestInputError> {
-    const inputOrError = validateCommandInput(CastInitialUpvoteOnCommentSchema, input);
-
-    if (inputOrError.isFailure) {
-      return fail(inputOrError.getError());
-    }
-
-    return success(new CastInitialUpvoteOnCommentCommand(inputOrError.getValue()));
   }
 }
 
@@ -70,16 +40,21 @@ export class VoteOnPostCommand {
 }
 
 // Initial Upvote On Post
+type CastInitialUpvoteOnPostProps = {
+  postId: string;
+  memberId: string;
+};
+
 export class CastInitialUpvoteOnPostCommand {
-  private constructor(public readonly props: CastInitialUpvoteOnPostInput) {}
+  constructor(public readonly props: CastInitialUpvoteOnPostProps) {}
+}
 
-  static create(input: unknown): Result<CastInitialUpvoteOnPostCommand, InvalidRequestInputError> {
-    const inputOrError = validateCommandInput(CastInitialUpvoteOnPostSchema, input);
+// Initial Upvote On Comment
+type CastInitialUpvoteOnCommentProps = {
+  commentId: string;
+  memberId: string;
+};
 
-    if (inputOrError.isFailure) {
-      return fail(inputOrError.getError());
-    }
-
-    return success(new CastInitialUpvoteOnPostCommand(inputOrError.getValue()));
-  }
+export class CastInitialUpvoteOnCommentCommand {
+  constructor(public readonly props: CastInitialUpvoteOnCommentProps) {}
 }
