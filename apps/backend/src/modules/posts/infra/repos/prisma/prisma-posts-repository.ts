@@ -1,18 +1,13 @@
-import {
-  type IDatabase,
-  Prisma,
-  Post as PostModel,
-  Member as MemberModel,
-} from '@talknest/database';
+import { type IDatabase, Prisma, PostModel, MemberModel } from '@talknest/database';
 import { DatabaseError } from '@talknest/errors/server';
 import { GetPostsQuery } from '@talknest/api/posts';
 
-import { Post } from '../../domain/post';
+import { Post } from '../../../domain/post';
 
-import { MemberReadModel } from '../../../members/application/read-models/member-read-model';
-import { PostReadModel } from '../../application/read-models/post-read-model';
-import type { IPostsRepository } from '../../application/ports/posts-repository';
-import { PostMap } from '../../application/mappers/post-map';
+import { MemberReadModel } from '../../../../members/application/read-models/member-read-model';
+import { PostReadModel } from '../../../application/read-models/post-read-model';
+import type { IPostsRepository } from '../../../application/ports/posts-repository';
+import { PostMap } from '../../mappers/post-map';
 
 type PostModelWithMember = PostModel & {
   member: MemberModel;
@@ -21,7 +16,7 @@ type PostModelWithMember = PostModel & {
 export class PrismaPostsRepository implements IPostsRepository {
   constructor(private database: IDatabase) {}
 
-  async findById(id: string): Promise<Post | null> {
+  public async findById(id: string): Promise<Post | null> {
     const connection = this.database.getClient();
     const post = await connection.post.findUnique({
       where: { id },
@@ -35,7 +30,7 @@ export class PrismaPostsRepository implements IPostsRepository {
     return PostMap.toDomain(post);
   }
 
-  async findPosts(query: GetPostsQuery): Promise<PostReadModel[]> {
+  public async findPosts(query: GetPostsQuery): Promise<PostReadModel[]> {
     const connection = this.database.getClient();
     const sqlQuery = {
       orderBy: {},
@@ -98,7 +93,10 @@ export class PrismaPostsRepository implements IPostsRepository {
     );
   }
 
-  async save(post: Post, transaction?: Prisma.TransactionClient): Promise<void | DatabaseError> {
+  public async save(
+    post: Post,
+    transaction?: Prisma.TransactionClient,
+  ): Promise<void | DatabaseError> {
     const prismaInstance = transaction ? transaction : this.database.getClient();
 
     const postData = PostMap.toPersistence(post);
@@ -115,7 +113,7 @@ export class PrismaPostsRepository implements IPostsRepository {
     }
   }
 
-  async getBySlug(slug: string): Promise<PostReadModel | null> {
+  public async getBySlug(slug: string): Promise<PostReadModel | null> {
     const connection = this.database.getClient();
     const post = await connection.post.findFirst({
       where: { slug },
@@ -134,6 +132,15 @@ export class PrismaPostsRepository implements IPostsRepository {
     const member = MemberReadModel.fromPersistence(post.memberPostedBy);
 
     return PostReadModel.fromPersistence(post, member);
+  }
+
+  public async findAuthorId(postId: string) {
+    const row = await this.database.getClient().post.findUnique({
+      where: { id: postId },
+      select: { memberId: true },
+    });
+
+    return row?.memberId ?? null;
   }
 
   public async updateVoteScore(postId: string, scoreChange: number): Promise<void> {

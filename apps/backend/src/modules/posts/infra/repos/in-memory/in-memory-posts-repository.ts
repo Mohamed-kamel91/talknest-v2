@@ -1,22 +1,16 @@
 import { type GetPostsQuery } from '@talknest/api/posts';
 
-import { Spy } from '../../../../shared/test-doubles/spy';
+import { Spy } from '../../../../../shared/test-doubles/spy';
 
-import { type PostReadModel } from '../../application/read-models/post-read-model';
-import { Post } from '../../domain/post';
-import { IPostsRepository } from '../../application/ports/posts-repository';
+import { type PostReadModel } from '../../../application/read-models/post-read-model';
+import { Post } from '../../../domain/post';
+import { IPostsRepository } from '../../../application/ports/posts-repository';
 
 export class InMemoryPostsRepository extends Spy<IPostsRepository> implements IPostsRepository {
   private posts: Post[] = [];
   private readModels: PostReadModel[] = [];
 
   // ---- Write side ----
-
-  public async findById(id: string): Promise<Post | null> {
-    this.addCall('findById', [id]);
-
-    return this.posts.find((post) => post.id === id) ?? null;
-  }
 
   public async save(post: Post): Promise<void> {
     this.addCall('save', [post]);
@@ -28,26 +22,6 @@ export class InMemoryPostsRepository extends Spy<IPostsRepository> implements IP
     } else {
       this.posts.push(post);
     }
-  }
-
-  // ---- Read side ----
-
-  public async findPosts(query: GetPostsQuery): Promise<PostReadModel[]> {
-    this.addCall('findPosts', [query]);
-
-    return this.readModels;
-  }
-
-  public async getDetailsById(id: string): Promise<PostReadModel | null> {
-    this.addCall('getDetailsById', [id]);
-
-    return this.readModels.find((post) => post.id === id) ?? null;
-  }
-
-  public async getBySlug(slug: string): Promise<PostReadModel | null> {
-    this.addCall('getBySlug', [slug]);
-
-    return this.readModels.find((post) => post.slug === slug) ?? null;
   }
 
   async updateVoteScore(postId: string, scoreChange: number): Promise<void> {
@@ -71,21 +45,41 @@ export class InMemoryPostsRepository extends Spy<IPostsRepository> implements IP
         : Post.reconstitute({ ...base, postType: 'text', content: post.content });
   }
 
-  // ---- Test setup helpers (no call tracking) ----
+  // ---- Read side ----
 
-  public seedPosts(posts: Post[]): void {
+  public async findById(id: string): Promise<Post | null> {
+    this.addCall('findById', [id]);
+    return this.posts.find((post) => post.id === id) ?? null;
+  }
+
+  public async findPosts(query: GetPostsQuery): Promise<PostReadModel[]> {
+    this.addCall('findPosts', [query]);
+    return this.readModels;
+  }
+
+  public async getDetailsById(id: string): Promise<PostReadModel | null> {
+    this.addCall('getDetailsById', [id]);
+    return this.readModels.find((post) => post.id === id) ?? null;
+  }
+
+  public async getBySlug(slug: string): Promise<PostReadModel | null> {
+    this.addCall('getBySlug', [slug]);
+    return this.readModels.find((post) => post.slug === slug) ?? null;
+  }
+
+  public async findAuthorId(postId: string): Promise<string | null> {
+    const post = this.posts.find((post) => post.id === postId);
+    return post?.memberId ?? null;
+  }
+
+  // ---- Test setup helpers ----
+
+  public seed(posts: Post[]): void {
     this.posts.push(...posts);
   }
 
   public seedReadModels(readModels: PostReadModel[]): void {
     this.readModels.push(...readModels);
-  }
-
-  public static createWithSeedData(): InMemoryPostsRepository {
-    const repo = new InMemoryPostsRepository();
-    // repo.seedPosts(...);
-    // repo.seedReadModels(...);
-    return repo;
   }
 
   public async reset(): Promise<void> {
