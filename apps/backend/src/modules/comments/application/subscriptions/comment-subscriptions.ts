@@ -16,10 +16,7 @@ export class CommentSubscriptions implements IEventSubscriptions {
       this.onCommentPosted.bind(this),
     );
 
-    this.eventBus.subscribe<CommentPosted>(
-      CommentPosted.eventName,
-      this.onReplyPosted.bind(this),
-    );
+    this.eventBus.subscribe<CommentPosted>(CommentPosted.eventName, this.onReplyPosted.bind(this));
   }
 
   private async onCommentPosted(event: CommentPosted): Promise<void> {

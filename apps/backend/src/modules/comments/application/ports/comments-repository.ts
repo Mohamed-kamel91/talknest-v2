@@ -4,5 +4,6 @@ export interface ICommentsRepository {
   save(comment: Comment): Promise<void>;
   findById(id: string): Promise<Comment | null>;
   findByPostId(postId: string): Promise<Comment[]>;
+  findAuthorId(commentId: string): Promise<string | null>;
   updateVoteScore(commentId: string, scoreChange: number): Promise<void>;
 }

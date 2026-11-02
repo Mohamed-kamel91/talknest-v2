@@ -15,9 +15,9 @@ import {
 import { buildPost, setupPostByRandomMember } from '../../../../../../tests/fixtures/unit/posts';
 import { CreateCommentInputBuilder } from '../../../../../../tests/builders/create-comment-input-builder';
 
-import { InMemoryMembersRepository } from '../../../../members/infra/repos/in-memory-members-repository';
-import { InMemoryPostsRepository } from '../../../../posts/infra/repos/in-memory-posts-repository';
-import { InMemoryCommentsRepository } from '../../../infra/repos';
+import { InMemoryMembersRepository } from '../../../../members/infra/repos/in-memory/in-memory-members-repository';
+import { InMemoryPostsRepository } from '../../../../posts/infra/repos/in-memory/in-memory-posts-repository';
+import { InMemoryCommentsRepository } from '../../../infra/repos/in-memory';
 
 import { PostNotFoundError } from '../../../../posts/domain/errors/posts-errors';
 import { MemberNotFoundError } from '../../../../members/domain/errors/member-errors';

@@ -1,12 +1,15 @@
-import { Spy } from '../../../../shared/test-doubles/spy';
-import { ICommentsRepository } from '../../application/ports/comments-repository';
-import { Comment } from '../../domain/comment';
+import { Spy } from '../../../../../shared/test-doubles/spy';
+
+import type { ICommentsRepository } from '../../../application/ports';
+import { Comment } from '../../../domain/comment';
 
 export class InMemoryCommentsRepository
   extends Spy<ICommentsRepository>
   implements ICommentsRepository
 {
   private comments: Comment[] = [];
+
+  // ---- Write side ----
 
   public async save(comment: Comment): Promise<void> {
     this.addCall('save', [comment]);
@@ -20,21 +23,7 @@ export class InMemoryCommentsRepository
     }
   }
 
-  public async findById(id: string): Promise<Comment | null> {
-    this.addCall('findById', [id]);
-
-    const found = this.comments.find((comment) => comment.id === id);
-
-    return found ?? null;
-  }
-
-  public async findByPostId(postId: string): Promise<Comment[]> {
-    this.addCall('findByPostId', [postId]);
-
-    return this.comments.filter((comment) => comment.postId === postId);
-  }
-
-  async updateVoteScore(commentId: string, scoreChange: number): Promise<void> {
+  public async updateVoteScore(commentId: string, scoreChange: number): Promise<void> {
     const index = this.comments.findIndex((comment) => comment.id === commentId);
     if (index === -1) throw new Error(`Comment ${commentId} not found`);
 
@@ -47,9 +36,29 @@ export class InMemoryCommentsRepository
       parentCommentId: comment.parentCommentId,
       memberId: comment.memberId,
       voteScore: comment.voteScore + scoreChange,
-      createdAt: comment.createdAt,
     });
   }
+
+  // ---- Read side ----
+
+  public async findById(id: string): Promise<Comment | null> {
+    this.addCall('findById', [id]);
+    const found = this.comments.find((comment) => comment.id === id);
+    return found ?? null;
+  }
+
+  public async findByPostId(postId: string): Promise<Comment[]> {
+    this.addCall('findByPostId', [postId]);
+
+    return this.comments.filter((comment) => comment.postId === postId);
+  }
+
+  public async findAuthorId(commentId: string): Promise<string | null> {
+    const comment = this.comments.find((comment) => comment.id === commentId);
+    return comment?.memberId ?? null;
+  }
+
+  // ---- Test setup helpers ----
 
   public getAll(): Comment[] {
     return [...this.comments];

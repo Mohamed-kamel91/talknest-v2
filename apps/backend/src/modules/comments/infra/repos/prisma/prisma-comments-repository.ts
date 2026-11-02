@@ -1,8 +1,7 @@
 import { IDatabase, Prisma } from '@talknest/database';
-
-import type { ICommentsRepository } from '../../application/ports/comments-repository';
-import { Comment } from '../../domain/comment';
-import { commentMap } from '../../application/mappers/comment-map';
+import { ICommentsRepository } from '../../../application/ports';
+import { Comment } from '../../../domain/comment';
+import { commentMap } from '../../mappers';
 
 export class PrismaCommentsRepository implements ICommentsRepository {
   constructor(private database: IDatabase) {}
@@ -40,6 +39,14 @@ export class PrismaCommentsRepository implements ICommentsRepository {
     return [];
   }
 
+  async findAuthorId(commentId: string) {
+    const row = await this.database.getClient().comment.findUnique({
+      where: { id: commentId },
+      select: { memberId: true },
+    });
+    return row?.memberId ?? null;
+  }
+  
   public async updateVoteScore(commentId: string, scoreChange: number): Promise<void> {
     const client = this.database.getClient();
 
@@ -48,4 +55,5 @@ export class PrismaCommentsRepository implements ICommentsRepository {
       data: { voteScore: { increment: scoreChange } },
     });
   }
+
 }

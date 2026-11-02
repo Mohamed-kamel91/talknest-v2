@@ -1,6 +1,6 @@
 import { type CommentRead as PrismaCommentReadModel } from '@talknest/database';
 
-import { CommentReadModel } from '../read-models/comment-read-model';
+import { CommentReadModel } from '../../application/read-models/comment-read-model';
 
 export class CommentReadModelMap {
   public static fromPersistence(

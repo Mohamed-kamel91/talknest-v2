@@ -1,21 +1,17 @@
 import { type IDatabase, Prisma } from '@talknest/database';
 import { DatabaseError } from '@talknest/errors';
 
-import { CommentReadModelMap } from '../../application/mappers/comment-read-model-map';
-import type { ICommentsReadRepository } from '../../application/ports';
-import { CommentReadModel } from '../../application/read-models/comment-read-model';
+import { CommentReadModelMap } from '../../mappers';
+import { CommentReadModel } from '../../../application/read-models/comment-read-model';
+import { ICommentsReadRepository } from '../../../application/ports';
 
 export class PrismaCommentsReadRepository implements ICommentsReadRepository {
   constructor(private database: IDatabase) {}
 
-  async save(
-    commentReadModel: CommentReadModel,
-    transaction?: Prisma.TransactionClient,
-  ) {
+  async save(commentReadModel: CommentReadModel, transaction?: Prisma.TransactionClient) {
     const prismaInstance = transaction || this.database.getClient();
 
-    const commentData =
-      CommentReadModelMap.toPersistence(commentReadModel);
+    const commentData = CommentReadModelMap.toPersistence(commentReadModel);
 
     try {
       await prismaInstance.commentRead.upsert({
@@ -29,9 +25,7 @@ export class PrismaCommentsReadRepository implements ICommentsReadRepository {
     }
   }
 
-  async findById(
-    commentId: string,
-  ): Promise<CommentReadModel | null> {
+  async findById(commentId: string): Promise<CommentReadModel | null> {
     const client = this.database.getClient();
 
     const comment = await client.commentRead.findUnique({
@@ -51,8 +45,6 @@ export class PrismaCommentsReadRepository implements ICommentsReadRepository {
       orderBy: { postedAt: 'asc' },
     });
 
-    return comments.map((comment) =>
-      CommentReadModelMap.fromPersistence(comment),
-    );
+    return comments.map((comment) => CommentReadModelMap.fromPersistence(comment));
   }
 }

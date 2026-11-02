@@ -1,7 +1,6 @@
-import { Spy } from '../../../../shared/test-doubles/spy';
-
-import type { ICommentsReadRepository } from '../../application/ports';
-import { CommentReadModel } from '../../application/read-models/comment-read-model';
+import { Spy } from '../../../../../shared/test-doubles/spy';
+import type { ICommentsReadRepository } from '../../../application/ports';
+import { CommentReadModel } from '../../../application/read-models';
 
 export class InMemoryCommentsReadRepository
   extends Spy<ICommentsReadRepository>
@@ -9,14 +8,10 @@ export class InMemoryCommentsReadRepository
 {
   private comments: CommentReadModel[] = [];
 
-  public async save(
-    commentReadModel: CommentReadModel,
-  ): Promise<void> {
+  public async save(commentReadModel: CommentReadModel): Promise<void> {
     this.addCall('save', [commentReadModel]);
 
-    const index = this.comments.findIndex(
-      (comment) => comment.id === commentReadModel.id,
-    );
+    const index = this.comments.findIndex((comment) => comment.id === commentReadModel.id);
 
     if (index >= 0) {
       this.comments[index] = commentReadModel;
@@ -25,20 +20,12 @@ export class InMemoryCommentsReadRepository
     }
   }
 
-  public async findById(
-    commentId: string,
-  ): Promise<CommentReadModel | null> {
+  public async findById(commentId: string): Promise<CommentReadModel | null> {
     this.addCall('findById', [commentId]);
-
-    return (
-      this.comments.find((comment) => comment.id === commentId) ??
-      null
-    );
+    return this.comments.find((comment) => comment.id === commentId) ?? null;
   }
 
-  public async listByPostId(
-    postId: string,
-  ): Promise<CommentReadModel[]> {
+  public async listByPostId(postId: string): Promise<CommentReadModel[]> {
     this.addCall('listByPostId', [postId]);
 
     return this.comments
